@@ -1,6 +1,6 @@
 # maintenance_manager
 
-A new Flutter project.
+A new Flutter project designed as a mobile application for the general maintenance and expense tracking of vehicles. Work In Progress.
 
 ## Getting Started
 
