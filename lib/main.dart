@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
-//import 'Pages/home.dart';
+import 'package:maintenance_manager/data/database.dart';
 import 'homepage.dart';
+import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+void main() async {
+  //Initializing the systems locale based on device settings to utilize date time API
+  WidgetsFlutterBinding.ensureInitialized();
+  await findSystemLocale();
+
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+  // Initialize the database connection
+  try {
+  await DatabaseRepository.instance.database;
+  }
+  catch(e) {
+    // ignore: avoid_print
+    print('Error initializing Database: $e');
+  }
+
   runApp(const MyApp());
+  // Closing database connection after application is closed
+  //await DatabaseProvider().closeConnection();
 }
 
 class MyApp extends StatelessWidget {

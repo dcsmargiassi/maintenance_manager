@@ -1,17 +1,10 @@
 //import 'package:final_project/Pages/add_vehicle_form.dart';
 import 'package:flutter/material.dart';
-import 'add_vehicle_form.dart';
-//import 'package:flutter_svg/flutter_svg.dart';
+//import 'add_vehicle_form.dart';
+import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-  // Function to allow navigation to add vehicle form app page
-  void _navigateToAddVehicleFormPage(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()), // Create an instance of the AddVehicleForm class.
-  );
-}
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +12,10 @@ class HomePage extends StatelessWidget {
   // Declared variables
   String myVehicles = 'My Vehicles';
   String archivedVehicles = 'Archived Vehicles';
-  String addRemoveVehicle = 'Add/Remove Vehicle';
+  String addRemoveVehicle = 'Add Vehicle';
   const double buttonFontSize = 20.0;
   const double homeScreenButtonHeight = 50.0;
-  const double homeScreenButtonWidth = 250.0;
+  const double homeScreenButtonWidth = 225.0;
   const double buttonSpacingBoxHeight = 50.0;
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +69,7 @@ class HomePage extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
                 //Call Function here
-              _navigateToAddVehicleFormPage(context);
+              navigateToAddVehicleFormPage(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
