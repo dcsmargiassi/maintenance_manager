@@ -2,6 +2,16 @@
 
 A new Flutter project designed as a mobile application for the general maintenance and expense tracking of vehicles. Work In Progress.
 
+
+Implemented Features:
+- Sign-In and Create account pages.
+- Add vehicle Forms
+- Work in Progress
+  
+Future Features:
+- Input and manage fuel expenses.
+- Generate visual graphs based on maintenance and fuel expenses over a given period of time.
+- Work in Progress
 ## Getting Started
 
 This project is a starting point for a Flutter application.
