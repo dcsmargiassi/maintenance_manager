@@ -221,11 +221,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   if (_formKey.currentState!.validate()) {
                   final vehicleInformation = VehicleInformation(
                     //userId: userId,
-<<<<<<< HEAD
-                    vehicleNickname: vehicleNickNameController.text,
-=======
                     vehicleNickName: vehicleNickNameController.text,
->>>>>>> cad9e83 (Initial Commit from new computer. Minor changes to)
                     vin: vinController.text,
                     make: makeController.text,
                     model: modelController.text,

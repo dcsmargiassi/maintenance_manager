@@ -97,20 +97,12 @@ class VehicleOperations {
 
   }
 
-<<<<<<< HEAD
-  Future<List<VehicleInformation>> getAllVehicles() async {
-    final db = await dbRepository.database;
-    var allRows = await db.query('vehicleInformation');
-    List<VehicleInformation> vehicles = allRows.map((vehicle) => VehicleInformation.fromMap(vehicle)).toList();
-    return vehicles;
-=======
   Future<List> getAllVehicles() async {
-    final db = await dbRepository.database;
-    final List<Map<String,dynamic>> allVehicles = await db.query("vehicleInformation");
-    //var allRows = await db.query('vehicleInformation');
-    //List<VehicleInformation> vehicles = allRows.map((vehicle) => VehicleInformation.fromMap(vehicle)).toList();
-    return allVehicles.map((e) => VehicleInformation.fromJson(e)).toList();
->>>>>>> cad9e83 (Initial Commit from new computer. Minor changes to)
+  final db = await dbRepository.database;
+  final List<Map<String,dynamic>> allVehicles = await db.query("vehicleInformation");
+  //var allRows = await db.query('vehicleInformation');
+  //List<VehicleInformation> vehicles = allRows.map((vehicle) => VehicleInformation.fromMap(vehicle)).toList();
+  return allVehicles.map((e) => VehicleInformation.fromJson(e)).toList();
   }
 }
 

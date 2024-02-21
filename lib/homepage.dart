@@ -47,10 +47,7 @@ class HomePage extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               //Call Function here
-<<<<<<< HEAD
-=======
               navigateToMyVehicles(context);
->>>>>>> cad9e83 (Initial Commit from new computer. Minor changes to)
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

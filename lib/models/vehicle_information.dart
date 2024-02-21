@@ -25,19 +25,11 @@ class VehicleInformation {
 
 // Vehicle Information table constructor
   VehicleInformation({this.vehicleId, this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
-<<<<<<< HEAD
-  this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, required String vehicleNickname});
-  
-  VehicleInformation.fromMap(dynamic obj) { 
-    vehicleId = obj['vehicleId'];
-    userId = obj['userId']?? '';
-=======
   this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice});
   
   VehicleInformation.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
-    userId = obj['userId']?? 0;
->>>>>>> cad9e83 (Initial Commit from new computer. Minor changes to)
+    userId = obj['userId']?? '';
     vehicleNickName = obj['vehicleNickName'];
     vin = obj['vin'];
     make = obj['make'];
@@ -73,10 +65,6 @@ class VehicleInformation {
     };
     return map;
   }
-
-<<<<<<< HEAD
-=======
   static fromJson(Map<String, dynamic> e) {}
 
->>>>>>> cad9e83 (Initial Commit from new computer. Minor changes to)
 }
