@@ -32,12 +32,6 @@ class DatabaseRepository {
     }
     return _databaseCompleter!.future;
   }
-  //Future<Database> get database async {
-  //  if (!_database.isOpen) {
-  //  _database = await _initDatabase();
-  //}
-  //return _database;
-  //}
 
 Future<Database> _initDatabase() async {
     Directory documents = await getApplicationDocumentsDirectory();

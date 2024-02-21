@@ -9,6 +9,7 @@ import "package:maintenance_manager/homepage.dart";
 import 'dart:async';
 import "package:maintenance_manager/my_vehicles.dart";
 
+
 // Function to allow navigation to add vehicle form app page
   void navigateToAddVehicleFormPage(BuildContext context) {
     Navigator.push(
@@ -38,7 +39,20 @@ void navigateToHomePage(BuildContext context) {
 void navigateToMyVehicles(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayVehicleLists()),
+    MaterialPageRoute(builder: (context) => const DisplayVehicleLists()),
+  ).then((_) {
+    if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToSpecificVehiclePage(BuildContext context, data) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      //builder: (context) => VehicleDetailsPage(vehicleInformation: data),
+      builder: (context) => const HomePage()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();

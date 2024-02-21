@@ -6,7 +6,7 @@
  - toMap method converts the user object into a Map<String, dynamic> which allows the updating or inserting of new records.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
-class VehicleInformation {
+class VehicleInformationModel {
   int? vehicleId;
   int? userId;
   String? vehicleNickName;
@@ -24,10 +24,10 @@ class VehicleInformation {
   double? sellPrice;
 
 // Vehicle Information table constructor
-  VehicleInformation({this.vehicleId, this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
+  VehicleInformationModel({this.vehicleId, this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
   this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice});
   
-  VehicleInformation.fromMap(dynamic obj) { 
+  VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
     userId = obj['userId']?? '';
     vehicleNickName = obj['vehicleNickName'];
@@ -65,6 +65,24 @@ class VehicleInformation {
     };
     return map;
   }
-  static fromJson(Map<String, dynamic> e) {}
-
+  
+   factory VehicleInformationModel.fromJson(Map<String, dynamic> json) {
+    return VehicleInformationModel(
+      vehicleId: json['vehicleId'],
+      userId: json['userId'],
+      vehicleNickName: json['vehicleNickName'],
+      vin: json['vin'],
+      make: json['make'],
+      model: json['model'],
+      version: json['version'],
+      year: json['year'],
+      purchaseDate: json['purchaseDate'],
+      sellDate: json['sellDate'],
+      odometerBuy: json['odometerBuy'],
+      odometerSell: json['odometerSell'],
+      odometerCurrent: json['odometerCurrent'],
+      purchasePrice: json['purchasePrice'],
+      sellPrice: json['sellPrice'],
+    );
+  }
 }

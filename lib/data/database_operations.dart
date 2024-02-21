@@ -71,7 +71,7 @@ class UserOperations {
 class VehicleOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
-  Future<void> createVehicle(VehicleInformation vehicle) async {
+  Future<void> createVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
     db.insert('vehicleInformation', vehicle.toMap());
     // ignore: avoid_print
@@ -79,30 +79,28 @@ class VehicleOperations {
 
   }
 
-  Future<void> updateVehicle(VehicleInformation vehicle) async {
+  Future<void> updateVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
     db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
 
   }
 
-  Future<void> archiveVehicle(VehicleInformation vehicle) async {
+  Future<void> archiveVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
     db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
 
   }
 
-  Future<void> deleteVehicle(VehicleInformation vehicle) async {
+  Future<void> deleteVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
     db.delete('vehicleInformation', where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
 
   }
 
-  Future<List> getAllVehicles() async {
-  final db = await dbRepository.database;
-  final List<Map<String,dynamic>> allVehicles = await db.query("vehicleInformation");
-  //var allRows = await db.query('vehicleInformation');
-  //List<VehicleInformation> vehicles = allRows.map((vehicle) => VehicleInformation.fromMap(vehicle)).toList();
-  return allVehicles.map((e) => VehicleInformation.fromJson(e)).toList();
+  Future<List<VehicleInformationModel>> getAllVehicles() async {
+    final db = await dbRepository.database;
+    final List<Map<String, dynamic>> allVehicles = await db.query("vehicleInformation");
+    return allVehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
   }
 }
 

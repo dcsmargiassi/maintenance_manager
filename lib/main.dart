@@ -21,8 +21,6 @@ void main() async {
   }
 
   runApp(const MyApp());
-  // Closing database connection after application is closed
-  //await DatabaseProvider().closeConnection();
 }
 
 class MyApp extends StatelessWidget {

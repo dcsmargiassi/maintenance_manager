@@ -219,7 +219,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.
                   if (_formKey.currentState!.validate()) {
-                  final vehicleInformation = VehicleInformation(
+                  final vehicleInformation = VehicleInformationModel(
                     //userId: userId,
                     vehicleNickName: vehicleNickNameController.text,
                     vin: vinController.text,
