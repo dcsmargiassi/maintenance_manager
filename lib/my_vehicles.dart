@@ -17,7 +17,6 @@ void initState() {
   super.initState();
 }
   
-    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +25,7 @@ void initState() {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if(snapshot.hasData){
               return ListView.builder(
-                itemCount: 5,
+                itemCount: snapshot.data.length,
                 itemBuilder: (context, index){
                   return _displayVehicles();
                 });
