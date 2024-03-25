@@ -5,13 +5,16 @@ A new Flutter project designed as a mobile application for the general maintenan
 
 Implemented Features:
 - Sign-In and Create account pages.
-- Add vehicle Forms
-- Work in Progress
+- Add vehicle Forms.
+- Able to view vehicles in database and navigate to a vehicle specific page.
+- Work in Progress.
   
 Future Features:
 - Input and manage fuel expenses.
+- Ability to archive vehicles.
+- Ability to delete vehicles.
 - Generate visual graphs based on maintenance and fuel expenses over a given period of time.
-- Work in Progress
+- Work in Progress.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
