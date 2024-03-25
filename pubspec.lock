@@ -209,6 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
+  date_format_field:
+    dependency: "direct main"
+    description:
+      name: date_format_field
+      sha256: d07a428bd253454ff3123f2e57511cf6ec101d1135af3b79cebb40e1bee8bab8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   drift:
     dependency: "direct main"
     description:
@@ -270,6 +278,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  flutter_pw_validator:
+    dependency: "direct main"
+    description:
+      name: flutter_pw_validator
+      sha256: "01960d4d701f6b972f3a2f324e202d840ecfe1b84e00522f92dece874b1c9b30"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter

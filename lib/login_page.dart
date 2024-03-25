@@ -1,0 +1,93 @@
+/* 
+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
+ - Code Explanation: The login page allows an existing user to login to their account or if new, navigate to the create account
+ page. This is the default page each user first sees when opening the application. Currently, users must login by providing
+ their email used for login and a password. This helps to ensure that usernames can be repeated as it will be associated with 
+ a unique email account.
+ - A feature to be added is the forgot password navigation page which will take care of users who have forgotten their
+ password, but remember the associated email for the account.
+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
+*/
+
+
+import 'package:flutter/material.dart';
+import 'package:maintenance_manager/create_account.dart';
+import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/models/user.dart';
+import 'package:maintenance_manager/data/database_operations.dart';
+
+class SignInPage extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  SignInPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sign In'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () async {
+                // Perform sign-in logic
+                // You should add error handling and display appropriate messages
+                User? user = await UserOperations().getUserByEmailAndPassword(
+                  emailController.text,
+                  passwordController.text,
+                );
+
+                if (user != null) {
+                  // ignore: use_build_context_synchronously
+                  navigateToHomePage(context);
+                } else {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Incorrect login attempt. Please try again.'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Sign In'),
+            ),
+            const SizedBox(height: 16.0),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+                );
+              },
+              child: const Text('Create an account'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+                );
+              },
+              child: const Text('Lost password? - Not implemented'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

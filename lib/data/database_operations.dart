@@ -21,14 +21,13 @@ class UserOperations {
   Future<void> createUser(User user) async {
     final db = await dbRepository.database;
     db.insert('user', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
-
   }
 
-  Future<User?> getUserByEmail(String email) async {
-    final db = await dbRepository.database;
-    var result = await db.query('user', where: 'email = ?', whereArgs: [email]);
-    return result.isNotEmpty ? User.fromMap(result.first) : null;
-  }
+  Future<User?> getUserByEmailAndPassword(String email, String password) async {
+  final db = await dbRepository.database;
+  var result = await db.query('user', where: 'email = ? AND password = ?', whereArgs: [email, password]);
+  return result.isNotEmpty ? User.fromMap(result.first) : null;
+}
 
   Future<User?> getUserByUsername(String username) async {
     final db = await dbRepository.database;

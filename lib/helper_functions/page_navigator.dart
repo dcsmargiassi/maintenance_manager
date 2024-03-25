@@ -5,6 +5,7 @@
 */
 import "package:flutter/material.dart";
 import "package:maintenance_manager/add_vehicle_form.dart";
+import "package:maintenance_manager/create_account.dart";
 import "package:maintenance_manager/homepage.dart";
 import 'dart:async';
 import "package:maintenance_manager/my_vehicles.dart";
@@ -53,6 +54,17 @@ void navigateToSpecificVehiclePage(BuildContext context, data) {
     MaterialPageRoute(
       //builder: (context) => VehicleDetailsPage(vehicleInformation: data),
       builder: (context) => const HomePage()),
+  ).then((_) {
+    if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToCreateAccountPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const CreateAccountPage()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();

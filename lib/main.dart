@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'homepage.dart';
+import 'package:maintenance_manager/login_page.dart';
+//import 'homepage.dart';
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -29,9 +30,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-     return const MaterialApp(
+     return MaterialApp( //removed const from this line
       debugShowCheckedModeBanner: false,
-      home: HomePage()
+      home: SignInPage()//HomePage()
     );
   }
 }

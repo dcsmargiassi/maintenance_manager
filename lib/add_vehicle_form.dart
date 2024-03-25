@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
-//import 'package:date_field/date_field.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
-//import 'package:path/path.dart';
+import 'package:date_format_field/date_format_field.dart';
 
 /// Flutter code sample for [Form].
 
@@ -200,6 +198,18 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     );
                   }).toList(),
                 ),
+            DateFormatField(
+              type: DateFormatType.type4,
+              controller: purchaseDateController,
+              decoration: const InputDecoration(
+                hintText: 'Enter purchase date of car',
+              ),
+              onComplete: (date) {
+              setState(() {
+              date = date;
+              });
+              },
+            ),
             //Implement this DateTime field later, remove the time selection and create helper functions that convert the date from date format to a string and vice versa.
             //DateTimeFormField(
             //  decoration: const InputDecoration(
@@ -227,7 +237,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     model: modelController.text,
                     version: versionController.text,
                     year: yearController.hashCode,
-                    purchaseDate: null,//purchaseDateController.hashCode,
+                    purchaseDate: purchaseDateController.text,
                     sellDate: null,//sellDateController.hashCode,
                     odometerBuy: null,//odometerBuyController.hashCode,
                     odometerSell: null,//odometerSellController.hashCode,

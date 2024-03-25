@@ -13,8 +13,8 @@ class User {
   String? password;
   DateTime? lastLogin;
   int emailNotifications = 0;
-  String firstName = ' ';
-  String lastName = ' ';
+  String? firstName = ' ';
+  String? lastName = ' ';
 
 // User table constructor
   User({required this.email, this.userId, required this.username, required this.password, 

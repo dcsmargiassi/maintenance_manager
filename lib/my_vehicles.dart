@@ -33,7 +33,7 @@ void initState() {
     home: Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Add Vehicle Form',
+          'My Vehicles',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
             fontSize: 32,
@@ -127,10 +127,3 @@ void initState() {
     );
   }
 }
-
-
-
-
-
-
-
