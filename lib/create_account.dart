@@ -8,10 +8,12 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/user.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({Key? key}) : super(key: key);
@@ -123,6 +125,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     emailNotifications: emailNotificationsController.hashCode,
                   );
                   await UserOperations().createUser(newUser);
+                  // ignore: use_build_context_synchronously
+                  final authState = Provider.of<AuthState>(context, listen: false);
+                  authState.setUser(emailController.text);
                   // ignore: use_build_context_synchronously
                   navigateToHomePage(context);
                 },

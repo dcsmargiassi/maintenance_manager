@@ -63,6 +63,12 @@ class UserOperations {
     List<User> users = allRows.map((user) => User.fromMap(user)).toList();
     return users;
   }
+
+  Future<String?> getUserIdByEmail(String email) async {
+    final db = await dbRepository.database;
+    var result = await db.query('user', columns: ['userId'], where: 'email = ?', whereArgs: [email]);
+    return result.isNotEmpty ? result.first['userId'] as String : null;
+}
 }
 
 // Vehicle information table operation functions
@@ -100,6 +106,18 @@ class VehicleOperations {
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> allVehicles = await db.query("vehicleInformation");
     return allVehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
+  }
+
+  Future<List<VehicleInformationModel>> getAllVehiclesByUserId(int userId) async {
+    final db = await dbRepository.database;
+    final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ?', whereArgs: [userId]);
+    return vehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
+}
+
+  Future<VehicleInformationModel> getVehicleById(int vehicleId, int userId) async {
+    final db = await dbRepository.database;
+    final result = await db.query('vehicleInformation', where: 'vehicleId = ? AND userId = ?', whereArgs: [vehicleId, userId]);
+    return VehicleInformationModel.fromMap(result.first);
   }
 }
 

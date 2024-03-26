@@ -1,6 +1,4 @@
-//import 'package:final_project/Pages/add_vehicle_form.dart';
 import 'package:flutter/material.dart';
-//import 'add_vehicle_form.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 
 class HomePage extends StatelessWidget {
@@ -23,13 +21,35 @@ class HomePage extends StatelessWidget {
           'Maintenance Manager',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: buttonFontSize,
+            fontSize: 32,
             fontWeight: FontWeight.bold
           )
         ),
-          backgroundColor: const Color.fromARGB(255, 44, 43, 44),
+        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
           elevation: 0.0,
           centerTitle: true,
+          actions: [
+          PopupMenuButton<String>(
+            onSelected: (choice) {
+              if (choice == 'Exit') {
+                navigateToHomePage(context); // Go back to the previous page.
+              }
+              if (choice == 'signout') {
+                navigateToLogin(context); // Go back to the previous page.
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'Exit',
+                child: Text('Return to HomePage'),
+              ),
+              const PopupMenuItem(
+                value: 'signout',
+                child: Text('Sign Out'),
+              ),
+            ],
+          ),
+          ]
       ),
       // Creation of sized box containing child 'column' to properly align and space buttons appropriately
       // ignore: sized_box_for_whitespace

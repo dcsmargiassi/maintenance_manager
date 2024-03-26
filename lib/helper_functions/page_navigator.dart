@@ -1,29 +1,23 @@
 /* 
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
- - Code Explanation: Various navigation functions to navigate the different pages on the application
+ - Code Explanation: Various navigation functions to navigate the different pages on the application.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import "package:flutter/material.dart";
 import "package:maintenance_manager/add_vehicle_form.dart";
 import "package:maintenance_manager/create_account.dart";
 import "package:maintenance_manager/homepage.dart";
+import "package:maintenance_manager/login_page.dart";
 import 'dart:async';
 import "package:maintenance_manager/my_vehicles.dart";
+import "package:maintenance_manager/vehicle_information.dart";
 
-
-// Function to allow navigation to add vehicle form app page
-  void navigateToAddVehicleFormPage(BuildContext context) {
-    Navigator.push(
-      context,
-     MaterialPageRoute(builder: (context) => const AddVehicleFormApp()), // Create an instance of the AddVehicleForm class.
-    );  
-  }
-  //void navigateToHomePage(BuildContext context) {
-  //  Navigator.push(
-  //    context,
-  //    MaterialPageRoute(builder: (context) => const HomePage()), // Create an instance of the AddVehicleForm class.
-  //  );  
-  //}
+void navigateToAddVehicleFormPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()), // Create an instance of the AddVehicleForm class.
+  );  
+}
 
 Completer<void> navigationCompleter = Completer<void>();
 void navigateToHomePage(BuildContext context) {
@@ -48,12 +42,12 @@ void navigateToMyVehicles(BuildContext context) {
   });
 }
 
-void navigateToSpecificVehiclePage(BuildContext context, data) {
+void navigateToSpecificVehiclePage(BuildContext context, int vehicleId) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      //builder: (context) => VehicleDetailsPage(vehicleInformation: data),
-      builder: (context) => const HomePage()),
+      builder: (context) => DisplayVehicleInfo(vehicleId: vehicleId),
+      ),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
@@ -65,6 +59,17 @@ void navigateToCreateAccountPage(BuildContext context) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+  ).then((_) {
+    if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToLogin(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SignInPage()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();

@@ -4,6 +4,8 @@ import 'package:maintenance_manager/login_page.dart';
 //import 'homepage.dart';
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   //Initializing the systems locale based on device settings to utilize date time API
@@ -21,7 +23,12 @@ void main() async {
     print('Error initializing Database: $e');
   }
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
      return MaterialApp( //removed const from this line
       debugShowCheckedModeBanner: false,
-      home: SignInPage()//HomePage()
+      home: SignInPage()
     );
   }
 }

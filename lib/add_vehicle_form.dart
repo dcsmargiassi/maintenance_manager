@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:date_format_field/date_format_field.dart';
+import 'package:provider/provider.dart';
 
 /// Flutter code sample for [Form].
 
@@ -80,10 +83,11 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   //static const List<String> fuelTypeItemsList = <String>["Miles Per Hour", "Kilometers Per Hour", ];
   String selectedUnit = "Miles Per Hour";
   
-  get userId => null;
 
   @override
   Widget build(BuildContext context) {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    var userId = authState.userId;
     return SingleChildScrollView(
       child: Form(
         key: _formKey,
@@ -206,7 +210,8 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               ),
               onComplete: (date) {
               setState(() {
-              date = date;
+                purchaseDateController.text = formatDateToString(date!);
+              //date = date;
               });
               },
             ),
@@ -230,7 +235,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   // the form is invalid.
                   if (_formKey.currentState!.validate()) {
                   final vehicleInformation = VehicleInformationModel(
-                    //userId: userId,
+                    userId: userId,
                     vehicleNickName: vehicleNickNameController.text,
                     vin: vinController.text,
                     make: makeController.text,
@@ -248,13 +253,10 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   //Create an instance of VehicleOperations
                   VehicleOperations vehicleOperations = VehicleOperations();
                   await vehicleOperations.createVehicle(vehicleInformation);
-                  // Navigate back to the homepage
-                  //navigateToHomePage(context);
                   if (!context.mounted) return;
-                  //Navigator.pop(context);
-                  navigationCompleter = Completer<void>();
-                  navigateToHomePage(context);
-                  await navigationCompleter.future;
+                    navigationCompleter = Completer<void>();
+                    navigateToHomePage(context);
+                    await navigationCompleter.future;
                   }
                 },
                 child: const Text('Submit'),

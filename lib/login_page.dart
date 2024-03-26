@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 /* 
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
  - Code Explanation: The login page allows an existing user to login to their account or if new, navigate to the create account
@@ -15,6 +17,8 @@ import 'package:maintenance_manager/create_account.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/user.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -52,10 +56,10 @@ class SignInPage extends StatelessWidget {
                 );
 
                 if (user != null) {
-                  // ignore: use_build_context_synchronously
+                  final authState = Provider.of<AuthState>(context, listen: false);
+                  authState.setUser(emailController.text);
                   navigateToHomePage(context);
                 } else {
-                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Incorrect login attempt. Please try again.'),
