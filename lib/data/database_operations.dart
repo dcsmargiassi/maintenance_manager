@@ -11,7 +11,7 @@ import 'package:maintenance_manager/models/user.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:sqflite/sqflite.dart';
 //import 'package:maintenance_manager/models/maintenance_records.dart';
-//import 'package:maintenance_manager/models/fuel_records.dart';
+import 'package:maintenance_manager/models/fuel_records.dart';
 
 // User table operation functions
 
@@ -123,12 +123,39 @@ class VehicleOperations {
 
 // Fuel Records operation functions
 
- //class FuelRecords {
- //  
- //}
+class FuelRecordOperations {
+  DatabaseRepository dbRepository = DatabaseRepository.instance;
+
+  Future<void> createFuelRecord(FuelRecords fuelRecord) async {
+    final db = await dbRepository.database;
+    db.insert('fuelRecords', fuelRecord.toMap());
+  }
+
+  Future<void> updateFuelRecord(FuelRecords fuelRecord) async {
+    final db = await dbRepository.database;
+    db.update('fuelRecords', fuelRecord.toMap(),
+        where: 'fuelRecordId = ?', whereArgs: [fuelRecord.fuelRecordId]);
+  }
+
+  Future<void> deleteFuelRecord(int fuelRecordId) async {
+    final db = await dbRepository.database;
+    db.delete('fuelRecords', where: 'fuelRecordId = ?', whereArgs: [fuelRecordId]);
+  }
+
+  Future<List<FuelRecords>> getAllFuelRecords() async {
+    final db = await dbRepository.database;
+    final List<Map<String, dynamic>> allFuelRecords = await db.query("fuelRecords");
+    return allFuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
+  }
+
+  Future<List<FuelRecords>> getFuelRecordsByVehicleId(int vehicleId) async {
+    final db = await dbRepository.database;
+    final List<Map<String, dynamic>> fuelRecords =
+        await db.query('fuelRecords', where: 'vehicleId = ?', whereArgs: [vehicleId]);
+    return fuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
+  }
+}
 
 
 // maintenance Records operation functions
-
-// Fuel records operation functions
 

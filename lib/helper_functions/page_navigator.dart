@@ -4,6 +4,7 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import "package:flutter/material.dart";
+import "package:maintenance_manager/add_fuel_record_form.dart";
 import "package:maintenance_manager/add_vehicle_form.dart";
 import "package:maintenance_manager/create_account.dart";
 import "package:maintenance_manager/homepage.dart";
@@ -72,6 +73,17 @@ void navigateToLogin(BuildContext context) {
     MaterialPageRoute(builder: (context) => SignInPage()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToAddFuelRecordPage(BuildContext context, int? vehicleId) { 
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const AddFuelRecordFormApp()),
+    ).then((_) {
+     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
     }
   });

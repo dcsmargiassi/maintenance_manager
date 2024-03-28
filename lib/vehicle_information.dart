@@ -249,7 +249,10 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               "VIN: ${data.vin}",
               style: const TextStyle(fontSize: 18),
             ),
-            // Add more fields as needed
+            Text(
+              "Mileage: ${data.odometerCurrent}",
+              style: const TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -257,7 +260,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to add fuel record page
-                    //navigateToAddFuelRecordPage(context, data.vehicleId);
+                    navigateToAddFuelRecordPage(context, data.vehicleId);
                   },
                   child: const Text('Add Fuel Record'),
                 ),

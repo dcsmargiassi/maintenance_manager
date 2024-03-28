@@ -215,18 +215,6 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               });
               },
             ),
-            //Implement this DateTime field later, remove the time selection and create helper functions that convert the date from date format to a string and vice versa.
-            //DateTimeFormField(
-            //  decoration: const InputDecoration(
-            //  labelText: 'Enter Date',
-            //  ),
-            //    firstDate: DateTime.now().add(const Duration(days: 10)),
-            //    lastDate: DateTime.now().add(const Duration(days: 40)),
-            //    initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-            //    onChanged: (DateTime? value) {
-            //    purchaseDateController = value as;
-            //    },
-            //),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
