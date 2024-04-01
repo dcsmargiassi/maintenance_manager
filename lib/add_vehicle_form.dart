@@ -229,12 +229,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     make: makeController.text,
                     model: modelController.text,
                     version: versionController.text,
-                    year: yearController.hashCode,
+                    year: int.tryParse(yearController.text) ?? 0,
                     purchaseDate: purchaseDateController.text,
                     sellDate: null,//sellDateController.hashCode,
                     odometerBuy: null,//odometerBuyController.hashCode,
                     odometerSell: null,//odometerSellController.hashCode,
-                    odometerCurrent: null,//odometerCurrentController.hashCode,
+                    odometerCurrent: double.tryParse(odometerCurrentController.text) ?? 0,
                     purchasePrice: null,//purchasePriceController.hashCode,
                     sellPrice: null//sellPriceController.hashCode
                   );

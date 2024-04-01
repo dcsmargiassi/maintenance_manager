@@ -74,7 +74,6 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // Variable Declarations
   static const double buttonSpacingBoxHeight = 50.0; 
-  //static const List<String> fuelTypeItemsList = <String>["Miles Per Hour", "Kilometers Per Hour", ];
   String selectedUnit = "Miles Per Hour";
   
 
