@@ -9,7 +9,7 @@ Implemented Features:
 - Sign-In and Create account pages.
 - Add vehicle Forms.
 - Able to view vehicles in database and navigate to a vehicle specific page.
-- Manual input of refuelling for each vehichle.
+- Manual input of refuelling for each vehicle.
 - Update vehicle information.
   
 Future Features:
@@ -18,4 +18,5 @@ Future Features:
 - Ability to delete vehicles.
 - Generate visual graphs based on maintenance and fuel expenses over a given period of time.
 - Ability to export vehicle information, fuel expenses, and maintenance reports as a pdf for printing as well as a csv file.
+- Upload images of mechanic reports for automatic processing by the application.
 - Work in Progress.
