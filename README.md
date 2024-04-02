@@ -1,4 +1,4 @@
-# maintenance_manager
+# Maintenance Manager Mobile Application
 
 A new Flutter project designed as a mobile application for the general maintenance and expense tracking of vehicles. Work In Progress.
 Check out the thesis paper on overleaf to see the full development process from the design process to final implementation!
