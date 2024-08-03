@@ -19,4 +19,7 @@ Future Features:
 - Generate visual graphs based on maintenance and fuel expenses over a given period of time.
 - Ability to export vehicle information, fuel expenses, and maintenance reports as a pdf for printing as well as a csv file.
 - Upload images of mechanic reports for automatic processing by the application.
+- Edit previous vehicle data entries
+- Edit previous fuel record data entries
+- Edit previous general maintenance data entries
 - Work in Progress.
