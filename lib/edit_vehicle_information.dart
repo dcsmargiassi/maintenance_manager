@@ -2,7 +2,6 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
  - Code Explanation: Edit Vehicle information page. Allows the user to edit previously entered information for specified vehicle.
  - Allows any previous values to be altered.
- - Not yet implemented
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'dart:async';
@@ -11,7 +10,6 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/get_user_id.dart';
-import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:provider/provider.dart';
