@@ -23,7 +23,7 @@ class AddFuelRecordFormApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
         title: const Text(
-          'Add Fuel Record Form',
+          'Add Fuel Record',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
             fontSize: 32,
