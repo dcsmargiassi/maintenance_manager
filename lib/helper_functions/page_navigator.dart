@@ -7,6 +7,8 @@ import "package:flutter/material.dart";
 import "package:maintenance_manager/add_fuel_record_form.dart";
 import "package:maintenance_manager/add_vehicle_form.dart";
 import "package:maintenance_manager/create_account.dart";
+import "package:maintenance_manager/data/database_operations.dart";
+import "package:maintenance_manager/edit_vehicle_information.dart";
 import "package:maintenance_manager/homepage.dart";
 import "package:maintenance_manager/login_page.dart";
 import 'dart:async';
@@ -49,6 +51,17 @@ void navigateToSpecificVehiclePage(BuildContext context, int vehicleId) {
     MaterialPageRoute(
       builder: (context) => DisplayVehicleInfo(vehicleId: vehicleId),
       ),
+  ).then((_) {
+    if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToEditVehiclePage(BuildContext context, int vehicleId)  {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleId: vehicleId)),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
