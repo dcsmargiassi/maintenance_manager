@@ -86,19 +86,20 @@ class VehicleOperations {
 
   Future<void> updateVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
-    db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
-
+    await db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId = ? AND userId = ?', whereArgs: [vehicle.vehicleId, vehicle.userId]);
+    // ignore: avoid_print
+    print('VehicleUpdated');
   }
 
   Future<void> archiveVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
-    db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
+    db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId = ?', whereArgs: [vehicle.vehicleId]);
 
   }
 
   Future<void> deleteVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
-    db.delete('vehicleInformation', where: 'vehicleId=>?', whereArgs: [vehicle.vehicleId]);
+    db.delete('vehicleInformation', where: 'vehicleId = ?', whereArgs: [vehicle.vehicleId]);
 
   }
 
