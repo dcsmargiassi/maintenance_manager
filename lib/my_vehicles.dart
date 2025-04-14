@@ -33,13 +33,16 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'My Vehicles',
           style: TextStyle(
+            // ignore: prefer_const_constructors
             color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: 32,
+            fontSize: titleFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),

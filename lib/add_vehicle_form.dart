@@ -18,14 +18,17 @@ class AddVehicleFormApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final double titleFontSize = screenSize.width * 0.06;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Add Vehicle Form',
           style: TextStyle(
+            // ignore: prefer_const_constructors
             color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: 32,
+            fontSize: titleFontSize,
             fontWeight: FontWeight.bold
           )
         ),
@@ -81,7 +84,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   // Variable Declarations
   static const double buttonSpacingBoxHeight = 50.0; 
   //static const List<String> fuelTypeItemsList = <String>["Miles Per Hour", "Kilometers Per Hour", ];
-  String selectedUnit = "Miles Per Hour";
+  String selectedUnit = "Miles Per Hour"; // Default unit
   
 
   @override

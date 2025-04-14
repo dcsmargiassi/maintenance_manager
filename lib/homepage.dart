@@ -8,6 +8,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
   // Declared variables
+  final screenSize = MediaQuery.of(context).size;
+  final double titleFontSize = screenSize.width * 0.06;
   String myVehicles = 'My Vehicles';
   String archivedVehicles = 'Archived Vehicles';
   String addRemoveVehicle = 'Add Vehicle';
@@ -17,11 +19,12 @@ class HomePage extends StatelessWidget {
   const double buttonSpacingBoxHeight = 50.0;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Maintenance Manager',
           style: TextStyle(
+            // ignore: prefer_const_constructors
             color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: 32,
+            fontSize: titleFontSize,
             fontWeight: FontWeight.bold
           )
         ),
@@ -32,10 +35,10 @@ class HomePage extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: (choice) {
               if (choice == 'Exit') {
-                navigateToHomePage(context); // Go back to the previous page.
+                navigateToHomePage(context);
               }
               if (choice == 'signout') {
-                navigateToLogin(context); // Go back to the previous page.
+                navigateToLogin(context);
               }
             },
             itemBuilder: (context) => [
@@ -66,7 +69,6 @@ class HomePage extends StatelessWidget {
           height: homeScreenButtonHeight,
           child: ElevatedButton(
             onPressed: () {
-              //Call Function here
               navigateToMyVehicles(context);
             },
             style: ElevatedButton.styleFrom(
@@ -134,7 +136,7 @@ class HomePage extends StatelessWidget {
         const Material(
           color: Colors.transparent,
           child: Text(
-            'Version: 0.0.0',
+            'Version: 0.1.0',
             style: TextStyle(fontSize: 10,
             fontWeight: FontWeight.normal,
             color: Colors.grey
