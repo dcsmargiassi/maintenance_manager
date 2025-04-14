@@ -25,7 +25,7 @@ class UserOperations {
 
   Future<User?> getUserByEmailAndPassword(String email, String password) async {
   final db = await dbRepository.database;
-  var result = await db.query('user', where: 'email = ? AND password = ?', whereArgs: [email, password]);
+  var result = await db.query('user', where: 'email = ? AND password = ?', whereArgs: [email.trim().toLowerCase(), password]);
   return result.isNotEmpty ? User.fromMap(result.first) : null;
 }
 
