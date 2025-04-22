@@ -13,6 +13,7 @@ import "package:maintenance_manager/login_page.dart";
 import 'dart:async';
 import "package:maintenance_manager/my_vehicles.dart";
 import "package:maintenance_manager/vehicle_information.dart";
+import "package:maintenance_manager/display_fuel_records.dart";
 
 void navigateToAddVehicleFormPage(BuildContext context) {
   Navigator.push(
@@ -82,7 +83,7 @@ void navigateToCreateAccountPage(BuildContext context) {
 void navigateToLogin(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SignInPage()),
+    MaterialPageRoute(builder: (context) => const SignInPage()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
@@ -94,6 +95,17 @@ void navigateToAddFuelRecordPage(BuildContext context, int? vehicleId) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const AddFuelRecordFormApp()),
+    ).then((_) {
+     if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToDisplayFuelRecordPage(BuildContext context, int vehicleId) { 
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => DisplayFuelRecords(vehicleId: vehicleId)),
     ).then((_) {
      if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
