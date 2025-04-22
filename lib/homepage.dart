@@ -91,7 +91,6 @@ class HomePage extends StatelessWidget {
           height: homeScreenButtonHeight,
           child: ElevatedButton(
             onPressed: () {
-                //Call Function here
               navigateToAddVehicleFormPage(context);
             },
             style: ElevatedButton.styleFrom(
