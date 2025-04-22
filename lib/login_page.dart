@@ -20,10 +20,17 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:provider/provider.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+  
+  @override
+  // ignore: library_private_types_in_public_api
+  _SignInPage createState() => _SignInPage();
+}
+class _SignInPage extends State<SignInPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  SignInPage({super.key});
+  bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +49,27 @@ class SignInPage extends StatelessWidget {
             ),
             TextField(
               controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: _isObscure,
+              decoration: InputDecoration(labelText: 'Password',
+              suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
+                    icon: Icon(
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
+              ),
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                // Perform sign-in logic
-                // You should add error handling and display appropriate messages
                 User? user = await UserOperations().getUserByEmailAndPassword(
                   emailController.text,
                   passwordController.text,
                 );
-
                 if (user != null) {
                   final authState = Provider.of<AuthState>(context, listen: false);
                   authState.setUser(emailController.text);
