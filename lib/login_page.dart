@@ -27,10 +27,18 @@ class SignInPage extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _SignInPage createState() => _SignInPage();
 }
+
 class _SignInPage extends State<SignInPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isObscure = true;
+
+  @override
+  void dispose() {
+  emailController.dispose();
+  passwordController.dispose();
+  super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +81,7 @@ class _SignInPage extends State<SignInPage> {
                 if (user != null) {
                   final authState = Provider.of<AuthState>(context, listen: false);
                   authState.setUser(emailController.text);
+                  dispose();
                   navigateToHomePage(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
