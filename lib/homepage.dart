@@ -19,6 +19,8 @@ class HomePage extends StatelessWidget {
   const double buttonSpacingBoxHeight = 50.0;
     return Scaffold(
       appBar: AppBar(
+        // Disabling backspace button
+        automaticallyImplyLeading: false,
         title: Text(
           'Maintenance Manager',
           style: TextStyle(
@@ -54,8 +56,6 @@ class HomePage extends StatelessWidget {
           ),
           ]
       ),
-      // Creation of sized box containing child 'column' to properly align and space buttons appropriately
-      // ignore: sized_box_for_whitespace
       body: SizedBox(
         width: double.maxFinite,
         child: Column(
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget> [
-          const SizedBox(height: buttonSpacingBoxHeight), // Used to add spacing between each button
+          const SizedBox(height: buttonSpacingBoxHeight),
         SizedBox(
           width: homeScreenButtonWidth,
           height: homeScreenButtonHeight,
