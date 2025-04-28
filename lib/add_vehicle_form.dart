@@ -8,8 +8,6 @@ import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:provider/provider.dart';
 
-/// Flutter code sample for [Form].
-
 // Creating object for vehicle information database
  VehicleOperations vehicleInformation = VehicleOperations();
 
@@ -23,6 +21,16 @@ class AddVehicleFormApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          // Custom backspace button
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back, 
+              color: Colors.white
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         title: Text(
           'Add Vehicle Form',
           style: TextStyle(
@@ -39,7 +47,7 @@ class AddVehicleFormApp extends StatelessWidget {
           PopupMenuButton(
             onSelected: (choice) {
               if (choice == 'Exit') {
-                Navigator.pop(context); // Go back to the previous page.
+                navigateToHomePage(context);
               }
             },
             itemBuilder: (context) => [
