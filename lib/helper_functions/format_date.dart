@@ -4,13 +4,14 @@
  - Date conversion functions from string to date format and vice versa.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
+import 'package:intl/intl.dart';
 
 String formatDateToString(DateTime date) {
   // Format the DateTime to a string in a desired format
-  return date.toIso8601String();
+  return DateFormat('MM/dd/yyyy').format(date);
 }
 
 DateTime parseStringToDate(String dateString) {
   // Parse the formatted string back to DateTime
-  return DateTime.parse(dateString);
+  return DateFormat('MM/dd/yyyy').parse(dateString);
 }
