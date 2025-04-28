@@ -34,16 +34,11 @@ class _SignInPage extends State<SignInPage> {
   bool _isObscure = true;
 
   @override
-  void dispose() {
-  emailController.dispose();
-  passwordController.dispose();
-  super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // disabling backspace button
+        automaticallyImplyLeading: false,
         title: const Text('Sign In'),
       ),
       body: Padding(
@@ -81,7 +76,6 @@ class _SignInPage extends State<SignInPage> {
                 if (user != null) {
                   final authState = Provider.of<AuthState>(context, listen: false);
                   authState.setUser(emailController.text);
-                  dispose();
                   navigateToHomePage(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
