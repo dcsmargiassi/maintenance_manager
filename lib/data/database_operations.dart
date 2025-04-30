@@ -111,9 +111,17 @@ class VehicleOperations {
 
   Future<List<VehicleInformationModel>> getAllVehiclesByUserId(int userId) async {
     final db = await dbRepository.database;
-    final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ?', whereArgs: [userId]);
+    const archivedStatus = 0;
+    final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ? AND archived = ?', whereArgs: [userId, archivedStatus]);
     return vehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
-}
+  }
+
+  Future<List<VehicleInformationModel>> getAllArchivedVehiclesByUserId(int userId) async {
+    final db = await dbRepository.database;
+    const archivedStatus = 1;
+    final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ? AND archived = ?', whereArgs: [userId, archivedStatus]);
+    return vehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
+  }
 
   Future<VehicleInformationModel> getVehicleById(int vehicleId, int userId) async {
     final db = await dbRepository.database;
