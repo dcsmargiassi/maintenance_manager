@@ -24,8 +24,7 @@ class HomePage extends StatelessWidget {
         title: Text(
           'Maintenance Manager',
           style: TextStyle(
-            // ignore: prefer_const_constructors
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 255, 255, 255),
             fontSize: titleFontSize,
             fontWeight: FontWeight.bold
           )
