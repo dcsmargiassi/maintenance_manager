@@ -22,10 +22,11 @@ class VehicleInformationModel {
   double? odometerCurrent;
   double? purchasePrice;
   double? sellPrice;
+  int? archived;
 
 // Vehicle Information table constructor
   VehicleInformationModel({this.vehicleId, this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
-  this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice});
+  this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, this.archived});
   
   VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
@@ -43,6 +44,7 @@ class VehicleInformationModel {
     odometerCurrent = obj['odometerCurrent'];
     purchasePrice = obj['purchasePrice'];
     sellPrice = obj['sellPrice'];
+    archived = obj['archived'];
   }
 
   Map<String, dynamic> toMap() {
@@ -62,6 +64,7 @@ class VehicleInformationModel {
       'odometerCurrent': odometerCurrent,
       'purchasePrice': purchasePrice,
       'sellPrice': sellPrice,
+      'archived': archived,
     };
     return map;
   }
@@ -83,6 +86,7 @@ class VehicleInformationModel {
       odometerCurrent: json['odometerCurrent'],
       purchasePrice: json['purchasePrice'],
       sellPrice: json['sellPrice'],
+      archived: json['archived'],
     );
   }
 }
