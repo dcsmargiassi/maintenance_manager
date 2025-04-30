@@ -18,7 +18,7 @@ import "package:maintenance_manager/display_fuel_records.dart";
 void navigateToAddVehicleFormPage(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()), // Create an instance of the AddVehicleForm class.
+    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()),
   );  
 }
 
@@ -58,13 +58,20 @@ void navigateToSpecificVehiclePage(BuildContext context, int vehicleId) {
   });
 }
 
-void navigateToEditVehiclePage(BuildContext context, int vehicleId)  {
-  Navigator.push(
+Future<void> navigateToEditVehiclePage(
+  BuildContext context, 
+  int vehicleId, {
+    VoidCallback? onReturn,
+  }) {
+  return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleId: vehicleId)),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
+    }
+    if (onReturn != null) {
+      onReturn();
     }
   });
 }
@@ -91,10 +98,10 @@ void navigateToLogin(BuildContext context) {
   });
 }
 
-void navigateToAddFuelRecordPage(BuildContext context, int? vehicleId) { 
+void navigateToAddFuelRecordPage(BuildContext context, int vehicleId)  { 
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const AddFuelRecordFormApp()),
+    MaterialPageRoute(builder: (context) => AddFuelRecordFormApp(vehicleId: vehicleId)),
     ).then((_) {
      if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
