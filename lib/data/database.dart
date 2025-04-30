@@ -17,7 +17,7 @@ class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
   final _databaseName = 'maintenanceManagerDatabase';
-  final _databaseVersion = 2;
+  final _databaseVersion = 4;
   
   
   static late Database _database; // Took away static and replaced with late to fix error as database should always be initialized at run time unless an error...
@@ -33,10 +33,10 @@ class DatabaseRepository {
     return _databaseCompleter!.future;
   }
 
-Future<Database> _initDatabase() async {
+  Future<Database> _initDatabase() async {
     Directory documents = await getApplicationDocumentsDirectory();
     String path = join(documents.path, _databaseName);
-    return await openDatabase(path, version: _databaseVersion, onCreate: onCreate);
+    return await openDatabase(path, version: _databaseVersion, onCreate: onCreate, onUpgrade: onUpgrade,);
   }
 
 //// Creating the database an initializing the path to the local directory where data will be stored.
@@ -46,6 +46,16 @@ Future<Database> _initDatabase() async {
 //    String path = join(documents.path + _databaseName);
 //    return await openDatabase(path, version: _databaseVersion, onCreate: onCreate);
 //  }
+
+
+  // Database update implementing archived value
+  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 4) {
+      // ignore: avoid_print
+      print('Database updated');
+      await db.execute('ALTER TABLE vehicleInformation ADD COLUMN archived INTEGER DEFAULT 0;');
+    }
+  }
 
   Future<void> onCreate(Database db, int version) async{
     await db.execute('''
@@ -77,6 +87,7 @@ Future<Database> _initDatabase() async {
         odometerCurrent REAL,
         purchasePrice REAL,
         sellPrice REAL,
+        archived INTEGER,
         FOREIGN KEY (userId) REFERENCES user(userId)
       );
     ''');
