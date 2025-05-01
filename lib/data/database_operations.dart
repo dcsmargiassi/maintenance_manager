@@ -91,10 +91,9 @@ class VehicleOperations {
     print('VehicleUpdated');
   }
 
-  Future<void> archiveVehicle(VehicleInformationModel vehicle) async {
+  Future<void> archiveVehicleById(int vehicleId) async {
     final db = await dbRepository.database;
-    db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId = ?', whereArgs: [vehicle.vehicleId]);
-
+  await db.update('vehicleInformation', {'archived': 1}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
   }
 
   Future<void> deleteVehicle(VehicleInformationModel vehicle) async {
