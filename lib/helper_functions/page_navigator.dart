@@ -4,16 +4,17 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import "package:flutter/material.dart";
-import "package:maintenance_manager/add_fuel_record_form.dart";
-import "package:maintenance_manager/add_vehicle_form.dart";
+import 'package:maintenance_manager/fuel_functions/add_fuel_record_form.dart';
+import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
 import "package:maintenance_manager/create_account.dart";
-import "package:maintenance_manager/edit_vehicle_information.dart";
+import 'package:maintenance_manager/vehicle_functions/archived_vehicles.dart';
+import 'package:maintenance_manager/vehicle_functions/edit_vehicle_information.dart';
 import "package:maintenance_manager/homepage.dart";
 import "package:maintenance_manager/login_page.dart";
 import 'dart:async';
-import "package:maintenance_manager/my_vehicles.dart";
-import "package:maintenance_manager/vehicle_information.dart";
-import "package:maintenance_manager/display_fuel_records.dart";
+import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_information.dart';
+import 'package:maintenance_manager/fuel_functions/display_fuel_records.dart';
 
 void navigateToAddVehicleFormPage(BuildContext context) {
   Navigator.push(
@@ -38,6 +39,17 @@ void navigateToMyVehicles(BuildContext context) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const DisplayVehicleLists()),
+  ).then((_) {
+    if (!navigationCompleter.isCompleted) {
+      navigationCompleter.complete();
+    }
+  });
+}
+
+void navigateToArchivedVehicles(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const DisplayArchivedVehicleLists()),
   ).then((_) {
     if (!navigationCompleter.isCompleted) {
       navigationCompleter.complete();
