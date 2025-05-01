@@ -1,0 +1,210 @@
+/* 
+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
+ - Code Explanation: Archived Vehicles display page. This page shows the user all vehicles in a scrollable list that they
+ have archived. Vehicles here will no longer be editable
+ - Top of page has a drop down menu allowing the user to select a vehicle to archive from the MyVehicles page.
+ - Option to click on vehicle and display all past maintenance and fuel records.
+ - Additional vehicle information is displayed such as lifetime fuel expenses and lifetime maintenance expenses
+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
+*/
+import 'package:flutter/material.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/models/vehicle_information.dart';
+import 'package:provider/provider.dart';
+
+class DisplayArchivedVehicleLists extends StatefulWidget {
+  const DisplayArchivedVehicleLists({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _DisplayVehicleListsState createState() => _DisplayVehicleListsState();
+}
+
+class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
+  late Future<List<VehicleInformationModel>> _vehiclesFuture;
+  List<VehicleInformationModel> _nonArchivedVehicles = [];
+  VehicleInformationModel? _selectedVehicle;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final userId = authState.userId;
+    _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
+    VehicleOperations().getAllVehiclesByUserId(userId).then((vehicles) {
+    setState(() {
+      _nonArchivedVehicles = vehicles;
+    });
+    super.initState();
+  });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final double titleFontSize = screenSize.width * 0.06;
+    return Scaffold(
+      appBar: AppBar(
+        // Custom backspace button
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white
+            ),
+          onPressed: () {
+            navigateToHomePage(context);
+          },
+        ),
+        title: Text(
+          'Archived Vehicles',
+          style: TextStyle(
+            color: const Color.fromARGB(255, 255, 255, 255),
+            fontSize: titleFontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
+        elevation: 0.0,
+        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (choice) {
+              if (choice == 'Exit') {
+                navigateToHomePage(context);
+              }
+              if (choice == 'signout') {
+                navigateToLogin(context);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'Exit',
+                child: Text('Return to HomePage'),
+              ),
+              const PopupMenuItem(
+                value: 'signout',
+                child: Text('Sign Out'),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DropdownButton<VehicleInformationModel>(
+                      hint: const Text("Select Vehicle to Archive"),
+                      value: _selectedVehicle,
+                      isExpanded: true,
+                      items: _nonArchivedVehicles.map((vehicle) {
+                        return DropdownMenuItem<VehicleInformationModel>(
+                          value: vehicle,
+                          child: Text(vehicle.vehicleNickName ?? 'Unnamed Vehicle'),
+                        );
+                      }).toList(),
+                      onChanged: (VehicleInformationModel? newValue) {
+                        setState(() {
+                          _selectedVehicle = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: _selectedVehicle == null || _isLoading
+                        ? null : () async {
+                          final authState = Provider.of<AuthState>(context, listen: false);
+                          final userId = authState.userId!;
+                          setState(() => _isLoading = true);
+                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!);
+                          setState(() {
+                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
+                          });
+                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId);
+                          _selectedVehicle = null;
+                          setState(() => _isLoading = false);
+                        },
+                    child: const Text("Archive"),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<List<VehicleInformationModel>>(
+                future: _vehiclesFuture,
+                builder: (BuildContext context, AsyncSnapshot<List<VehicleInformationModel>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return _displayVehicles(snapshot.data![index]);
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text("No Archived Vehicles"));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _displayVehicles(VehicleInformationModel data) {
+    return GestureDetector(
+      onTap: () {
+        navigateToSpecificVehiclePage(context, data.vehicleId!);
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${data.vehicleNickName}",
+                style: const TextStyle(fontSize: 24),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "${data.make}",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "${data.model}",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "${data.year}",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
