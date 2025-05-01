@@ -115,7 +115,7 @@ class HomePage extends StatelessWidget {
           height: homeScreenButtonHeight,
           child: ElevatedButton(
             onPressed: () {
-                //Call Function here
+                navigateToArchivedVehicles(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
