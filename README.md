@@ -10,7 +10,8 @@ Implemented Features:
 - Add vehicle Forms.
 - Able to view vehicles in database and navigate to a vehicle specific page.
 - Manual input of refuelling for each vehicle.
-- Update vehicle information.
+- Edit and Update vehicle information.
+- Archive or Unarchive vehicles
   
 Future Features:
 - Input and manage fuel expenses.
@@ -22,4 +23,6 @@ Future Features:
 - Edit previous vehicle data entries
 - Edit previous fuel record data entries
 - Edit previous general maintenance data entries
+- Custom theme options (Light, Dark, Etc)
+- Settings tab (Currency, Date Format, Fuel type(MPG, km/l), mileage type, Theme, Notifications, Erase Data/Account)
 - Work in Progress.
