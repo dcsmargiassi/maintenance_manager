@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/login_page.dart';
-//import 'homepage.dart';
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:provider/provider.dart';
+
+Future<void> printVehicleTableColumns() async {
+  final db = await DatabaseRepository.instance.database;
+  final result = await db.rawQuery('PRAGMA table_info(vehicleInformation);');
+
+  for (final row in result) {
+    // ignore: avoid_print
+    print('Column: ${row['name']}, Type: ${row['type']}');
+  }
+}
 
 void main() async {
   //Initializing the systems locale based on device settings to utilize date time API
@@ -22,7 +31,7 @@ void main() async {
     // ignore: avoid_print
     print('Error initializing Database: $e');
   }
-
+  printVehicleTableColumns();
   runApp(
     ChangeNotifierProvider(
       create: (context) => AuthState(),
@@ -37,87 +46,72 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-     return MaterialApp( //removed const from this line
-      debugShowCheckedModeBanner: false,
-      home: SignInPage()
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenSize = MediaQuery.of(context).size;
+        final theme = ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color.fromARGB(255, 44, 43, 44),
+            foregroundColor: Colors.white,
+            centerTitle: true,
+          ),
+          colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Color.fromARGB(255, 0, 128, 255),
+            onPrimary: Color.fromARGB(255, 0, 0, 0),
+            secondary: Color.fromARGB(255, 49, 48, 48),
+            onSecondary: Color.fromARGB(255, 204, 190, 190),
+            background: Colors.white,
+            onBackground: Colors.black,
+            surface: Colors.white,
+            onSurface: Colors.black,
+            error: Colors.red,
+            onError: Colors.white,
+          ),
+          textTheme: TextTheme(
+            headlineLarge: TextStyle(
+              fontSize: screenSize.width * 0.06,
+              fontWeight: FontWeight.bold,
+              color: const Color.fromARGB(255, 48, 48, 48),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          titleMedium: TextStyle(
+              fontSize: screenSize.width * 0.04,
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+            bodyLarge: TextStyle(
+              fontSize: screenSize.width * 0.04,
+              fontWeight: FontWeight.normal,
+              color: const Color.fromARGB(255, 0, 128, 255),
+            ),
+            labelLarge: TextStyle(
+              fontSize: screenSize.width * 0.04,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 0, 128, 255),
+              foregroundColor: Colors.white,
+              textStyle: TextStyle(
+                fontSize: screenSize.width * 0.07,
+                fontWeight: FontWeight.w600,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+        );
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          home:  const SignInPage()
+        );
+      }
     );
   }
 }
