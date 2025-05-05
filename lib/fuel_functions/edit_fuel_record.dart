@@ -98,7 +98,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Edit Vehicle'),
+            title: const Text('Edit Fuel Record'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
