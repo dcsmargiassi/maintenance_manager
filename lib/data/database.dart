@@ -1,6 +1,7 @@
 /* 
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
  - Code Explanation: The creation of the database tables using Raw SQL code
+ - Section to easily update database tables to new versions
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'dart:io';
@@ -9,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 
-
 class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
@@ -17,10 +17,10 @@ class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
   final _databaseName = 'maintenanceManagerDatabase';
-  final _databaseVersion = 4;
+  final _databaseVersion = 5;
   
   
-  static late Database _database; // Took away static and replaced with late to fix error as database should always be initialized at run time unless an error...
+  static late Database _database;
   static Completer<Database>? _databaseCompleter;
 // Checking to see if database is already created, if not jump to _initdatabase and create it
 
@@ -39,23 +39,30 @@ class DatabaseRepository {
     return await openDatabase(path, version: _databaseVersion, onCreate: onCreate, onUpgrade: onUpgrade,);
   }
 
-//// Creating the database an initializing the path to the local directory where data will be stored.
-//  // ignore: unused_element
-//  _initDatabase() async {
-//    Directory documents = await getApplicationDocumentsDirectory();
-//    String path = join(documents.path + _databaseName);
-//    return await openDatabase(path, version: _databaseVersion, onCreate: onCreate);
-//  }
+  // Updating database with missing table columns, if necessary
+Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+  if (oldVersion < 5) {
+    // ignore: avoid_print
+    print('Database updated');
 
+    final existingColumns = await _getColumnNames(db, 'vehicleInformation');
 
-  // Database update implementing archived value
-  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 4) {
-      // ignore: avoid_print
-      print('Database updated');
-      await db.execute('ALTER TABLE vehicleInformation ADD COLUMN archived INTEGER DEFAULT 0;');
+    if (!existingColumns.contains('lifeTimeFuelCost')) {
+      await db.execute(
+          'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeFuelCost REAL DEFAULT 0.0;');
+    }
+
+    if (!existingColumns.contains('lifeTimeMaintenanceCost')) {
+      await db.execute(
+          'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeMaintenanceCost REAL DEFAULT 0.0;');
     }
   }
+}
+
+Future<List<String>> _getColumnNames(Database db, String tableName) async {
+  final result = await db.rawQuery('PRAGMA table_info($tableName);');
+  return result.map((row) => row['name'] as String).toList();
+}
 
   Future<void> onCreate(Database db, int version) async{
     await db.execute('''
@@ -88,6 +95,8 @@ class DatabaseRepository {
         purchasePrice REAL,
         sellPrice REAL,
         archived INTEGER,
+        lifeTimeFuelCost REAL,
+        lifeTimeMaintenanceCost REAL,
         FOREIGN KEY (userId) REFERENCES user(userId)
       );
     ''');
