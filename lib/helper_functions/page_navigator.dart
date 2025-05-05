@@ -3,131 +3,103 @@
  - Code Explanation: Various navigation functions to navigate the different pages on the application.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
-import "package:flutter/material.dart";
-import 'package:maintenance_manager/fuel_functions/add_fuel_record_form.dart';
-import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
-import "package:maintenance_manager/create_account.dart";
-import 'package:maintenance_manager/vehicle_functions/archived_vehicles.dart';
-import 'package:maintenance_manager/vehicle_functions/edit_vehicle_information.dart';
-import "package:maintenance_manager/homepage.dart";
-import "package:maintenance_manager/login_page.dart";
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:maintenance_manager/create_account.dart';
+import 'package:maintenance_manager/login_page.dart';
+import 'package:maintenance_manager/homepage.dart';
 import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
+import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_information.dart';
-import 'package:maintenance_manager/fuel_functions/display_fuel_records.dart';
-
-void navigateToAddVehicleFormPage(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()),
-  );  
-}
+import 'package:maintenance_manager/vehicle_functions/edit_vehicle_information.dart';
+import 'package:maintenance_manager/vehicle_functions/archived_vehicles.dart';
+import 'package:maintenance_manager/vehicle_functions/archived_vehicle_information.dart';
+import 'package:maintenance_manager/fuel_functions/add_fuel_record_form.dart';
+import 'package:maintenance_manager/fuel_functions/fuel_record_list.dart';
 
 Completer<void> navigationCompleter = Completer<void>();
-void navigateToHomePage(BuildContext context) {
-  Navigator.push(
+
+// Authentication and home Pages
+
+Future<void> navigateToCreateAccountPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToLogin(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const SignInPage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToHomePage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const HomePage()),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToMyVehicles(BuildContext context) {
-  Navigator.push(
+// Vehicle Functions
+
+Future<void> navigateToMyVehicles(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const DisplayVehicleLists()),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToArchivedVehicles(BuildContext context) {
-  Navigator.push(
+Future<void> navigateToAddVehicleFormPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const DisplayArchivedVehicleLists()),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+    MaterialPageRoute(builder: (context) => const AddVehicleFormApp()),
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToSpecificVehiclePage(BuildContext context, int vehicleId) {
-  Navigator.push(
+Future<void> navigateToSpecificVehiclePage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (context) => DisplayVehicleInfo(vehicleId: vehicleId),
-      ),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+    MaterialPageRoute(builder: (context) => DisplayVehicleInfo(vehicleId: vehicleId)),
+  ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditVehiclePage(
-  BuildContext context, 
-  int vehicleId, {
-    VoidCallback? onReturn,
-  }) {
+Future<void> navigateToEditVehiclePage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleId: vehicleId)),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-    if (onReturn != null) {
-      onReturn();
-    }
-  });
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToCreateAccountPage(BuildContext context) {
-  Navigator.push(
+// Archived Vehicles
+
+Future<void> navigateToArchivedVehicles(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const CreateAccountPage()),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+    MaterialPageRoute(builder: (context) => const DisplayArchivedVehicleLists()),
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToLogin(BuildContext context) {
-  Navigator.push(
+Future<void> navigateToSpecificArchivedVehiclePage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const SignInPage()),
-  ).then((_) {
-    if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+    MaterialPageRoute(builder: (context) => DisplayArchivedVehicleInfo(vehicleId: vehicleId)),
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToAddFuelRecordPage(BuildContext context, int vehicleId)  { 
-  Navigator.push(
+// Fuel Records
+
+Future<void> navigateToAddFuelRecordPage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => AddFuelRecordFormApp(vehicleId: vehicleId)),
-    ).then((_) {
-     if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+  ).then((_) => onReturn?.call());
 }
 
-void navigateToDisplayFuelRecordPage(BuildContext context, int vehicleId) { 
-  Navigator.push(
+Future<void> navigateToDisplayFuelRecordPage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
+  return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayFuelRecords(vehicleId: vehicleId)),
-    ).then((_) {
-     if (!navigationCompleter.isCompleted) {
-      navigationCompleter.complete();
-    }
-  });
+    MaterialPageRoute(builder: (context) => DisplayFuelLists(vehicleId: vehicleId)),
+  ).then((_) => onReturn?.call());
 }
