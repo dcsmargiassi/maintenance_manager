@@ -134,7 +134,7 @@ class HomePage extends StatelessWidget {
         const Material(
           color: Colors.transparent,
           child: Text(
-            'Version: 0.1.0',
+            'Version: 0.3.0',
             style: TextStyle(fontSize: 10,
             fontWeight: FontWeight.normal,
             color: Colors.grey
