@@ -12,8 +12,14 @@ class AuthState extends ChangeNotifier {
   int? userId;
 
   Future<void> setUser(String email) async {
-    int? id = await getUserIdByEmail(email); // Await the Future
-    userId = id!;
+    final id = await getUserIdByEmail(email); // Await the Future
+    
+    // Check for null user id, if so throw exception
+    if (id == null) { 
+      throw Exception ("No user found with the email: $email");
+    }
+
+    userId = id;
     notifyListeners();
   }
 }
@@ -21,6 +27,6 @@ DatabaseRepository dbRepository = DatabaseRepository.instance;
 
 Future<int?> getUserIdByEmail(String email) async {
   final db = await dbRepository.database;
-  var result = await db.query('user', columns: ['userId'], where: 'email = ?', whereArgs: [email]);
+  final result = await db.query('user', columns: ['userId'], where: 'email = ?', whereArgs: [email]);
   return result.isNotEmpty ? result.first['userId'] as int? : null;
 }
