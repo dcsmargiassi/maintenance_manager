@@ -27,7 +27,7 @@ class UserOperations {
   final db = await dbRepository.database;
   var result = await db.query('user', where: 'email = ? AND password = ?', whereArgs: [email.trim().toLowerCase(), password]);
   return result.isNotEmpty ? User.fromMap(result.first) : null;
-}
+  }
 
   Future<User?> getUserByUsername(String username) async {
     final db = await dbRepository.database;
@@ -68,7 +68,7 @@ class UserOperations {
     final db = await dbRepository.database;
     var result = await db.query('user', columns: ['userId'], where: 'email = ?', whereArgs: [email]);
     return result.isNotEmpty ? result.first['userId'] as String : null;
-}
+  }
 }
 
 // Vehicle information table operation functions
@@ -96,10 +96,11 @@ class VehicleOperations {
   await db.update('vehicleInformation', {'archived': 1}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
   }
 
-  Future<void> deleteVehicle(VehicleInformationModel vehicle) async {
+  Future<void> deleteVehicle(int userId, int vehicleId) async {
     final db = await dbRepository.database;
-    db.delete('vehicleInformation', where: 'vehicleId = ?', whereArgs: [vehicle.vehicleId]);
-
+    db.delete('vehicleInformation', 
+    where: 'vehicleId = ? AND userId = ?', 
+    whereArgs: [vehicleId, userId]);
   }
 
   Future<List<VehicleInformationModel>> getAllVehicles() async {
@@ -127,6 +128,11 @@ class VehicleOperations {
     final result = await db.query('vehicleInformation', where: 'vehicleId = ? AND userId = ?', whereArgs: [vehicleId, userId]);
     return VehicleInformationModel.fromMap(result.first);
   }
+
+  Future<void> updateLifeTimeFuelCost(VehicleInformationModel vehicle) async {
+    final db = await dbRepository.database;
+    await db.update('vehicleInformation', vehicle.toMap(), where: 'vehicleId = ? AND userId = ?', whereArgs: [vehicle.vehicleId, vehicle.userId]);
+  }
 }
 
 // Fuel Records operation functions
@@ -142,28 +148,55 @@ class FuelRecordOperations {
   Future<void> updateFuelRecord(FuelRecords fuelRecord) async {
     final db = await dbRepository.database;
     db.update('fuelRecords', fuelRecord.toMap(),
-        where: 'fuelRecordId = ?', whereArgs: [fuelRecord.fuelRecordId]);
+        where: 'fuelRecordId = ?',
+        whereArgs: [fuelRecord.fuelRecordId]);
   }
 
   Future<void> deleteFuelRecord(int fuelRecordId) async {
     final db = await dbRepository.database;
     db.delete('fuelRecords', where: 'fuelRecordId = ?', whereArgs: [fuelRecordId]);
   }
-
-  Future<List<FuelRecords>> getAllFuelRecords() async {
+  Future<void> deleteAllFuelRecordsByVehicleId(int userId, int vehicleId) async {
     final db = await dbRepository.database;
-    final List<Map<String, dynamic>> allFuelRecords = await db.query("fuelRecords");
+    db.delete('fuelRecords', 
+      where: 'userId = ? AND vehicleId = ?', 
+      whereArgs: [userId, vehicleId]);
+  }
+
+  Future<List<FuelRecords>> getAllFuelRecords(int vehicleId) async {
+    final db = await dbRepository.database;
+    final List<Map<String, dynamic>> allFuelRecords = await db.query(
+      "fuelRecords", 
+      where: 'vehileId = ?', 
+      whereArgs: [vehicleId]);
     return allFuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
   }
 
-  Future<List<FuelRecords>> getFuelRecordsByVehicleId(int vehicleId) async {
+  Future<List<FuelRecords>> getAllFuelRecordsByVehicleId(int userId, int vehicleId) async {
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> fuelRecords =
-        await db.query('fuelRecords', where: 'vehicleId = ?', whereArgs: [vehicleId]);
+      await db.query(
+        'fuelRecords',
+        where: 'userId = ? AND vehicleId = ?',
+        whereArgs: [userId, vehicleId]);
     return fuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
+  }
+
+  Future<List<FuelRecords>> getFuelRecordsByMonth(int vehicleId, int year, int month) async {
+    final db = await dbRepository.database;
+    final firstDayOfMonth = DateTime(year, month, 1);
+    final lastDayOfMonth = DateTime(year, month + 1, 0, 23, 59, 59); // year, month, day, hour, minute, seconds 
+    final records = await db.query(
+      'fuelrecords',
+      where: 'vehicleId = ? AND date >= ? AND date <= ?',
+      whereArgs: [
+        vehicleId,
+        firstDayOfMonth.toIso8601String(),
+        lastDayOfMonth.toIso8601String()
+      ],
+    );
+    return records.map((e) => FuelRecords.fromMap(e)).toList();
   }
 }
 
-
 // maintenance Records operation functions
-
