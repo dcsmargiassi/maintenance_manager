@@ -6,6 +6,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/create_account.dart';
+import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/login_page.dart';
 import 'package:maintenance_manager/homepage.dart';
 import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
@@ -101,5 +102,12 @@ Future<void> navigateToDisplayFuelRecordPage(BuildContext context, int vehicleId
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => DisplayFuelLists(vehicleId: vehicleId)),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToEditFuelRecordPage(BuildContext context, int vehicleId, int fuelRecordId, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => EditFuelForm(vehicleId: vehicleId, fuelRecordId: fuelRecordId,)),
   ).then((_) => onReturn?.call());
 }
