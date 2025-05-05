@@ -36,7 +36,6 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController yearController = TextEditingController();
   final TextEditingController purchaseDateController = TextEditingController();
   final TextEditingController odometerCurrentController = TextEditingController();
-  int archiveController = 0;
 
   String selectedUnit = "Miles Per Hour";
   VehicleInformationModel? vehicleData;
@@ -201,7 +200,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                           odometerCurrent: double.tryParse(odometerCurrentController.text) ?? 0.0,
                           purchasePrice: vehicleData!.purchasePrice,
                           sellPrice: vehicleData!.sellPrice,
-                          archived: archiveController,
+                          archived: vehicleData!.archived,
                         );
 
                         await VehicleOperations().updateVehicle(updatedVehicle);
