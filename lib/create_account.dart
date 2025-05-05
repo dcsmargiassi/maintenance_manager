@@ -85,21 +85,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   specialCharCount: 1,
                   width: 400,
                   height: 150,
-                  onSuccess: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Password is valid'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
+                  successColor: Colors.green,
+                  failureColor: Colors.red,
+                  onSuccess: () {},
                   onFail: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Password is invalid'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
                   },
                 ),
               ),
@@ -116,8 +105,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
+                  //Snack bar message to determine valid or invalid password upon clicking submit
+                  final authState = Provider.of<AuthState>(context, listen: false);
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final password = passwordController.text;
+                  final validPassword = RegExp(r'^(?=(.*[a-z]){2,})(?=(.*[A-Z]){2,})(?=(.*\d){2,})(?=(.*[!@#\$&*~]){1,}).{8,}$');
+
+                  // Message to notify user of invalid password
+                  if (!validPassword.hasMatch(password)) {
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        content: Text('Password does not meet requirements.'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    return;
+                  }
+                  // Create object for new user
                   User newUser = User(
-                    email: emailController.text,
+                    email: emailController.text.toLowerCase(),
                     username: usernameController.text,
                     password: passwordController.text,
                     firstName: firstNameController.text,
@@ -125,10 +131,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     emailNotifications: emailNotificationsController.hashCode,
                   );
                   await UserOperations().createUser(newUser);
-                  // ignore: use_build_context_synchronously
-                  final authState = Provider.of<AuthState>(context, listen: false);
+                  if (!mounted) return;
                   authState.setUser(emailController.text);
-                  // ignore: use_build_context_synchronously
                   navigateToHomePage(context);
                 },
                 child: const Text('Create Account'),
