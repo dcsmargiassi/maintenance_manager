@@ -7,6 +7,8 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 
+import 'package:maintenance_manager/data/database_operations.dart';
+
 bool isValidNumber(String? input) {
   if (input == null) return false;
   return double.tryParse(input) != null;
@@ -31,3 +33,34 @@ bool isValidDate(String input) {
     return false;
   }
 }
+
+// Lifetime Fuel Calculations
+
+Future<void> incrementLifeTimeFuelCosts(int vehicleId, int userId, double cost) async {
+  // Check for blank fuel cost
+  if(cost == 0) return;
+   final vehicleOps = VehicleOperations();
+   final data = await vehicleOps.getVehicleById(vehicleId, userId);
+   
+   if(cost >= 0.0){
+    double oldCost = data.lifeTimeFuelCost ?? 0.0;
+    double newCost = oldCost + cost;
+    data.lifeTimeFuelCost = newCost;
+    await vehicleOps.updateLifeTimeFuelCost(data);
+   }
+}
+
+Future<void> decrementLifeTimeFuelCosts(int vehicleId, int userId, double cost) async {
+  // Check for blank fuel cost
+  if(cost == 0) return;
+   final vehicleOps = VehicleOperations();
+   final data = await vehicleOps.getVehicleById(vehicleId, userId);
+   if(cost >= 0.0 && data.lifeTimeFuelCost != null){
+    double? oldCost = data.lifeTimeFuelCost;
+    double newCost = oldCost! - cost;
+    data.lifeTimeFuelCost = newCost;
+    await vehicleOps.updateLifeTimeFuelCost(data);
+   }
+}
+
+// Lifetime Maintenance Calculations
