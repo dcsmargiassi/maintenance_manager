@@ -30,6 +30,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
 
   @override
   void initState() {
+    super.initState();
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
     _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
@@ -37,7 +38,6 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
     setState(() {
       _nonArchivedVehicles = vehicles;
     });
-    super.initState();
   });
   }
 
@@ -71,7 +71,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (choice) {
-              if (choice == 'Exit') {
+              if (choice == 'homePage') {
                 navigateToHomePage(context);
               }
               if (choice == 'signout') {
@@ -80,7 +80,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 'Exit',
+                value: 'homePage',
                 child: Text('Return to HomePage'),
               ),
               const PopupMenuItem(
@@ -146,7 +146,18 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return _displayVehicles(snapshot.data![index]);
+                        final vehicle = snapshot.data![index];
+                        return _displayVehicles(vehicle, () async {
+                          final authState = Provider.of<AuthState>(context, listen: false);
+                          final userId = authState.userId!;
+                          final vehicleId = vehicle.vehicleId!;
+                          await FuelRecordOperations().deleteAllFuelRecordsByVehicleId(userId, vehicleId);
+                          await VehicleOperations().deleteVehicle(userId, vehicleId);
+                          setState(() {
+                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
+                          });
+                          
+                        });
                       },
                     );
                   } else {
@@ -161,10 +172,43 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
     );
   }
 
-  Widget _displayVehicles(VehicleInformationModel data) {
-    return GestureDetector(
+  Widget _displayVehicles(VehicleInformationModel data, VoidCallback onDelete) {
+    return Dismissible(
+      key: Key(data.vehicleId.toString()),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        color: Colors.red,
+        child: const Icon(Icons.delete, color: Colors.white, size: 32),
+      ),
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Confirm Deletion"),
+            content: const Text("Are you sure you want to delete this vehicle and all F?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text("Delete", style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (direction) {
+        onDelete(); 
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar
+          (content: Text("Vehicle and Fuel records deleted!")));
+      },
+    child: GestureDetector(
       onTap: () {
-        navigateToSpecificVehiclePage(context, data.vehicleId!);
+        navigateToSpecificArchivedVehiclePage(context, data.vehicleId!);
       },
       child: Card(
         child: Padding(
@@ -205,6 +249,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
           ),
         ),
       ),
+    ),
     );
   }
 }
