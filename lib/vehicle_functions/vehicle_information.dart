@@ -5,7 +5,6 @@ import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
-
 class DisplayVehicleInfo extends StatefulWidget {
   final int vehicleId;
 
@@ -17,19 +16,44 @@ class DisplayVehicleInfo extends StatefulWidget {
 
 class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
+  double? _monthlyFuelCost;
 
   @override
   void initState() {
     super.initState();
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
-    setState((){
     _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
+
+    getMonthlyFuelCost(widget.vehicleId, userId).then((cost) {
+      if(mounted) {
+        setState(() {
+          _monthlyFuelCost = cost;
+        });
+      }
     });
-}
+  }
+
+  Future<double> getMonthlyFuelCost (int vehicleId, int userId) async {
+  DateTime now = DateTime.now();
+  int currentYear = now.year;
+  int previousMonth = now.month - 1;
+  if (previousMonth == 0) {
+    previousMonth = 12;
+    currentYear -= 1;
+  }
+
+  // ignore: avoid_print
+  print("Current Year: $currentYear, Previous Month: $previousMonth");
+  // ignore: avoid_print
+
+  final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
+  double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost ?? 0));
+  return totalCost;
+  }
 
   @override
-  Widget build(BuildContext context,) {
+  Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
@@ -55,22 +79,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
         elevation: 0.0,
         centerTitle: true,
         actions: [
-          //IconButton(
-          //  icon: const Icon(Icons.arrow_back),
-          //  onPressed: () {
-          //    navigateToHomePage(context);
-          //  },
-          //),
           PopupMenuButton<String>(
             onSelected: (choice) {
-              if (choice == 'Exit') {
+              if (choice == 'editVehicle'){ 
+                navigateToEditVehiclePage(context, widget.vehicleId);
+              }
+              if (choice == 'homePage') {
                 navigateToHomePage(context);
               }
               if (choice == 'signout') {
                 navigateToLogin(context);
-              }
-              if (choice == 'editVehicle'){ 
-                navigateToEditVehiclePage(context, widget.vehicleId);
               }
             },
             itemBuilder: (context) => [
@@ -79,7 +97,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 child: Text('Edit Information'),
               ),
               const PopupMenuItem(
-                value: 'Exit',
+                value: 'homePage',
                 child: Text('Return to HomePage'),
               ),
               const PopupMenuItem(
@@ -102,7 +120,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               return _displayVehicleDetails(snapshot.data!);
             } else if (snapshot.hasError) {
               return Center(
-                child: Text("Error: ${snapshot.error}"),
+                child: Text("Error: ${snapshot.error}")
               );
             } else {
               return const Center(
@@ -115,6 +133,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     );
   }
 
+  // Widget to create the buttons for vehicle information pages.
   Widget buildVehicleButton(String label, VoidCallback onPressed) {
     return Expanded(
       child: Padding(
@@ -132,7 +151,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   }
 
   Widget _displayVehicleDetails(VehicleInformationModel data) {
-  
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -140,13 +158,14 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Vehicle Nickname: ${data.vehicleNickName}",
-              style: const TextStyle(fontSize: 22),
+              "${data.vehicleNickName}",
+              style: const TextStyle(fontSize: 22), 
             ),
             const SizedBox(height: 10),
             Text(
               "Make: ${data.make}",
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18
+              ),
             ),
             Text(
               "Model: ${data.model}",
@@ -168,55 +187,52 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               "Mileage: ${data.odometerCurrent}",
               style: const TextStyle(fontSize: 18),
             ),
-            
+            Text(
+              _monthlyFuelCost != null
+                  ? "Last Month's Fuel Cost: \$${_monthlyFuelCost!.toStringAsFixed(2)}"
+                  : "Loading fuel cost...",
+              style: const TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-                child: Column(
-                  children:[
-                    Row(
-                      children: [
-                        Expanded(
-                        child: buildVehicleButton('Fuel Record', () {
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+              child: Column(
+                children:[
+                  Row(
+                    children: [
+                      buildVehicleButton('Add Fuel', () {
+                        navigateToAddFuelRecordPage(context, data.vehicleId!);
+                       }),
+                      const SizedBox(width: 16.0),
+                        buildVehicleButton('Add Work', () {
                           navigateToAddFuelRecordPage(context, data.vehicleId!);
-                         }),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: buildVehicleButton('Maintenance', () {
-                            navigateToAddFuelRecordPage(context, data.vehicleId!);
-                         }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child:buildVehicleButton('Fuel Data', () {
-                            navigateToDisplayFuelRecordPage(context, data.vehicleId!);
-                         }),
-                        ),
-                        const SizedBox(width: 16.0),
-                         Expanded( 
-                          child: buildVehicleButton('Edit Info', () {
-                            navigateToEditVehiclePage(
-                              context, 
-                              data.vehicleId!,
-                              onReturn: () {
-                                setState(() {
-                                  _vehicleInfoFuture;
-                                });
-                              }
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
+                       }),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      buildVehicleButton('View Fuel', () {
+                        navigateToDisplayFuelRecordPage(context, data.vehicleId!);
+                      }),
+                      const SizedBox(width: 16.0),
+                      buildVehicleButton('View Work', () {
+                        //navigateToEditVehiclePage(
+                        //  context, 
+                        //  data.vehicleId!,
+                        //  onReturn: () {
+                        //    setState(() {
+                        //      _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, Provider.of<AuthState>(context, listen: false).userId!);
+                        //    });
+                        //  }
+                        //);
+                      }),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
+            ),
           ],
         ),
       ),
