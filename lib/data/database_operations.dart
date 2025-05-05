@@ -197,6 +197,13 @@ class FuelRecordOperations {
     );
     return records.map((e) => FuelRecords.fromMap(e)).toList();
   }
+  Future<FuelRecords> getFuelRecord(int? vehicleId, int userId, int? fuelRecordId) async {
+    final db = await dbRepository.database;
+    final result = await db.query('fuelRecords', 
+      where: 'vehicleId = ? AND userId = ? AND fuelRecordId = ?',
+     whereArgs: [vehicleId, userId, fuelRecordId]);
+    return FuelRecords.fromMap(result.first);
+  }
 }
 
 // maintenance Records operation functions
