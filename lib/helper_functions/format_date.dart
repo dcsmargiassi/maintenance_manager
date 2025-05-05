@@ -15,3 +15,14 @@ DateTime parseStringToDate(String dateString) {
   // Parse the formatted string back to DateTime
   return DateFormat('MM/dd/yyyy').parse(dateString);
 }
+
+String formatDateDisplayToString(String? dateStr) {
+  if (dateStr == null || dateStr.isEmpty) return "Unknown Date";
+
+  try {
+    final date = DateTime.parse(dateStr);
+    return DateFormat('MM/dd/yyyy').format(date);
+  } catch (e) {
+    return "Invalid Date";
+  }
+}
