@@ -52,16 +52,16 @@ class MyApp extends StatelessWidget {
         final theme = ThemeData(
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color.fromARGB(255, 44, 43, 44),
+            backgroundColor: Color(0xFF1E88E5),
             foregroundColor: Colors.white,
             centerTitle: true,
           ),
           colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Color.fromARGB(255, 0, 128, 255),
-            onPrimary: Color.fromARGB(255, 0, 0, 0),
-            secondary: Color.fromARGB(255, 49, 48, 48),
-            onSecondary: Color.fromARGB(255, 204, 190, 190),
+            primary: Color(0xFF007BFF),
+            onPrimary: Colors.white,
+            secondary: Color(0xFF616161),
+            onSecondary: Colors.white,
             background: Colors.white,
             onBackground: Colors.black,
             surface: Colors.white,
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
             headlineLarge: TextStyle(
               fontSize: screenSize.width * 0.06,
               fontWeight: FontWeight.bold,
-              color: const Color.fromARGB(255, 48, 48, 48),
+              color: const Color(0xFF2C2C2C),
             ),
           titleMedium: TextStyle(
               fontSize: screenSize.width * 0.04,
@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(
               fontSize: screenSize.width * 0.04,
               fontWeight: FontWeight.normal,
-              color: const Color.fromARGB(255, 0, 128, 255),
+              color: Colors.black,//const Color(0xFF007BFF),
             ),
             labelLarge: TextStyle(
               fontSize: screenSize.width * 0.04,
@@ -93,16 +93,45 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 0, 128, 255),
+              backgroundColor: const Color(0xFF1E88E5),
               foregroundColor: Colors.white,
+              elevation: 1,
+              minimumSize: const Size(0, 14),
               textStyle: TextStyle(
-                fontSize: screenSize.width * 0.07,
+                fontSize: screenSize.width * 0.045,
                 fontWeight: FontWeight.w600,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+            foregroundColor: const Color(0xFF007BFF),
+            textStyle: TextStyle(
+              fontSize: screenSize.width * 0.045,
+              fontWeight: FontWeight.w500,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF007BFF),
+              side: const BorderSide(color: Color(0xFF007BFF), width: 1),
+            textStyle: TextStyle(
+              fontSize: screenSize.width * 0.043,
+              fontWeight: FontWeight.w500,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             ),
           ),
         );
