@@ -23,10 +23,14 @@ class VehicleInformationModel {
   double? purchasePrice;
   double? sellPrice;
   int? archived;
+  double? lifeTimeFuelCost;
+  double? lifeTimeMaintenanceCost;
+
 
 // Vehicle Information table constructor
-  VehicleInformationModel({this.vehicleId, this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
-  this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, this.archived});
+  VehicleInformationModel({this.vehicleId, required this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
+  this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, this.archived,
+  this.lifeTimeFuelCost, this.lifeTimeMaintenanceCost});
   
   VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
@@ -45,6 +49,8 @@ class VehicleInformationModel {
     purchasePrice = obj['purchasePrice'];
     sellPrice = obj['sellPrice'];
     archived = obj['archived'];
+    lifeTimeFuelCost = obj['lifeTimeFuelCost'];
+    lifeTimeMaintenanceCost = obj['lifeTimeMaintenanceCost'];
   }
 
   Map<String, dynamic> toMap() {
@@ -65,6 +71,8 @@ class VehicleInformationModel {
       'purchasePrice': purchasePrice,
       'sellPrice': sellPrice,
       'archived': archived,
+      'lifeTimeFuelCost': lifeTimeFuelCost,
+      'lifeTimeMaintenanceCost': lifeTimeMaintenanceCost,
     };
     return map;
   }
@@ -87,6 +95,8 @@ class VehicleInformationModel {
       purchasePrice: json['purchasePrice'],
       sellPrice: json['sellPrice'],
       archived: json['archived'],
+      lifeTimeFuelCost: json['lifeTimeFuelCost'],
+      lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'],
     );
   }
 }
