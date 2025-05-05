@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 /* 
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
  - Code Explanation: The login page allows an existing user to login to their account or if new, navigate to the create account
@@ -11,6 +9,7 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/create_account.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
@@ -68,22 +67,41 @@ class _SignInPage extends State<SignInPage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                User? user = await UserOperations().getUserByEmailAndPassword(
-                  emailController.text,
-                  passwordController.text,
-                );
-                if (user != null) {
-                  final authState = Provider.of<AuthState>(context, listen: false);
-                  authState.setUser(emailController.text);
-                  navigateToHomePage(context);
-                } else {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final authState = Provider.of<AuthState>(context, listen: false);
+                // Check for blank email or password
+                if(emailController.text.isEmpty || passwordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Fill in all fields.")),
+                  );
+                  return;
+                }
+                try {
+                User? user = await UserOperations().getUserByEmailAndPassword(
+                  emailController.text.trim(),
+                  passwordController.text.trim(),
+                );
+
+                if (user != null && user.userId != null) {
+                  authState.setUser(emailController.text);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    navigateToHomePage(context);
+                  });
+                } else {
+                  scaffoldMessenger.showSnackBar(
                     const SnackBar(
                       content: Text('Incorrect login attempt. Please try again.'),
                       duration: Duration(seconds: 3),
                     ),
                   );
                 }
+                }
+                catch (e) {
+                  const SnackBar(content: Text("Login attempt failed due to server issue, try again!"),
+                  duration: Duration(seconds: 3),
+                  );
+                }
+                debugPrint("Sign in error: $e");
               },
               child: const Text('Sign In'),
             ),
