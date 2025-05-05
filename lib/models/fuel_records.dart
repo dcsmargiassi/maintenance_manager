@@ -10,16 +10,16 @@ class FuelRecords {
   int? fuelRecordId;
   int? userId;
   int? vehicleId;
-  double? fuelAmount = 0.0;
-  double? fuelPrice = 0.0;
-  double? refuelCost = 0.0; // Should be auto-calculated based on fuel amount and price removing manual entry
-  double? odometerAmount = 0.0;
-  String? date = ' ';
-  String? notes = ' ';
+  double? fuelAmount;
+  double? fuelPrice;
+  double? refuelCost; // Should be auto-calculated based on fuel amount and price removing manual entry
+  double? odometerAmount;
+  String? date;
+  String? notes;
 
 // Fuel Records table constructor
-  FuelRecords({required this.fuelRecordId, required this.userId, required this.vehicleId, required this.fuelAmount, required this.fuelPrice, 
-  this.refuelCost, this.odometerAmount, this.date, this.notes});
+  FuelRecords({required this.fuelRecordId, required this.userId, required this.vehicleId, required this.fuelAmount, 
+  required this.fuelPrice, this.refuelCost, this.odometerAmount, this.date, this.notes});
   
   FuelRecords.fromMap(dynamic obj) { 
     fuelRecordId = obj['fuelRecordId'];
