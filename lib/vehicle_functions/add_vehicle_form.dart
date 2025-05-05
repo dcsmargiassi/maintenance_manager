@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
@@ -47,13 +46,13 @@ class AddVehicleFormApp extends StatelessWidget {
           actions: [
           PopupMenuButton(
             onSelected: (choice) {
-              if (choice == 'Exit') {
+              if (choice == 'homePage') {
                 navigateToHomePage(context);
               }
             },
             itemBuilder: (context) => [
             const PopupMenuItem(
-              value: 'Exit',
+              value: 'homePage',
               child:Text('Return to HomePage'),
             ),
           ]
@@ -254,9 +253,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   VehicleOperations vehicleOperations = VehicleOperations();
                   await vehicleOperations.createVehicle(vehicleInformation);
                   if (!context.mounted) return;
-                    navigationCompleter = Completer<void>();
                     navigateToHomePage(context);
-                    await navigationCompleter.future;
                   }
                 },
                 child: const Text('Submit'),
