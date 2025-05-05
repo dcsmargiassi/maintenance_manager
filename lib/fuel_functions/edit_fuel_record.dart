@@ -99,7 +99,18 @@ class _EditFuelFormState extends State<EditFuelForm> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Edit Fuel Record'),
+            // Custom backspace button
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white
+              ),
+              onPressed: () {
+                navigateToDisplayFuelRecordPage(context, widget.vehicleId);
+              },
+            ),
           ),
+
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Form(
