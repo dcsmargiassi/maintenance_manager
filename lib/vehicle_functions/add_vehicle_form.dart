@@ -16,52 +16,36 @@ class AddVehicleFormApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          // Custom backspace button
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back, 
-              color: Colors.white
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add Vehicle Form'),
+        // Custom backspace button
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back, 
+            color: Colors.white
           ),
-        title: Text(
-          'Add Vehicle Form',
-          style: TextStyle(
-            // ignore: prefer_const_constructors
-            color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold
-          )
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-          backgroundColor: const Color.fromARGB(255, 44, 43, 44),
-          elevation: 0.0,
-          centerTitle: true,
-          actions: [
-          PopupMenuButton(
-            onSelected: (choice) {
-              if (choice == 'homePage') {
-                navigateToHomePage(context);
-              }
-            },
-            itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'homePage',
-              child:Text('Return to HomePage'),
-            ),
-          ]
+        actions: [
+        PopupMenuButton(
+          onSelected: (choice) {
+            if (choice == 'homePage') {
+              navigateToHomePage(context);
+            }
+          },
+          itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 'homePage',
+            child:Text('Return to HomePage'),
           ),
-          ]
+        ]
         ),
-        body: const AddVehicleForm(),
+        ]
       ),
-      debugShowCheckedModeBanner: false,
+      body: const AddVehicleForm(),
     );
   }
 }
@@ -108,6 +92,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: vehicleNickNameController,
               decoration: const InputDecoration(
+                labelText: 'Nickname',
                 hintText: 'Enter nickname of car',
               ),
               validator: (String? value) {
@@ -121,6 +106,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: vinController,
               decoration: const InputDecoration(
+                labelText: 'VIN',
                 hintText: 'Enter VIN of car',
               ),
               validator: (String? value) {
@@ -134,6 +120,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: makeController,
               decoration: const InputDecoration(
+                labelText: 'Make',
                 hintText: 'Enter make of car',
               ),
               validator: (String? value) {
@@ -147,6 +134,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: modelController,
               decoration: const InputDecoration(
+                labelText: 'Model',
                 hintText: 'Enter model of car',
               ),
               validator: (String? value) {
@@ -160,6 +148,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: versionController,
               decoration: const InputDecoration(
+                labelText: 'Submodel',
                 hintText: 'Enter submodel of car',
               ),
             ),
@@ -167,6 +156,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: yearController,
               decoration: const InputDecoration(
+                labelText: 'Year',
                 hintText: 'Enter year of car',
               ),
               validator: (String? value) {
@@ -185,6 +175,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             TextFormField(
               controller: odometerCurrentController,
               decoration: const InputDecoration(
+                labelText: 'Current Mileage',
                 hintText: 'Enter current mileage of car',
               ),
               validator: (String? value) {
@@ -217,6 +208,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               type: DateFormatType.type4,
               controller: purchaseDateController,
               decoration: const InputDecoration(
+                labelText: 'Purchase Date',
                 hintText: 'Enter purchase date of car',
               ),
               onComplete: (date) {
