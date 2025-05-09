@@ -9,7 +9,6 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/create_account.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
@@ -97,11 +96,11 @@ class _SignInPage extends State<SignInPage> {
                 }
                 }
                 catch (e) {
+                  debugPrint("Sign in error: $e");
                   const SnackBar(content: Text("Login attempt failed due to server issue, try again!"),
                   duration: Duration(seconds: 3),
                   );
                 }
-                debugPrint("Sign in error: $e");
               },
               child: const Text('Sign In'),
             ),
@@ -128,5 +127,11 @@ class _SignInPage extends State<SignInPage> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

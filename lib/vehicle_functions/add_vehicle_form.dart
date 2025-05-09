@@ -256,4 +256,21 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
       ),
     );
   }
+  @override
+  void dispose() {
+    vehicleNickNameController.dispose();
+    vinController.dispose();
+    makeController.dispose();
+    modelController.dispose();
+    versionController.dispose();
+    yearController.dispose();
+    purchaseDateController.dispose();
+    sellDateController.dispose();
+    odometerBuyController.dispose();
+    odometerSellController.dispose();
+    odometerCurrentController.dispose();
+    purchasePriceController.dispose();
+    sellPriceController.dispose();
+    super.dispose();
+  }
 }

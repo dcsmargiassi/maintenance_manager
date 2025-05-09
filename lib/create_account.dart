@@ -143,4 +143,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ),
     );
   }
+  @override
+  void dispose() { 
+    emailController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    passwordCheckController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailNotificationsController.dispose();
+    super.dispose();
+  }
 }

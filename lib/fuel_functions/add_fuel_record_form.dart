@@ -169,6 +169,7 @@ class _AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     }
                     return null;
                   },
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
 
                 const SizedBox(height: buttonSpacingBoxHeight),
@@ -242,6 +243,17 @@ class _AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
           ),
         ),
       ),
+      
     );
+  }
+  @override
+  void dispose() {
+    fuelAmountController.dispose();
+    fuelPriceController.dispose();
+    refuelCostController.dispose();
+    odometerAmountController.dispose();
+    dateController.dispose();
+    notesController.dispose();
+    super.dispose();
   }
 }
