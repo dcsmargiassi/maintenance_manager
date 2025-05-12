@@ -13,11 +13,10 @@ class AddFuelRecordFormApp extends StatefulWidget {
   const AddFuelRecordFormApp({super.key, required this.vehicleId});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _AddFuelRecordFormAppState createState() => _AddFuelRecordFormAppState();
+  AddFuelRecordFormAppState createState() => AddFuelRecordFormAppState();
 }
 
-class _AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
+class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   // Vehicle Controller Variable Declarations
   final TextEditingController fuelAmountController = TextEditingController();
   final TextEditingController fuelPriceController = TextEditingController();
@@ -41,7 +40,7 @@ class _AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   @override
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context, listen: false);
-    var userId = authState.userId;
+    String? userId = authState.userId;
     final screenSize = MediaQuery.of(context).size;
     final double titleFontSize = screenSize.width * 0.06;
 

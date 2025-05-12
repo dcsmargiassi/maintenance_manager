@@ -36,7 +36,7 @@ bool isValidDate(String input) {
 
 // Lifetime Fuel Calculations
 
-Future<void> incrementLifeTimeFuelCosts(int vehicleId, int userId, double cost) async {
+Future<void> incrementLifeTimeFuelCosts(int vehicleId, String userId, double cost) async {
   // Check for blank fuel cost
   if(cost == 0) return;
    final vehicleOps = VehicleOperations();
@@ -50,7 +50,7 @@ Future<void> incrementLifeTimeFuelCosts(int vehicleId, int userId, double cost) 
    }
 }
 
-Future<void> decrementLifeTimeFuelCosts(int vehicleId, int userId, double cost) async {
+Future<void> decrementLifeTimeFuelCosts(int vehicleId, String userId, double cost) async {
   // Check for blank fuel cost
   if(cost == 0) return;
    final vehicleOps = VehicleOperations();

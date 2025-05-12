@@ -8,7 +8,7 @@
 */
 class FuelRecords {
   int? fuelRecordId;
-  int? userId;
+  String? userId;
   int? vehicleId;
   double? fuelAmount;
   double? fuelPrice;

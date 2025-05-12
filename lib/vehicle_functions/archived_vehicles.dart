@@ -124,14 +124,13 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                   ElevatedButton(
                     onPressed: _selectedVehicle == null || _isLoading
                         ? null : () async {
-                          final authState = Provider.of<AuthState>(context, listen: false);
-                          final userId = authState.userId!;
+                          final userId = Provider.of<AuthState>(context, listen: false).userId;
                           setState(() => _isLoading = true);
                           await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!);
                           setState(() {
-                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
+                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
                           });
-                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId);
+                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId!);
                           _selectedVehicle = null;
                           setState(() => _isLoading = false);
                         },
@@ -152,10 +151,9 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                       itemBuilder: (context, index) {
                         final vehicle = snapshot.data![index];
                         return _displayVehicles(vehicle, () async {
-                          final authState = Provider.of<AuthState>(context, listen: false);
-                          final userId = authState.userId!;
+                          final userId = Provider.of<AuthState>(context, listen: false).userId;
                           final vehicleId = vehicle.vehicleId!;
-                          await FuelRecordOperations().deleteAllFuelRecordsByVehicleId(userId, vehicleId);
+                          await FuelRecordOperations().deleteAllFuelRecordsByVehicleId(userId!, vehicleId);
                           await VehicleOperations().deleteVehicle(userId, vehicleId);
                           setState(() {
                             _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);

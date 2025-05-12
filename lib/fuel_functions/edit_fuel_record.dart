@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
-import 'package:maintenance_manager/helper_functions/get_user_id.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:date_format_field/date_format_field.dart';
@@ -46,7 +45,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
 
   Future<void> _loadFuelData() async {
     final fuelOps = FuelRecordOperations();
-    final userId = getUserId(context);
+    final userId = Provider.of<AuthState>(context, listen: false).userId;
     final data = await fuelOps.getFuelRecord(widget.vehicleId, userId!, widget.fuelRecordId);
 
 
@@ -63,8 +62,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = Provider.of<AuthState>(context, listen: false);
-    final userId = authState.userId;
+    final userId = Provider.of<AuthState>(context, listen: false).userId;
 
     if (fuelData == null) {
       return const Scaffold(
