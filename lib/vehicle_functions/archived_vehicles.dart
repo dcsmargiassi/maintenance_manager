@@ -18,11 +18,10 @@ class DisplayArchivedVehicleLists extends StatefulWidget {
   const DisplayArchivedVehicleLists({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _DisplayVehicleListsState createState() => _DisplayVehicleListsState();
+  DisplayVehicleListsState createState() => DisplayVehicleListsState();
 }
 
-class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
+class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
   late Future<List<VehicleInformationModel>> _vehiclesFuture;
   List<VehicleInformationModel> _nonArchivedVehicles = [];
   VehicleInformationModel? _selectedVehicle;
@@ -31,14 +30,19 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+  }
+  Future<void> _loadInitialData() async {
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
+
+    setState(() {
     _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
-    VehicleOperations().getAllVehiclesByUserId(userId).then((vehicles) {
+  });
+    final vehicles = await VehicleOperations().getAllVehiclesByUserId(userId!);
     setState(() {
       _nonArchivedVehicles = vehicles;
     });
-  });
   }
 
   @override
@@ -187,7 +191,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text("Confirm Deletion"),
-            content: const Text("Are you sure you want to delete this vehicle and all F?"),
+            content: const Text("Are you sure you want to delete this vehicle and all Fuel Records?"),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -219,6 +223,7 @@ class _DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
               Text(
                 "${data.vehicleNickName}",
                 style: const TextStyle(fontSize: 24),
+                overflow: TextOverflow.ellipsis,
               ),
               Row(
                 children: [

@@ -217,15 +217,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                       }),
                       const SizedBox(width: 16.0),
                       buildVehicleButton('View Work', () {
-                        //navigateToEditVehiclePage(
-                        //  context, 
-                        //  data.vehicleId!,
-                        //  onReturn: () {
-                        //    setState(() {
-                        //      _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, Provider.of<AuthState>(context, listen: false).userId!);
-                        //    });
-                        //  }
-                        //);
+                        //Navigate to future view work page
                       }),
                     ],
                   ),
