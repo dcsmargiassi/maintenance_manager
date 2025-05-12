@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827318939439",
+    "project_id": "maintenance-manager-8e329",
+    "storage_bucket": "maintenance-manager-8e329.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827318939439:android:d5106001d99cfbebb2fbda",
+        "android_client_info": {
+          "package_name": "com.example.maintenance_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeaSxgRuX-3fgyZRkFFEhsiq0VWV9BQi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
