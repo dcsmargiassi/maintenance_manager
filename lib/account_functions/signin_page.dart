@@ -9,23 +9,22 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:maintenance_manager/create_account.dart';
-import 'package:maintenance_manager/helper_functions/page_navigator.dart';
-import 'package:maintenance_manager/models/user.dart';
-import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/account_functions/password_reset.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:maintenance_manager/account_functions/create_account.dart';
+import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
   
   @override
-  // ignore: library_private_types_in_public_api
-  _SignInPage createState() => _SignInPage();
+  SignInPageState createState() => SignInPageState();
 }
 
-class _SignInPage extends State<SignInPage> {
+class SignInPageState extends State<SignInPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isObscure = true;
@@ -66,8 +65,8 @@ class _SignInPage extends State<SignInPage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
                 final authState = Provider.of<AuthState>(context, listen: false);
+                //authState.setUser(FirebaseAuth.instance.currentUser);
                 // Check for blank email or password
                 if(emailController.text.isEmpty || passwordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -76,28 +75,21 @@ class _SignInPage extends State<SignInPage> {
                   return;
                 }
                 try {
-                User? user = await UserOperations().getUserByEmailAndPassword(
-                  emailController.text.trim(),
-                  passwordController.text.trim(),
+                  final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: emailController.text.trim(), 
+                    password: passwordController.text.trim(),
                 );
 
-                if (user != null && user.userId != null) {
-                  authState.setUser(emailController.text);
+                if (userCredential.user != null) {
+                  authState.setUser(FirebaseAuth.instance.currentUser);
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     navigateToHomePage(context);
                   });
-                } else {
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(
-                      content: Text('Incorrect login attempt. Please try again.'),
-                      duration: Duration(seconds: 3),
-                    ),
-                  );
+                } 
                 }
-                }
-                catch (e) {
+                on FirebaseAuthException catch (e) {
                   debugPrint("Sign in error: $e");
-                  const SnackBar(content: Text("Login attempt failed due to server issue, try again!"),
+                  const SnackBar(content: Text("Login attempt failed due server issue, try again!"), // ${e.message}
                   duration: Duration(seconds: 3),
                   );
                 }
@@ -118,7 +110,7 @@ class _SignInPage extends State<SignInPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+                  MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
                 );
               },
               child: const Text('Lost password? - Not implemented'),

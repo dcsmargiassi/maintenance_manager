@@ -34,7 +34,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     });
   }
 
-  Future<double> getMonthlyFuelCost (int vehicleId, int userId) async {
+  Future<double> getMonthlyFuelCost (int vehicleId, String userId) async {
   DateTime now = DateTime.now();
   int currentYear = now.year;
   int previousMonth = now.month - 1;
@@ -42,9 +42,9 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     previousMonth = 12;
     currentYear -= 1;
   }
-
+  
   // ignore: avoid_print
-  print("Current Year: $currentYear, Previous Month: $previousMonth");
+  //print("Current Year: $currentYear, Previous Month: $previousMonth");
   // ignore: avoid_print
 
   final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
@@ -217,15 +217,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                       }),
                       const SizedBox(width: 16.0),
                       buildVehicleButton('View Work', () {
-                        //navigateToEditVehiclePage(
-                        //  context, 
-                        //  data.vehicleId!,
-                        //  onReturn: () {
-                        //    setState(() {
-                        //      _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, Provider.of<AuthState>(context, listen: false).userId!);
-                        //    });
-                        //  }
-                        //);
+                        //Navigate to future view work page
                       }),
                     ],
                   ),

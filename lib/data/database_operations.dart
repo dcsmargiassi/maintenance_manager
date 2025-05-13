@@ -7,69 +7,9 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/models/user.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
-import 'package:sqflite/sqflite.dart';
-//import 'package:maintenance_manager/models/maintenance_records.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
-
-// User table operation functions
-
-class UserOperations {
-  DatabaseRepository dbRepository = DatabaseRepository.instance;
-
-  Future<void> createUser(User user) async {
-    final db = await dbRepository.database;
-    db.insert('user', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace,);
-  }
-
-  Future<User?> getUserByEmailAndPassword(String email, String password) async {
-  final db = await dbRepository.database;
-  var result = await db.query('user', where: 'email = ? AND password = ?', whereArgs: [email.trim().toLowerCase(), password]);
-  return result.isNotEmpty ? User.fromMap(result.first) : null;
-  }
-
-  Future<User?> getUserByUsername(String username) async {
-    final db = await dbRepository.database;
-    var result = await db.query('user', where: 'username = ?', whereArgs: [username]);
-    return result.isNotEmpty ? User.fromMap(result.first) : null;
-  }
-
-  Future<void> updateUser(User user) async {
-    final db = await dbRepository.database;
-    db.update('user', user.toMap(), where: 'email=>?', whereArgs: [user.email]);
-
-  }
-
-  Future<void> deleteUser(User user) async {
-    final db = await dbRepository.database;
-    db.delete('user', where: 'email=>?', whereArgs: [user.email]);
-
-  }
-
-  Future<void> updateLastLogin(User user) async {
-    final db = await dbRepository.database;
-    await db.update(
-      'user',
-      {'lastLogin': DateTime.now().toIso8601String()},
-      where: 'email = ?',
-      whereArgs: [user.email],
-    );
-  }
-
-  Future<List<User>> getAllUsers() async {
-    final db = await dbRepository.database;
-    var allRows = await db.query('user');
-    List<User> users = allRows.map((user) => User.fromMap(user)).toList();
-    return users;
-  }
-
-  Future<String?> getUserIdByEmail(String email) async {
-    final db = await dbRepository.database;
-    var result = await db.query('user', columns: ['userId'], where: 'email = ?', whereArgs: [email]);
-    return result.isNotEmpty ? result.first['userId'] as String : null;
-  }
-}
+//import 'package:maintenance_manager/models/maintenance_records.dart';
 
 // Vehicle information table operation functions
 
@@ -96,7 +36,7 @@ class VehicleOperations {
   await db.update('vehicleInformation', {'archived': 1}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
   }
 
-  Future<void> deleteVehicle(int userId, int vehicleId) async {
+  Future<void> deleteVehicle(String userId, int vehicleId) async {
     final db = await dbRepository.database;
     db.delete('vehicleInformation', 
     where: 'vehicleId = ? AND userId = ?', 
@@ -109,21 +49,21 @@ class VehicleOperations {
     return allVehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
   }
 
-  Future<List<VehicleInformationModel>> getAllVehiclesByUserId(int userId) async {
+  Future<List<VehicleInformationModel>> getAllVehiclesByUserId(String userId) async {
     final db = await dbRepository.database;
     const archivedStatus = 0;
     final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ? AND archived = ?', whereArgs: [userId, archivedStatus]);
     return vehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
   }
 
-  Future<List<VehicleInformationModel>> getAllArchivedVehiclesByUserId(int userId) async {
+  Future<List<VehicleInformationModel>> getAllArchivedVehiclesByUserId(String userId) async {
     final db = await dbRepository.database;
     const archivedStatus = 1;
     final List<Map<String, dynamic>> vehicles = await db.query( 'vehicleInformation', where: 'userId = ? AND archived = ?', whereArgs: [userId, archivedStatus]);
     return vehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();
   }
 
-  Future<VehicleInformationModel> getVehicleById(int vehicleId, int userId) async {
+  Future<VehicleInformationModel> getVehicleById(int vehicleId, String userId) async {
     final db = await dbRepository.database;
     final result = await db.query('vehicleInformation', where: 'vehicleId = ? AND userId = ?', whereArgs: [vehicleId, userId]);
     return VehicleInformationModel.fromMap(result.first);
@@ -156,7 +96,7 @@ class FuelRecordOperations {
     final db = await dbRepository.database;
     db.delete('fuelRecords', where: 'fuelRecordId = ?', whereArgs: [fuelRecordId]);
   }
-  Future<void> deleteAllFuelRecordsByVehicleId(int userId, int vehicleId) async {
+  Future<void> deleteAllFuelRecordsByVehicleId(String userId, int vehicleId) async {
     final db = await dbRepository.database;
     db.delete('fuelRecords', 
       where: 'userId = ? AND vehicleId = ?', 
@@ -172,7 +112,7 @@ class FuelRecordOperations {
     return allFuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
   }
 
-  Future<List<FuelRecords>> getAllFuelRecordsByVehicleId(int userId, int vehicleId) async {
+  Future<List<FuelRecords>> getAllFuelRecordsByVehicleId(String userId, int vehicleId) async {
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> fuelRecords =
       await db.query(
@@ -197,7 +137,7 @@ class FuelRecordOperations {
     );
     return records.map((e) => FuelRecords.fromMap(e)).toList();
   }
-  Future<FuelRecords> getFuelRecord(int? vehicleId, int userId, int? fuelRecordId) async {
+  Future<FuelRecords> getFuelRecord(int? vehicleId, String userId, int? fuelRecordId) async {
     final db = await dbRepository.database;
     final result = await db.query('fuelRecords', 
       where: 'vehicleId = ? AND userId = ? AND fuelRecordId = ?',

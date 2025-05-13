@@ -8,8 +8,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
   // Declared variables
-  final screenSize = MediaQuery.of(context).size;
-  final double titleFontSize = screenSize.width * 0.06;
+  //final screenSize = MediaQuery.of(context).size;
+  //final double titleFontSize = screenSize.width * 0.06;
   String myVehicles = 'My Vehicles';
   String archivedVehicles = 'Archived Vehicles';
   String addRemoveVehicle = 'Add Vehicle';
@@ -21,17 +21,17 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         // Disabling backspace button
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Maintenance Manager',
-          style: TextStyle(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold
-          )
+          //style: TextStyle(
+          //  color: const Color.fromARGB(255, 255, 255, 255),
+          //  fontSize: titleFontSize,
+          //  fontWeight: FontWeight.bold
+          //)
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
-          elevation: 0.0,
-          centerTitle: true,
+        //backgroundColor: const Color.fromARGB(255, 44, 43, 44),
+          //elevation: 0.0,
+          //centerTitle: true,
           actions: [
           PopupMenuButton<String>(
             onSelected: (choice) {
@@ -71,7 +71,7 @@ class HomePage extends StatelessWidget {
               navigateToMyVehicles(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              //backgroundColor: Colors.blue,
               elevation: 4,
             ),
             child: Text ((myVehicles),
@@ -93,14 +93,13 @@ class HomePage extends StatelessWidget {
               navigateToAddVehicleFormPage(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              //backgroundColor: Colors.blue,
               elevation: 4,
             ),
               child: Text ((addRemoveVehicle),
                 style: const TextStyle(fontSize: buttonFontSize,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
-
+                color: Colors.white
                 ),
               ),
           ),
@@ -118,7 +117,7 @@ class HomePage extends StatelessWidget {
                 navigateToArchivedVehicles(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              //backgroundColor: Colors.blue,
               elevation: 4,
             ),
               child: Text ((archivedVehicles),

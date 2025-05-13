@@ -8,7 +8,7 @@
 */
 class VehicleInformationModel {
   int? vehicleId;
-  int? userId;
+  String? userId;
   String? vehicleNickName;
   String? vin;
   String? make;

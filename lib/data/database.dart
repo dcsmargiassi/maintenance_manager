@@ -2,6 +2,8 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
  - Code Explanation: The creation of the database tables using Raw SQL code
  - Section to easily update database tables to new versions
+ - Verson 5: adding lifetimefuel cost and lifetimemaintenance cost to respective tables
+ - Version 6: Changed userId to text for firebase implementation
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'dart:io';
@@ -17,7 +19,7 @@ class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
   final _databaseName = 'maintenanceManagerDatabase';
-  final _databaseVersion = 5;
+  final _databaseVersion = 6;
   
   
   static late Database _database;
@@ -41,7 +43,7 @@ class DatabaseRepository {
 
   // Updating database with missing table columns, if necessary
 Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-  if (oldVersion < 5) {
+  if (oldVersion < 6) {
     // ignore: avoid_print
     print('Database updated');
 
@@ -66,21 +68,9 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
 
   Future<void> onCreate(Database db, int version) async{
     await db.execute('''
-      CREATE TABLE user (
-        userId INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL,
-        lastLogin TEXT,
-        emailNotifications INTEGER,
-        firstname TEXT,
-        lastname TEXT
-      );
-      ''');
-    await db.execute('''
       CREATE TABLE vehicleInformation (
         vehicleId INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER,
+        userId TEXT NOT NULL,
         vehicleNickName TEXT,
         vin TEXT,
         make TEXT,
@@ -96,14 +86,13 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
         sellPrice REAL,
         archived INTEGER,
         lifeTimeFuelCost REAL,
-        lifeTimeMaintenanceCost REAL,
-        FOREIGN KEY (userId) REFERENCES user(userId)
+        lifeTimeMaintenanceCost REAL
       );
     ''');
     await db.execute('''
       CREATE TABLE fuelRecords (
         fuelRecordId INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER,
+        userId TEXT NOT NULL,
         vehicleId INTEGER,
         fuelAmount REAL,
         fuelPrice REAL,
@@ -111,7 +100,6 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
         odometerAmount REAL,
         date TEXT,
         notes TEXT,
-        FOREIGN KEY (userId) REFERENCES user(userId),
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');

@@ -7,11 +7,11 @@
  - The page, for privacy, allows the toggling of obscuring the text on password input allowing them to double check what they entered.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
-import 'package:maintenance_manager/models/user.dart';
-import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +19,11 @@ class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CreateAccountPageState createState() => _CreateAccountPageState();
+
+  CreateAccountPageState createState() => CreateAccountPageState();
 }
 
-class _CreateAccountPageState extends State<CreateAccountPage> {
+class CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -105,35 +105,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  //Snack bar message to determine valid or invalid password upon clicking submit
                   final authState = Provider.of<AuthState>(context, listen: false);
-                  final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  final password = passwordController.text;
-                  final validPassword = RegExp(r'^(?=(.*[a-z]){2,})(?=(.*[A-Z]){2,})(?=(.*\d){2,})(?=(.*[!@#\$&*~]){1,}).{8,}$');
-
-                  // Message to notify user of invalid password
-                  if (!validPassword.hasMatch(password)) {
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        content: Text('Password does not meet requirements.'),
-                        duration: Duration(seconds: 2),
-                      ),
+                  try {
+                    final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
                     );
-                    return;
+                    final user = userCredential.user;
+                    if (user == null) throw Exception('Account Creation Failed!');
+
+                    final now = Timestamp.now();
+
+                    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+                      'userId': user.uid,
+                      'email': emailController.text.trim(),
+                      'emailVerified': user.emailVerified,
+                      'username': usernameController.text.trim(),
+                      'firstName': firstNameController.text.trim(),
+                      'lastName': lastNameController.text.trim(),
+                      'lastLogin': now,
+                      'createdAt': now,
+                      'lastPasswordChange': now,
+                      'failedLoginAttempts': 0,
+                    });
+
+                    if(!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Account Created Successfully!')),
+                    );
+                    authState.setUser(user);
+                    navigateToHomePage(context);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${e.toString()}')),
+                    );
                   }
-                  // Create object for new user
-                  User newUser = User(
-                    email: emailController.text.toLowerCase(),
-                    username: usernameController.text,
-                    password: passwordController.text,
-                    firstName: firstNameController.text,
-                    lastName: lastNameController.text,
-                    emailNotifications: emailNotificationsController.hashCode,
-                  );
-                  await UserOperations().createUser(newUser);
-                  if (!mounted) return;
-                  authState.setUser(emailController.text);
-                  navigateToHomePage(context);
                 },
                 child: const Text('Create Account'),
               ),
