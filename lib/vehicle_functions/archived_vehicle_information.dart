@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
@@ -57,7 +59,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (choice) {
+            onSelected: (choice) async {
               if (choice == 'editVehicle'){ 
                 navigateToEditVehiclePage(context, widget.vehicleId);
               }
@@ -65,7 +67,14 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                 navigateToHomePage(context);
               }
               if (choice == 'signout') {
-                navigateToLogin(context);
+                final navigator = Navigator.of(context);
+                final authState = context.read<AuthState>();
+                authState.clearUser();
+                await FirebaseAuth.instance.signOut();
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const SignInPage()),
+                  (Route<dynamic> route) => false,
+                );
               }
             },
             itemBuilder: (context) => [

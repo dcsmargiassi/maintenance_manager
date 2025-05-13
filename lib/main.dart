@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/helper_functions/global_theme.dart';
-import 'package:maintenance_manager/signin_page.dart';
+import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';

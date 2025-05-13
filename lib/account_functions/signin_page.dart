@@ -11,8 +11,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/account_functions/password_reset.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/create_account.dart';
+import 'package:maintenance_manager/account_functions/create_account.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +66,7 @@ class SignInPageState extends State<SignInPage> {
             ElevatedButton(
               onPressed: () async {
                 final authState = Provider.of<AuthState>(context, listen: false);
-                authState.setUser(FirebaseAuth.instance.currentUser);
+                //authState.setUser(FirebaseAuth.instance.currentUser);
                 // Check for blank email or password
                 if(emailController.text.isEmpty || passwordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -80,6 +81,7 @@ class SignInPageState extends State<SignInPage> {
                 );
 
                 if (userCredential.user != null) {
+                  authState.setUser(FirebaseAuth.instance.currentUser);
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     navigateToHomePage(context);
                   });
@@ -87,7 +89,7 @@ class SignInPageState extends State<SignInPage> {
                 }
                 on FirebaseAuthException catch (e) {
                   debugPrint("Sign in error: $e");
-                  const SnackBar(content: Text("Login attempt failed due to server issue, try again!"), // ${e.message}
+                  const SnackBar(content: Text("Login attempt failed due server issue, try again!"), // ${e.message}
                   duration: Duration(seconds: 3),
                   );
                 }
@@ -108,7 +110,7 @@ class SignInPageState extends State<SignInPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CreateAccountPage()),
+                  MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
                 );
               },
               child: const Text('Lost password? - Not implemented'),
