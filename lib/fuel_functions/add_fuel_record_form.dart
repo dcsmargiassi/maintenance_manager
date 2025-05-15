@@ -115,6 +115,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 TextFormField(
                   controller: fuelAmountController,
                   decoration: const InputDecoration(
+                    labelText: 'Fuel Amount',
                     hintText: 'Enter amount of fuel',
                   ),
                   validator: (String? value) {
@@ -129,6 +130,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 TextFormField(
                   controller: fuelPriceController,
                   decoration: const InputDecoration(
+                    labelText: 'Fuel Price',
                     hintText: 'Enter price of fuel',
                   ),
                   validator: (String? value) {
@@ -143,6 +145,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 TextFormField(
                   controller: refuelCostController,
                   decoration: const InputDecoration(
+                    labelText: 'Total Cost',
                     hintText: 'Total Cost of Fuel',
                   ),
                   validator: (String? value) {
@@ -157,6 +160,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 TextFormField(
                   controller: odometerAmountController,
                   decoration: const InputDecoration(
+                    labelText: 'Odometer',
                     hintText: 'Enter current odometer number (Optional)',
                   ),
                   validator: (String? value) {
@@ -177,6 +181,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                   type: DateFormatType.type4,
                   controller: dateController,
                   decoration: const InputDecoration(
+                    labelText: 'Date',
                     hintText: 'Enter date of refuel',
                   ),
                   onComplete: (date) {
