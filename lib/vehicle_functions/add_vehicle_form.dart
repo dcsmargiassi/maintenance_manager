@@ -5,6 +5,7 @@ import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:date_format_field/date_format_field.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
 import 'package:provider/provider.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 
@@ -72,6 +73,18 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final TextEditingController odometerCurrentController = TextEditingController();
   final TextEditingController purchasePriceController = TextEditingController(); //version 2
   final TextEditingController sellPriceController = TextEditingController(); //version 2
+
+  // Engine Controllers
+  final TextEditingController engineSizeController = TextEditingController(); // Ex 1.5 L
+  final TextEditingController cylinderController = TextEditingController(); // Ex 4 Cylinder ( I4)
+  final TextEditingController engineTypeController = TextEditingController(); // Gas, diesel, hybrid Etc.
+  final TextEditingController oilWeightController = TextEditingController(); //5W-20, 5W-30, etc
+  final TextEditingController oilCompositionController = TextEditingController(); // Synthetic Blend, Conventional, etc
+  final TextEditingController oilClassController = TextEditingController(); // Standard, Diesel, High Mileage
+  final TextEditingController oilFilterController = TextEditingController(); // Ex S7317XL
+  final TextEditingController engineFilterController = TextEditingController(); // Ex FA-1785
+
+  // Battery Controllers
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // Variable Declarations
@@ -217,6 +230,46 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               });
               },
             ),
+
+            // EXTENDED DETAILS
+            // ENGINE DETAILS
+            ExpansionTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.car_repair, color: Colors.grey),
+                  SizedBox(width: 10),
+                  Text(
+                    "Engine Details",
+                  ),
+                ],
+              ),
+              trailing: const Icon(Icons.expand_more_sharp),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: EngineDetailsSection(
+                    engineSizeController: engineSizeController,
+                    cylinderController: cylinderController,
+                    engineTypeController: engineTypeController,
+                    oilWeightController: oilWeightController,
+                    oilCompositionController: oilCompositionController,
+                    oilClassController: oilClassController,
+                    oilFilterController: oilFilterController,
+                    engineFilterController: engineFilterController,
+                  ),
+                ),
+              ],
+            ),
+
+            // BATTERY DETAILS
+
+            // BRAKE DETAILS
+
+            // FLUID DETAILS
+
+            // CABIN DETAILS
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
@@ -271,6 +324,16 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
     odometerCurrentController.dispose();
     purchasePriceController.dispose();
     sellPriceController.dispose();
+
+    // Engine Controllers
+    engineSizeController.dispose();
+    cylinderController.dispose();
+    engineTypeController.dispose();
+    oilWeightController.dispose();
+    oilCompositionController.dispose();
+    oilClassController.dispose();
+    oilFilterController.dispose();
+    engineFilterController.dispose();
     super.dispose();
   }
 }
