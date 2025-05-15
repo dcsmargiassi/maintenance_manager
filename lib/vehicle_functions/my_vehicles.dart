@@ -13,7 +13,7 @@ import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
 class DisplayVehicleLists extends StatefulWidget {
-  const DisplayVehicleLists({Key? key}) : super(key: key);
+  const DisplayVehicleLists({super.key});
 
   @override
   // ignore: library_private_types_in_public_api

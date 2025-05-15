@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class DisplayArchivedVehicleInfo extends StatefulWidget {
   final int vehicleId;
 
-   const DisplayArchivedVehicleInfo({Key? key, required this.vehicleId}) : super(key: key);
+   const DisplayArchivedVehicleInfo({super.key, required this.vehicleId});
 
   @override
   DisplayVehicleInfoState createState() => DisplayVehicleInfoState();

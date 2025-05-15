@@ -15,7 +15,7 @@ import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
 class DisplayArchivedVehicleLists extends StatefulWidget {
-  const DisplayArchivedVehicleLists({Key? key}) : super(key: key);
+  const DisplayArchivedVehicleLists({super.key});
 
   @override
   DisplayVehicleListsState createState() => DisplayVehicleListsState();

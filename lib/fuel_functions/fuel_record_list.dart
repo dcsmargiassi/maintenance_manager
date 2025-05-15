@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class DisplayFuelLists extends StatefulWidget {
   final int vehicleId;
-  const DisplayFuelLists({Key? key, required this.vehicleId}) : super(key: key);
+  const DisplayFuelLists({super.key, required this.vehicleId});
 
   @override
   DisplayFuelListsState createState() => DisplayFuelListsState();
