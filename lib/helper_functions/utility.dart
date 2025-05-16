@@ -4,9 +4,11 @@
  - Valid number check
  - Valid integer check
  - Valid date check
+ - Confirm discard changes when leaving page without saving
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 
+import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 
 bool isValidNumber(String? input) {
@@ -32,6 +34,26 @@ bool isValidDate(String input) {
   } catch (_) {
     return false;
   }
+}
+
+Future<bool> confirmDiscardChanges(BuildContext context) async {
+  return await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Discard changes?'),
+      content: const Text('You have unsaved changes. Are you sure you want to leave?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Leave'),
+        ),
+      ],
+    ),
+  ) ?? false;
 }
 
 // Lifetime Fuel Calculations

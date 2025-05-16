@@ -129,7 +129,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                       'failedLoginAttempts': 0,
                     });
 
-                    if(!mounted) return;
+                    if(!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Account Created Successfully!')),
                     );

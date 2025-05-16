@@ -52,8 +52,11 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
             Icons.arrow_back,
             color: Colors.white
             ),
-          onPressed: () {
+          onPressed: () async {
+            final shouldPop = await confirmDiscardChanges(context);
+            if (shouldPop && context.mounted) {
             navigateToSpecificVehiclePage(context, widget.vehicleId);
+            }
           },
         ),
         title: Text(
@@ -83,27 +86,11 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
       ),
       body: PopScope(
           canPop: false,
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult: (bool didPop, Object? result) async {
             if (didPop) return;
-            bool shouldPop = await showDialog(
-              context: context, 
-              builder: (context) => AlertDialog(
-                title: const Text('Discard changes?'),
-                content: const Text('You have unsaved changes. Are you sure you want to leave?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false), // stay on current page
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true), // Leave page without saving
-                  child: const Text('Leave'),
-                ),
-              ],
-              ),
-            );
-            if (shouldPop == true && mounted) {
-              navigateToSpecificVehiclePage(context, widget.vehicleId);
+            final shouldPop = await confirmDiscardChanges(context);
+            if (shouldPop && context.mounted) {
+            navigateToSpecificVehiclePage(context, widget.vehicleId);
             }
           },
         child: SingleChildScrollView(

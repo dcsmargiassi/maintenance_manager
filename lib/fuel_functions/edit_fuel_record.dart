@@ -71,26 +71,10 @@ class _EditFuelFormState extends State<EditFuelForm> {
     }
       return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) async {
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
           if (didPop) return;
-          bool shouldPop = await showDialog(
-            context: context, 
-            builder: (context) => AlertDialog(
-              title: const Text('Discard changes?'),
-              content: const Text('You have unsaved changes. Are you sure you want to leave?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false), // stay on current page
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true), // Leave page without saving
-                child: const Text('Leave'),
-              ),
-            ],
-            ),
-          );
-          if (shouldPop == true && mounted) {
+          final shouldPop = await confirmDiscardChanges(context);
+          if (shouldPop == true && context.mounted) {
             navigateToDisplayFuelRecordPage(context, widget.vehicleId);
           }
         },
