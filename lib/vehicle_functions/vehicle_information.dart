@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/models/battery_detail_records.dart';
+import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +18,8 @@ class DisplayVehicleInfo extends StatefulWidget {
 
 class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
+  late Future<EngineDetailsModel> _engineDetailsFuture;
+  late Future<BatteryDetailsModel> _batteryDetailsFuture;
   double? _monthlyFuelCost;
 
   @override
@@ -24,6 +28,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
     _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
+    _engineDetailsFuture = EngineDetailsOperations().getEngineDetailsByVehicleId(userId, widget.vehicleId);
+    _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
 
     getMonthlyFuelCost(widget.vehicleId, userId).then((cost) {
       if(mounted) {
@@ -54,8 +60,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
       appBar: AppBar(
         // Custom backspace button
@@ -68,39 +72,43 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
             navigateToMyVehicles(context);
           },
         ),
-        title: Text(
+        title: const Text(
           'Vehicle Information',
-          style: TextStyle(
-              color: const Color.fromARGB(255, 255, 255, 255),
-              fontSize: titleFontSize,
-              fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
         elevation: 0.0,
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (choice) {
-              if (choice == 'editVehicle'){ 
-                navigateToEditVehiclePage(context, widget.vehicleId);
-              }
-              if (choice == 'homePage') {
-                navigateToHomePage(context);
-              }
-              if (choice == 'signout') {
-                navigateToLogin(context);
-              }
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
+            }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'editVehicle',
-                child: Text('Edit Information'),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
               ),
-              const PopupMenuItem(
-                value: 'homePage',
-                child: Text('Return to HomePage'),
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
                 value: 'signout',
                 child: Text('Sign Out'),
               ),
@@ -116,17 +124,38 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (snapshot.hasData) {
-              return _displayVehicleDetails(snapshot.data!);
-            } else if (snapshot.hasError) {
+            } if (snapshot.hasError) {
               return Center(
-                child: Text("Error: ${snapshot.error}")
+                child: Text("Error: ${snapshot.error}"),
               );
-            } else {
+            } if(!snapshot.hasData) {
               return const Center(
                 child: Text("No Vehicle Found"),
               );
             }
+            return FutureBuilder<EngineDetailsModel>(
+              future: _engineDetailsFuture,
+              builder: (context, engineSnapshot) {
+                if (!engineSnapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return FutureBuilder<BatteryDetailsModel>(
+                  future: _batteryDetailsFuture,
+                  builder: (context, batterySnapshot) {
+                    if (!batterySnapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    return _displayVehicleDetails(
+                      snapshot.data!,
+                      engineSnapshot.data!,
+                      batterySnapshot.data!,
+                    );
+                  },
+                );
+              },
+            );
           },
         ),
       ),
@@ -150,83 +179,123 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     );
   }
 
-  Widget _displayVehicleDetails(VehicleInformationModel data) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${data.vehicleNickName}",
-              style: const TextStyle(fontSize: 22), 
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "Make: ${data.make}",
-              style: const TextStyle(fontSize: 18
+  // Widget to build info text
+  Widget _infoText(String label, String? value){
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text("$label: ${value ?? 'N/A'}", style: const TextStyle(fontSize: 16), textAlign: TextAlign.left),
+      ),
+    );
+  }
+    Widget _displayVehicleDetails(
+      VehicleInformationModel vehicleData,
+      EngineDetailsModel engineData,
+      BatteryDetailsModel batteryData) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  navigateToEditVehiclePage(
+                    context,
+                    vehicleData.vehicleId!,
+                    vehicleData.archived!,
+                    onReturn: () {
+                      setState(() {
+                        _vehicleInfoFuture = VehicleOperations().getVehicleById(
+                          widget.vehicleId,
+                          Provider.of<AuthState>(context, listen: false).userId!,
+                        );
+                      });
+                    },
+                  );
+                },
+                icon: const Icon(Icons.edit),
+                label: const Text('Edit Vehicle'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[800],
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            Text(
-              "Model: ${data.model}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "Year: ${data.year}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "Version: ${data.version}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "VIN: ${data.vin}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "Mileage: ${data.odometerCurrent}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              _monthlyFuelCost != null
-                  ? "Last Month's Fuel Cost: \$${_monthlyFuelCost!.toStringAsFixed(2)}"
-                  : "Loading fuel cost...",
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-              child: Column(
-                children:[
-                  Row(
-                    children: [
-                      buildVehicleButton('Add Fuel', () {
-                        navigateToAddFuelRecordPage(context, data.vehicleId!);
-                       }),
-                      const SizedBox(width: 16.0),
-                        buildVehicleButton('Add Work', () {
-                          navigateToAddFuelRecordPage(context, data.vehicleId!);
-                       }),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      buildVehicleButton('View Fuel', () {
-                        navigateToDisplayFuelRecordPage(context, data.vehicleId!);
-                      }),
-                      const SizedBox(width: 16.0),
-                      buildVehicleButton('View Work', () {
-                        //Navigate to future view work page
-                      }),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
+          ),
+          ExpansionTile(
+            initiallyExpanded: true,
+            title: const Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Name", vehicleData.vehicleNickName),
+              _infoText("Make", vehicleData.make),
+              _infoText("Model", vehicleData.model),
+              _infoText("Year", vehicleData.year.toString()),
+              _infoText("VIN", vehicleData.vin),
+              _infoText("Mileage", vehicleData.odometerCurrent.toString()),
+              //_infoText("Lifetime Repair Cost", "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"),
+              _infoText("Lifetime Fuel Cost", "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"),
+              _infoText("Last Month's Fuel Cost", _monthlyFuelCost != null
+                ? "\$${_monthlyFuelCost!.toStringAsFixed(2)}"
+                : "Loading..."
               ),
+            ],
+          ),
+          ExpansionTile(
+            title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Engine Details", engineData.engineSize),
+              _infoText("Cylinders", engineData.cylinders),
+              _infoText("Engine Type", engineData.engineType),
+              _infoText("Oil Weight", engineData.oilWeight),
+              _infoText("Oil Filter", engineData.oilFilter),
+            ],
+          ),
+          ExpansionTile(
+            title: const Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Series Type", batteryData.batterySeriesType),
+              _infoText("Battery Size", batteryData.batterySize),
+              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    buildVehicleButton('Add Fuel', () {
+                      navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                    const SizedBox(width: 16.0),
+                    buildVehicleButton('Add Work', () {
+                      // navigateToAddWorkRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    buildVehicleButton('View Fuel', () {
+                      navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                    const SizedBox(width: 16.0),
+                    buildVehicleButton('View Work', () {
+                      // navigateToDisplayWorkRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -10,6 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
@@ -47,8 +48,6 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
       appBar: AppBar(
         // Custom backspace button
@@ -61,39 +60,48 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
             navigateToHomePage(context);
           },
         ),
-        title: Text(
+        title: const Text(
           'Archived Vehicles',
-          style: TextStyle(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold,
-          ),
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
         elevation: 0.0,
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (choice) {
-              if (choice == 'homePage') {
-                navigateToHomePage(context);
-              }
-              if (choice == 'signout') {
-                navigateToLogin(context);
-              }
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
+            }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'homePage',
-                child: Text('Return to HomePage'),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
+              ),
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
                 value: 'signout',
                 child: Text('Sign Out'),
               ),
             ],
-          ),
-        ],
+          ),        ],
       ),
       body: SafeArea(
         child: Column(
@@ -125,8 +133,10 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                     onPressed: _selectedVehicle == null || _isLoading
                         ? null : () async {
                           final userId = Provider.of<AuthState>(context, listen: false).userId;
+                          final archiveDate = DateTime.now();
+                          final date = formatDateToString(archiveDate);
                           setState(() => _isLoading = true);
-                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!);
+                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!, date);
                           setState(() {
                             _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
                           });

@@ -48,8 +48,6 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
       appBar: AppBar(
         // Custom backspace button
@@ -59,36 +57,47 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
             color: Colors.white
             ),
           onPressed: () {
-            navigateToSpecificVehiclePage(context, widget.vehicleId);
+            Navigator.pop(context);
+            //navigateToSpecificVehiclePage(context, widget.vehicleId);
           },
         ),
-        title: Text(
+        title: const Text(
           'Fuel Records',
-          style: TextStyle(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold,
-          ),
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
         elevation: 0.0,
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (choice) {
-              if (choice == 'homePage') {
-                navigateToHomePage(context);
-              }
-              if (choice == 'signout') {
-                navigateToLogin(context);
-              }
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
+            }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'homePage',
-                child: Text('Return to HomePage'),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
+              ),
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
                 value: 'signout',
                 child: Text('Sign Out'),
               ),

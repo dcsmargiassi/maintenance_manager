@@ -33,8 +33,6 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
     return Scaffold(
       appBar: AppBar(
         // Custom backspace button
@@ -47,33 +45,43 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
             navigateToHomePage(context);
           },
         ),
-        title: Text(
+        title: const Text(
           'My Vehicles',
-          style: TextStyle(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold,
-          ),
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
         elevation: 0.0,
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (choice) {
-              if (choice == 'Exit') {
-                navigateToHomePage(context);
-              }
-              if (choice == 'signout') {
-                navigateToLogin(context);
-              }
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
+            }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'Exit',
-                child: Text('Return to HomePage'),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
+              ),
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
                 value: 'signout',
                 child: Text('Sign Out'),
               ),

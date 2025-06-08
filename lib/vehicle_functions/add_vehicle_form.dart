@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
-import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/models/battery_detail_records.dart';
+import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
-import 'package:date_format_field/date_format_field.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_stats/vehicle_details.dart';
 import 'package:provider/provider.dart';
-import 'package:maintenance_manager/helper_functions/utility.dart';
 
 // Creating object for vehicle information database
  VehicleOperations vehicleInformation = VehicleOperations();
+
+ // Creating object for engine details database
+ EngineDetailsOperations engineDetails = EngineDetailsOperations();
+
+ // Creating object for Miscellaneous details database
+ BatteryDetailsOperations batteryDetails = BatteryDetailsOperations();
 
 class AddVehicleFormApp extends StatelessWidget {
   const AddVehicleFormApp({super.key}); 
@@ -31,19 +38,42 @@ class AddVehicleFormApp extends StatelessWidget {
           },
         ),
         actions: [
-        PopupMenuButton(
-          onSelected: (choice) {
-            if (choice == 'homePage') {
-              navigateToHomePage(context);
+          PopupMenuButton<String>(
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
             }
-          },
-          itemBuilder: (context) => [
-          const PopupMenuItem(
-            value: 'homePage',
-            child:Text('Return to HomePage'),
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
+              ),
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
+              ),
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
+                value: 'signout',
+                child: Text('Sign Out'),
+              ),
+            ],
           ),
-        ]
-        ),
         ]
       ),
       body: const AddVehicleForm(),
@@ -66,13 +96,13 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final TextEditingController modelController = TextEditingController();
   final TextEditingController versionController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
-  final TextEditingController purchaseDateController = TextEditingController(); //version 2
-  final TextEditingController sellDateController = TextEditingController(); //version 2
-  final TextEditingController odometerBuyController = TextEditingController(); //version 2
-  final TextEditingController odometerSellController = TextEditingController(); //version 2
+  final TextEditingController purchaseDateController = TextEditingController();
+  final TextEditingController sellDateController = TextEditingController();
+  final TextEditingController odometerBuyController = TextEditingController();
+  final TextEditingController odometerSellController = TextEditingController();
   final TextEditingController odometerCurrentController = TextEditingController();
-  final TextEditingController purchasePriceController = TextEditingController(); //version 2
-  final TextEditingController sellPriceController = TextEditingController(); //version 2
+  final TextEditingController purchasePriceController = TextEditingController();
+  final TextEditingController sellPriceController = TextEditingController();
 
   // Engine Controllers
   final TextEditingController engineSizeController = TextEditingController(); // Ex 1.5 L
@@ -85,11 +115,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final TextEditingController engineFilterController = TextEditingController(); // Ex FA-1785
 
   // Battery Controllers
+  final TextEditingController batterySeriesTypeController = TextEditingController(); // Ex BXT
+  final TextEditingController batterySizeController = TextEditingController(); // BCI number
+  final TextEditingController coldCrankAmpsController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // Variable Declarations
-  static const double buttonSpacingBoxHeight = 50.0; 
-  //static const List<String> fuelTypeItemsList = <String>["Miles Per Hour", "Kilometers Per Hour", ];
   String selectedUnit = "Miles Per Hour"; // Default unit
 
   @override
@@ -101,148 +132,56 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              controller: vehicleNickNameController,
-              decoration: const InputDecoration(
-                labelText: 'Nickname',
-                hintText: 'Enter nickname of car',
+          children: <Widget>[ 
+            // Vehicle Details
+            ExpansionTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.car_rental, color: Colors.black),
+                  SizedBox(width: 10),
+                  Text(
+                    "Vehicle Details",
+                  ),
+                ],
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-
-            TextFormField(
-              controller: vinController,
-              decoration: const InputDecoration(
-                labelText: 'VIN',
-                hintText: 'Enter VIN of car',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-
-            TextFormField(
-              controller: makeController,
-              decoration: const InputDecoration(
-                labelText: 'Make',
-                hintText: 'Enter make of car',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-
-            TextFormField(
-              controller: modelController,
-              decoration: const InputDecoration(
-                labelText: 'Model',
-                hintText: 'Enter model of car',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-
-            TextFormField(
-              controller: versionController,
-              decoration: const InputDecoration(
-                labelText: 'Submodel',
-                hintText: 'Enter submodel of car',
-              ),
-            ),
-
-            TextFormField(
-              controller: yearController,
-              decoration: const InputDecoration(
-                labelText: 'Year',
-                hintText: 'Enter year of car',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                if(!isValidInteger(yearController.text)){
-                  return 'Year must be a number';
-                }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: buttonSpacingBoxHeight),
-
-            TextFormField(
-              controller: odometerCurrentController,
-              decoration: const InputDecoration(
-                labelText: 'Current Mileage',
-                hintText: 'Enter current mileage of car',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                if(!isValidNumber(odometerCurrentController.text)){
-                  return 'Current Mileage must be a number';
-                }
-                return null;
-              },
-            ),
-
-            DropdownButton<String>(
-                  value: selectedUnit,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedUnit = newValue!;
-                    });
-                  },
-                  items: <String>['Miles Per Hour', 'Kilometers Per Liter']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+              initiallyExpanded: true,
+              trailing: const Icon(Icons.expand_more_sharp),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: VehicleDetailsSection(
+                    vehicleNickNameController: vehicleNickNameController,
+                    vinController: vinController,
+                    makeController: makeController,
+                    modelController: modelController,
+                    versionController: versionController,
+                    yearController: yearController,
+                    purchaseDateController: purchaseDateController,
+                    sellDateController: sellDateController,
+                    odometerBuyController: odometerBuyController,
+                    odometerSellController: odometerSellController,
+                    odometerCurrentController: odometerCurrentController,
+                    purchasePriceController: purchasePriceController,
+                    sellPriceController: sellPriceController,
+                  ),
                 ),
-            DateFormatField(
-              type: DateFormatType.type4,
-              controller: purchaseDateController,
-              decoration: const InputDecoration(
-                labelText: 'Purchase Date',
-                hintText: 'Enter purchase date of car',
-              ),
-              onComplete: (date) {
-              setState(() {
-                purchaseDateController.text = formatDateToString(date!);
-              });
-              },
+              ],
             ),
-
             // EXTENDED DETAILS
             // ENGINE DETAILS
             ExpansionTile(
               title: const Row(
                 children: [
-                  Icon(Icons.car_repair, color: Colors.grey),
+                  Icon(Icons.engineering_sharp, color: Colors.black),
                   SizedBox(width: 10),
                   Text(
                     "Engine Details",
                   ),
                 ],
               ),
+              initiallyExpanded: false,
               trailing: const Icon(Icons.expand_more_sharp),
               tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
               childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -265,17 +204,42 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
 
             // BATTERY DETAILS
 
+            ExpansionTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.battery_std, color: Colors.black),
+                  SizedBox(width: 10),
+                  Text(
+                    "Battery Details",
+                  ),
+                ],
+              ),
+              initiallyExpanded: false,
+              trailing: const Icon(Icons.expand_more_sharp),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: BatteryDetailsSection(
+                    batterySeriesTypeController: batterySeriesTypeController,
+                    batterySizeController: batterySizeController,
+                    coldCrankAmpsController: coldCrankAmpsController,
+                  ),
+                ),
+              ],
+            ),
+
             // BRAKE DETAILS
 
             // FLUID DETAILS
 
             // CABIN DETAILS
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
               child: ElevatedButton(
                 onPressed: () async {
-                  // Validate will return true if the form is valid, or false if
-                  // the form is invalid.
+                  // Validate will return true if the form is valid, or false if form is invalid
                   if (_formKey.currentState!.validate()) {
                   final vehicleInformation = VehicleInformationModel(
                     userId: userId,
@@ -286,17 +250,42 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     version: versionController.text,
                     year: int.tryParse(yearController.text) ?? 0,
                     purchaseDate: purchaseDateController.text,
-                    sellDate: null,//sellDateController.hashCode,
-                    odometerBuy: null,//odometerBuyController.hashCode,
-                    odometerSell: null,//odometerSellController.hashCode,
+                    sellDate: null,
+                    odometerBuy: double.parse(odometerBuyController.text),
+                    odometerSell: null,
                     odometerCurrent: double.tryParse(odometerCurrentController.text) ?? 0,
-                    purchasePrice: null,//purchasePriceController.hashCode,
-                    sellPrice: null,//sellPriceController.hashCode
+                    purchasePrice: double.parse(purchasePriceController.text),
+                    sellPrice: null,
                     archived: archiveController,
                   );
-                  //Create an instance of VehicleOperations
                   VehicleOperations vehicleOperations = VehicleOperations();
-                  await vehicleOperations.createVehicle(vehicleInformation);
+                  int vehicleId = await vehicleOperations.createVehicle(vehicleInformation);
+                  EngineDetailsModel engineDetails = EngineDetailsModel(
+                    userId: userId,
+                    vehicleId: vehicleId,
+                    engineSize: engineSizeController.text,
+                    cylinders: cylinderController.text,
+                    engineType: engineTypeController.text,
+                    oilWeight: oilWeightController.text,
+                    oilComposition: oilCompositionController.text,
+                    oilClass: oilClassController.text,
+                    oilFilter: oilFilterController.text,
+                    engineFilter: engineFilterController.text,
+                  );
+                  EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
+                  await engineDetailsOperations.insertEngineDetails(engineDetails);
+                  BatteryDetailsModel batteryDetails = BatteryDetailsModel(
+                    userId: userId!,
+                    vehicleId: vehicleId,
+                    batterySeriesType: batterySeriesTypeController.text,
+                    batterySize: batterySizeController.text,
+                    coldCrankAmps: double.tryParse(coldCrankAmpsController.text),
+                  );
+                  BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
+                  await batteryDetailsOperations.insertBatteryDetails(batteryDetails);
+                  //Create an instance of VehicleOperations
+                  //VehicleOperations vehicleOperations = VehicleOperations();
+                  //await vehicleOperations.createVehicle(vehicleInformation);
                   if (!context.mounted) return;
                     navigateToHomePage(context);
                   }
@@ -334,6 +323,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
     oilClassController.dispose();
     oilFilterController.dispose();
     engineFilterController.dispose();
+
+    // Battery Controllers
+    batterySeriesTypeController.dispose();
+    batterySizeController.dispose();
+    coldCrankAmpsController.dispose();
+
     super.dispose();
   }
 }

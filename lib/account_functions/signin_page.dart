@@ -113,7 +113,7 @@ class SignInPageState extends State<SignInPage> {
                   MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
                 );
               },
-              child: const Text('Lost password? - Not implemented'),
+              child: const Text('Reset Password'),
             ),
           ],
         ),

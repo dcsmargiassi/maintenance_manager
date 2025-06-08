@@ -104,6 +104,33 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
       );
     ''');
     await db.execute('''
+      CREATE TABLE engineDetails (
+        engineDetailsId INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT NOT NULL,
+        vehicleId INTEGER NOT NULL,
+        engineSize TEXT,
+        cylinders TEXT,
+        engineType TEXT,
+        oilWeight TEXT,
+        oilComposition TEXT,
+        oilClass TEXT,
+        oilFilter TEXT,
+        engineFilter TEXT,
+        FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
+      );
+    ''');
+    await db.execute('''
+      CREATE TABLE batteryDetails (
+        batteryDetailsId INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT NOT NULL,
+        vehicleId INTEGER NOT NULL,
+        batterySeriesType TEXT,
+        batterySize TEXT,
+        coldCrankAmps REAL,
+        FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
+      );
+    ''');
+    await db.execute('''
       CREATE TABLE maintenanceRecords (
         maintenanceRecordId INTEGER PRIMARY KEY AUTOINCREMENT,
         vehicleId INTEGER,

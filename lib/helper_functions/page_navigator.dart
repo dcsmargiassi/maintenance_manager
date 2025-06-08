@@ -6,6 +6,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/account_functions/create_account.dart';
+import 'package:maintenance_manager/account_functions/edit_profile.dart';
+import 'package:maintenance_manager/account_functions/profile_page.dart';
 import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/homepage.dart';
@@ -36,10 +38,24 @@ Future<void> navigateToLogin(BuildContext context, {VoidCallback? onReturn}) {
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToHomePage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToHomePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const HomePage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToProfilePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const ProfilePage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToEditProfilePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const EditProfilePage()),
   ).then((_) => onReturn?.call());
 }
 
@@ -66,10 +82,10 @@ Future<void> navigateToSpecificVehiclePage(BuildContext context, int vehicleId, 
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditVehiclePage(BuildContext context, int vehicleId, {VoidCallback? onReturn}) {
+Future<void> navigateToEditVehiclePage(BuildContext context, int vehicleId, int archivedStatus, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleId: vehicleId)),
+    MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleId: vehicleId, archivedStatus: archivedStatus,)),
   ).then((_) => onReturn?.call());
 }
 

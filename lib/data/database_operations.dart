@@ -7,6 +7,8 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'package:maintenance_manager/data/database.dart';
+import 'package:maintenance_manager/models/battery_detail_records.dart';
+import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 //import 'package:maintenance_manager/models/maintenance_records.dart';
@@ -16,12 +18,10 @@ import 'package:maintenance_manager/models/fuel_records.dart';
 class VehicleOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
-  Future<void> createVehicle(VehicleInformationModel vehicle) async {
+  Future<int> createVehicle(VehicleInformationModel vehicle) async {
     final db = await dbRepository.database;
-    db.insert('vehicleInformation', vehicle.toMap());
-    // ignore: avoid_print
-    print('Vehicle Inserted');
-
+    final vehicleId = await db.insert('vehicleInformation', vehicle.toMap());
+    return vehicleId;
   }
 
   Future<void> updateVehicle(VehicleInformationModel vehicle) async {
@@ -31,9 +31,19 @@ class VehicleOperations {
     print('VehicleUpdated');
   }
 
-  Future<void> archiveVehicleById(int vehicleId) async {
+  Future<void> archiveVehicleById(int vehicleId, String date) async {
     final db = await dbRepository.database;
-  await db.update('vehicleInformation', {'archived': 1}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
+  await db.update('vehicleInformation', {'archived': 1,'sellDate': date}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
+  }
+
+  Future<void> unarchiveVehicleById(String userId, int vehicleId) async {
+  final db = await dbRepository.database;
+  await db.update(
+    'vehicleInformation',
+    {'archived': 0},
+    where: 'vehicleId = ? AND userId = ?',
+    whereArgs: [vehicleId, userId],
+  );
   }
 
   Future<void> deleteVehicle(String userId, int vehicleId) async {
@@ -41,6 +51,31 @@ class VehicleOperations {
     db.delete('vehicleInformation', 
     where: 'vehicleId = ? AND userId = ?', 
     whereArgs: [vehicleId, userId]);
+    db.delete('fuelRecords',
+    where: 'vehicleId = ? AND userId = ?',
+    whereArgs: [vehicleId, userId]);
+    db.delete('engineDetails',
+    where: 'vehicleId = ? AND userId = ?',
+    whereArgs: [vehicleId, userId]);
+    db.delete('batteryDetails',
+    where:'vehicleId = ? AND userId = ?',
+    whereArgs: [vehicleId, userId]);
+  }
+
+  Future<void> deleteAllVehicles(String userId) async {
+    final db = await dbRepository.database;
+    db.delete('vehicleInformation', 
+    where: 'userId = ?', 
+    whereArgs: [userId]);
+    db.delete('fuelRecords',
+    where: 'userId = ?',
+    whereArgs: [userId]);
+    db.delete('engineDetails',
+    where: 'userId = ?',
+    whereArgs: [userId]);
+    db.delete('batteryDetails',
+    where:'userId = ?',
+    whereArgs: [userId]);
   }
 
   Future<List<VehicleInformationModel>> getAllVehicles() async {
@@ -145,5 +180,78 @@ class FuelRecordOperations {
     return FuelRecords.fromMap(result.first);
   }
 }
+
+// Engine Details operation functions
+class EngineDetailsOperations {
+  DatabaseRepository dbRepository = DatabaseRepository.instance;
+
+  Future<void> insertEngineDetails(EngineDetailsModel engine) async {
+    final db = await dbRepository.database;
+    await db.insert('engineDetails', engine.toMap());
+  }
+  
+  Future<void> updateEngineDetails(EngineDetailsModel engine) async {
+    final db = await dbRepository.database;
+    await db.update('engineDetails', engine.toMap(),
+      where: 'engineDetailsId = ? AND userId = ?',
+      whereArgs: [engine.engineDetailsId, engine.userId],
+    );
+  }
+  
+  Future<void> deleteEngineDetails(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    await db.delete('engineDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+  }
+  
+  Future<EngineDetailsModel> getEngineDetailsByVehicleId(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    final result = await db.query('engineDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+      return EngineDetailsModel.fromMap(result.first);
+  }
+}
+
+// Battery details operation functions
+class BatteryDetailsOperations{
+  DatabaseRepository dbRepository = DatabaseRepository.instance;
+  
+  Future<void> insertBatteryDetails(BatteryDetailsModel battery) async {
+    final db = await dbRepository.database;
+    await db.insert('batteryDetails', battery.toMap());
+  }
+
+  Future<void> updateBatteryDetails(BatteryDetailsModel battery) async {
+    final db = await dbRepository.database;
+    await db.update('batteryDetails', battery.toMap(),
+      where: 'batteryDetailsId = ? AND userId = ?',
+      whereArgs: [battery.batteryDetailsId, battery.userId],
+    );
+  }
+
+  Future<void> deleteBatteryDetails(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    await db.delete('batteryDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+  }
+
+  Future<BatteryDetailsModel> getBatteryDetailsByVehicleId(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    final result = await db.query('batteryDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+      return BatteryDetailsModel.fromMap(result.first);
+
+
+  }
+}
+
 
 // maintenance Records operation functions

@@ -41,8 +41,6 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context, listen: false);
     String? userId = authState.userId;
-    final screenSize = MediaQuery.of(context).size;
-    final double titleFontSize = screenSize.width * 0.06;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,26 +57,44 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
             }
           },
         ),
-        title: Text(
+        title: const Text(
           'Add Fuel Record',
-          style: TextStyle(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontSize: titleFontSize,
-            fontWeight: FontWeight.bold,
-          ),),
-        backgroundColor: const Color.fromARGB(255, 44, 43, 44),
+          ),
         centerTitle: true,
         actions: [
-          PopupMenuButton(
-            onSelected: (choice) {
-              if (choice == 'Exit') {
-                navigateToHomePage(context);
-              }
+          PopupMenuButton<String>(
+            onSelected: (choice) async {
+              switch (choice) {
+              case 'Profile':
+                await navigateToProfilePage(context);
+                break;
+              case 'HomePage':
+                await navigateToHomePage(context);
+                break;
+              case 'Settings':
+                await navigateToHomePage(context);
+                break;
+              case 'signout':
+                await navigateToLogin(context);
+                break;
+            }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'Exit',
-                child: Text('Return to HomePage'),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'Profile',
+                child: Text('Profile'),
+              ),
+              PopupMenuItem(
+                value: 'HomePage',
+                child: Text('HomePage'),
+              ),
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
+                value: 'signout',
+                child: Text('Sign Out'),
               ),
             ],
           ),
@@ -94,10 +110,12 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
             }
           },
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(10.0),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              
               children: <Widget>[
                 TextFormField(
                   controller: fuelAmountController,
