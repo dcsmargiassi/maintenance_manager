@@ -73,6 +73,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget> [
           const SizedBox(height: buttonSpacingBoxHeight),
+
         SizedBox(
           width: homeScreenButtonWidth,
           height: homeScreenButtonHeight,

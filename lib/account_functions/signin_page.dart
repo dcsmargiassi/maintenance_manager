@@ -89,12 +89,16 @@ class SignInPageState extends State<SignInPage> {
                 }
                 on FirebaseAuthException catch (e) {
                   debugPrint("Sign in error: $e");
-                  const SnackBar(content: Text("Login attempt failed due server issue, try again!"), // ${e.message}
-                  duration: Duration(seconds: 3),
-                  );
-                }
-              },
-              child: const Text('Sign In'),
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(e.message ?? "Login attempt failed due server issue, try again!"), // ${e.message}
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              }
+            },
+            child: const Text('Sign In'),
             ),
             const SizedBox(height: 16.0),
             TextButton(
