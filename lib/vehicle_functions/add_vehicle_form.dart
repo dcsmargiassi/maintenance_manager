@@ -251,10 +251,10 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     year: int.tryParse(yearController.text) ?? 0,
                     purchaseDate: purchaseDateController.text,
                     sellDate: null,
-                    odometerBuy: double.parse(odometerBuyController.text),
+                    odometerBuy: double.tryParse(odometerBuyController.text),
                     odometerSell: null,
-                    odometerCurrent: double.tryParse(odometerCurrentController.text) ?? 0,
-                    purchasePrice: double.parse(purchasePriceController.text),
+                    odometerCurrent: double.tryParse(odometerCurrentController.text),
+                    purchasePrice: double.tryParse(purchasePriceController.text),
                     sellPrice: null,
                     archived: archiveController,
                   );

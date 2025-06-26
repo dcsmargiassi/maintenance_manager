@@ -275,9 +275,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             prefix: Text('\$ '),
           ),
           validator: (String? value) {
-            if (value != null) {
+            if (value != null && value.trim().isNotEmpty) {
               if(!isValidNumber(widget.purchasePriceController.text)){
-              return 'Current Mileage must be a number';
+              return 'Purchase price must be a number';
               }
             }
             return null;
@@ -293,9 +293,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             hintText: 'Enter odometer number when purchased',
           ),
           validator: (String? value) {
-            if (value != null) {
+            if (value != null && value.trim().isNotEmpty) {
               if(!isValidNumber(widget.odometerBuyController.text)){
-              return 'Input must be a number';
+              return 'Odometer reading must be a number';
               }
             }
             return null;
