@@ -247,6 +247,14 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
             ],
           ),
           ExpansionTile(
+            title: const Text("Finances", style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Purchase Price", vehicleData.purchasePrice.toString()),
+              _infoText("Lifetime Fuel", batteryData.batterySize),
+              _infoText("Lifetime Expenses", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+            ],
+          ),
+          ExpansionTile(
             title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
               _infoText("Engine Details", engineData.engineSize),
@@ -261,7 +269,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
             children: [
               _infoText("Series Type", batteryData.batterySeriesType),
               _infoText("Battery Size", batteryData.batterySize),
-              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps}"),
             ],
           ),
           const SizedBox(height: 20),
