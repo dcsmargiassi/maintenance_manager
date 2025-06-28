@@ -20,7 +20,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
   late Future<EngineDetailsModel> _engineDetailsFuture;
   late Future<BatteryDetailsModel> _batteryDetailsFuture;
-  double? _monthlyFuelCost;
+  //double? _monthlyFuelCost;
+  int _selectedMonth = DateTime.now().month;
+  int _selectedYear = DateTime.now().year;
+  double? _selectedMonthFuelCost;
+  double? _selectedYearFuelCost;
+  final Map<int, String> monthNames = const {
+      1: 'January', 2: 'February', 3: 'March', 4: 'April',
+      5: 'May', 6: 'June', 7: 'July', 8: 'August',
+      9: 'September', 10: 'October', 11: 'November', 12: 'December',
+    };
 
   @override
   void initState() {
@@ -30,15 +39,21 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
     _engineDetailsFuture = EngineDetailsOperations().getEngineDetailsByVehicleId(userId, widget.vehicleId);
     _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
+    _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
 
-    getMonthlyFuelCost(widget.vehicleId, userId).then((cost) {
-      if(mounted) {
-        setState(() {
-          _monthlyFuelCost = cost;
-        });
-      }
-    });
   }
+
+  void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
+  final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
+  final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+
+  if (!mounted) return;
+
+  setState(() {
+    _selectedMonthFuelCost = monthCost;
+    _selectedYearFuelCost = yearCost;
+  });
+}
 
   Future<double> getMonthlyFuelCost (int vehicleId, String userId) async {
   DateTime now = DateTime.now();
@@ -56,6 +71,45 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
   double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost ?? 0));
   return totalCost;
+  }
+
+  void _onMonthYearChanged(int year, int month, String userId) async {
+    setState(() {
+      _selectedMonth = month;
+      _selectedYear = year;
+    });
+
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+
+    if (!mounted) return;
+
+    setState(() {
+      _selectedMonthFuelCost = monthCost;
+      _selectedYearFuelCost = yearCost;
+    });
+  }
+
+  Future<double> getFuelCostByMonthYear(int vehicleId, String userId, int year, int month) async {
+    final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, year, month);
+
+    double totalCost = 0.0;
+    for (final record in records) {
+      final cost = record.refuelCost;
+      totalCost += cost ?? 0;
+    }
+    return totalCost;
+  }
+
+  Future<double> getFuelCostByYear(int vehicleId, String userId, int year) async {
+    final records = await FuelRecordOperations().getFuelRecordsByYear(vehicleId, year);
+  
+    double totalCost = 0.0;
+    for (final record in records) {
+      final cost = record.refuelCost;  
+      totalCost += cost ?? 0;
+    }
+    return totalCost;
   }
 
   @override
@@ -238,20 +292,102 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               _infoText("Year", vehicleData.year.toString()),
               _infoText("VIN", vehicleData.vin),
               _infoText("Mileage", vehicleData.odometerCurrent.toString()),
-              //_infoText("Lifetime Repair Cost", "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"),
-              _infoText("Lifetime Fuel Cost", "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"),
-              _infoText("Last Month's Fuel Cost", _monthlyFuelCost != null
-                ? "\$${_monthlyFuelCost!.toStringAsFixed(2)}"
-                : "Loading..."
-              ),
             ],
           ),
           ExpansionTile(
-            title: const Text("Finances", style: TextStyle(fontWeight: FontWeight.bold)),
+            key: ValueKey('financial_summary_${_selectedYear}_$_selectedMonth'),
+            title: const Text("Financial Summary", style: TextStyle(fontWeight: FontWeight.bold)),
+            initiallyExpanded: true,
             children: [
-              _infoText("Purchase Price", vehicleData.purchasePrice.toString()),
-              _infoText("Lifetime Fuel", batteryData.batterySize),
-              _infoText("Lifetime Expenses", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    // Year Selector Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Select Year",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          DropdownButton<int>(
+                            value: _selectedYear,
+                            onChanged: (newYear) {
+                              if (newYear != null) {
+                                final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                _onMonthYearChanged(newYear, _selectedMonth, userId);
+                              }
+                            },
+                            items: List.generate(10, (index) {
+                              final year = DateTime.now().year - index;
+                              return DropdownMenuItem(value: year, child: Text('$year'));
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    // Month Selector Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Select Month",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          DropdownButton<int>(
+                            value: _selectedMonth,
+                            onChanged: (newMonth) {
+                              if (newMonth != null) {
+                                final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                _onMonthYearChanged(_selectedYear, newMonth, userId);
+                              }
+                            },
+                            items: List.generate(12, (index) {
+                              final monthNumber = index + 1;
+                              final monthName = monthNames[monthNumber]!;
+                              return DropdownMenuItem(value: monthNumber, child: Text(monthName));
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _infoText(
+                "Fuel Cost for $_selectedMonth/$_selectedYear",
+                _selectedMonthFuelCost != null ? "\$${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+              ),
+              _infoText(
+                "Fuel Cost for $_selectedYear",
+                _selectedYearFuelCost != null ? "\$${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+              ),
+              _infoText(
+                "Lifetime Fuel Cost",
+                "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
+              ),
+              _infoText(
+                "Purchase Price",
+                "\$${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
+              ),
+              _infoText(
+                "Lifetime Maintenance Cost",
+                "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
+              ),
+              _infoText(
+                "Lifetime Vehicle Cost",
+                "\$${(
+                    (vehicleData.purchasePrice ?? 0) +
+                    (vehicleData.lifeTimeFuelCost ?? 0) +
+                    (vehicleData.lifeTimeMaintenanceCost ?? 0)
+                  ).toStringAsFixed(2)}"
+              ),
             ],
           ),
           ExpansionTile(

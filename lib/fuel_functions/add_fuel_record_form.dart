@@ -169,10 +169,10 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     hintText: 'Enter current odometer number (Optional)',
                   ),
                   validator: (String? value) {
-                    if (value != null && value.isNotEmpty) {
+                    if (value != null && value.trim().isNotEmpty) {
                       final parsedValue = double.tryParse(value);
                       if (parsedValue == null){
-                      return 'Please enter some text';
+                      return 'Please enter a number';
                       }
                     }
                     return null;

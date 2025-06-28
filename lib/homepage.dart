@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
         // Disabling backspace button
         automaticallyImplyLeading: false,
         title: const Text(
-          'Maintenance Manager',
+          'Vehicle Record Tracker',
         ),
         actions: [
           PopupMenuButton<String>(
@@ -143,7 +143,7 @@ class HomePage extends StatelessWidget {
         const Material(
           color: Colors.transparent,
           child: Text(
-            'Version: 0.3.0',
+            'Version: 0.5.0',
             style: TextStyle(fontSize: 10,
             fontWeight: FontWeight.normal,
             color: Colors.grey

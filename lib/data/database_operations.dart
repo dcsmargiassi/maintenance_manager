@@ -172,6 +172,46 @@ class FuelRecordOperations {
     );
     return records.map((e) => FuelRecords.fromMap(e)).toList();
   }
+
+  Future<List<FuelRecords>> getFuelRecordsByYear(int vehicleId, int year) async {
+    final db = await dbRepository.database;
+    final start = DateTime(year, 1, 1);
+    final end = DateTime(year + 1, 1, 1).subtract(Duration(milliseconds: 1));
+    final result = await db.query(
+      'fuelrecords',
+      where: 'vehicleId = ? AND date >= ? AND date <= ?',
+      whereArgs: [vehicleId, start.toIso8601String(), end.toIso8601String()],
+      orderBy: 'date DESC',
+    );
+    return result.map((json) => FuelRecords.fromMap(json)).toList();
+  }
+
+  Future<double> getTotalFuelCostByYear(int vehicleId, int year) async {
+    final db = await dbRepository.database;
+    final start = DateTime(year, 1, 1);
+    final end = DateTime(year + 1, 1, 1).subtract(Duration(milliseconds: 1));
+    final result = await db.rawQuery(
+      'SELECT SUM(refuelCost) as totalCost FROM fuelrecords WHERE vehicleId = ? AND date >= ? AND date <= ?',
+      [vehicleId, start.toIso8601String(), end.toIso8601String()],
+    );
+    double total = result.first['totalCost'] != null ? result.first['totalCost'] as double : 0.0;
+    return total;
+  }
+
+  Future<double> getTotalFuelCostByMonth(int vehicleId, int year, int month) async {
+    final db = await dbRepository.database;
+    final start = DateTime(year, month, 1);
+    final end = (month < 12)
+      ? DateTime(year, month + 1, 1).subtract(Duration(milliseconds: 1))
+      : DateTime(year + 1, 1, 1).subtract(Duration(milliseconds: 1));
+    final result = await db.rawQuery(
+      'SELECT SUM(refuelCost) as totalCost FROM fuelrecords WHERE vehicleId = ? AND date >= ? AND date <= ?',
+      [vehicleId, start.toIso8601String(), end.toIso8601String()],
+    );
+    double total = result.first['totalCost'] != null ? result.first['totalCost'] as double : 0.0;
+    return total;
+  }
+
   Future<FuelRecords> getFuelRecord(int? vehicleId, String userId, int? fuelRecordId) async {
     final db = await dbRepository.database;
     final result = await db.query('fuelRecords', 
