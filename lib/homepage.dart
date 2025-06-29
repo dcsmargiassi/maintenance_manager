@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 
 class HomePage extends StatelessWidget {
@@ -61,8 +60,6 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-        //  if(showGlobalActions) ...[
-        //    GlobalActionsMenu(parentContext: context)]
         ],
       ),
       body: SizedBox(
@@ -103,7 +100,6 @@ class HomePage extends StatelessWidget {
               navigateToAddVehicleFormPage(context);
             },
             style: ElevatedButton.styleFrom(
-              //backgroundColor: Colors.blue,
               elevation: 4,
             ),
               child: Text ((addRemoveVehicle),
@@ -127,7 +123,6 @@ class HomePage extends StatelessWidget {
                 navigateToArchivedVehicles(context);
             },
             style: ElevatedButton.styleFrom(
-              //backgroundColor: Colors.blue,
               elevation: 4,
             ),
               child: Text ((archivedVehicles),
@@ -143,8 +138,8 @@ class HomePage extends StatelessWidget {
         const Material(
           color: Colors.transparent,
           child: Text(
-            'Version: 0.5.0',
-            style: TextStyle(fontSize: 10,
+            'Version: 0.5.1',
+            style: TextStyle(fontSize: 12,
             fontWeight: FontWeight.normal,
             color: Colors.grey
             ),

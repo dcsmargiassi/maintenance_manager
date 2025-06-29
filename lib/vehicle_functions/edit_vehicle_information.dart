@@ -156,7 +156,12 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
         if (didPop) return;
         final shouldPop = await confirmDiscardChanges(context);
         if (shouldPop == true && context.mounted) {
-          navigateToSpecificVehiclePage(context, widget.vehicleId);
+          if(widget.archivedStatus == 0){
+            navigateToSpecificVehiclePage(context, widget.vehicleId);
+          }
+          if(widget.archivedStatus == 1){
+            navigateToSpecificArchivedVehiclePage(context, widget.vehicleId);
+          }
         }
       },
       child: Scaffold(

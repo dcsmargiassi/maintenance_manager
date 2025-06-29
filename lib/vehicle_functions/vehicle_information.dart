@@ -20,7 +20,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
   late Future<EngineDetailsModel> _engineDetailsFuture;
   late Future<BatteryDetailsModel> _batteryDetailsFuture;
-  //double? _monthlyFuelCost;
   int _selectedMonth = DateTime.now().month;
   int _selectedYear = DateTime.now().year;
   double? _selectedMonthFuelCost;
@@ -44,16 +43,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   }
 
   void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
-  final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
-  final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  setState(() {
-    _selectedMonthFuelCost = monthCost;
-    _selectedYearFuelCost = yearCost;
-  });
-}
+    setState(() {
+      _selectedMonthFuelCost = monthCost;
+      _selectedYearFuelCost = yearCost;
+    });
+  } 
 
   Future<double> getMonthlyFuelCost (int vehicleId, String userId) async {
   DateTime now = DateTime.now();

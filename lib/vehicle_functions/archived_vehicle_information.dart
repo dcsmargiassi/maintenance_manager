@@ -21,6 +21,15 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
   late Future<EngineDetailsModel> _engineDetailsFuture;
   late Future<BatteryDetailsModel> _batteryDetailsFuture;
+  int _selectedMonth = DateTime.now().month;
+  int _selectedYear = DateTime.now().year;
+  double? _selectedMonthFuelCost;
+  double? _selectedYearFuelCost;
+  final Map<int, String> monthNames = const {
+      1: 'January', 2: 'February', 3: 'March', 4: 'April',
+      5: 'May', 6: 'June', 7: 'July', 8: 'August',
+      9: 'September', 10: 'October', 11: 'November', 12: 'December',
+    };
 
   @override
   void initState() {
@@ -30,10 +39,76 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
     _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
     _engineDetailsFuture = EngineDetailsOperations().getEngineDetailsByVehicleId(userId, widget.vehicleId);
     _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
+    _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
     if(mounted) {
         setState(() {});
       }
   }
+  void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+
+    if (!mounted) return;
+
+    setState(() {
+      _selectedMonthFuelCost = monthCost;
+      _selectedYearFuelCost = yearCost;
+    });
+  }
+
+  Future<double> getMonthlyFuelCost (int vehicleId, String userId) async {
+  DateTime now = DateTime.now();
+  int currentYear = now.year;
+  int previousMonth = now.month - 1;
+  if (previousMonth == 0) {
+    previousMonth = 12;
+    currentYear -= 1;
+  }
+
+  final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
+  double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost ?? 0));
+  return totalCost;
+  }
+
+  void _onMonthYearChanged(int year, int month, String userId) async {
+    setState(() {
+      _selectedMonth = month;
+      _selectedYear = year;
+    });
+
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+
+    if (!mounted) return;
+
+    setState(() {
+      _selectedMonthFuelCost = monthCost;
+      _selectedYearFuelCost = yearCost;
+    });
+  }
+
+  Future<double> getFuelCostByMonthYear(int vehicleId, String userId, int year, int month) async {
+    final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, year, month);
+
+    double totalCost = 0.0;
+    for (final record in records) {
+      final cost = record.refuelCost;
+      totalCost += cost ?? 0;
+    }
+    return totalCost;
+  }
+
+  Future<double> getFuelCostByYear(int vehicleId, String userId, int year) async {
+    final records = await FuelRecordOperations().getFuelRecordsByYear(vehicleId, year);
+  
+    double totalCost = 0.0;
+    for (final record in records) {
+      final cost = record.refuelCost;  
+      totalCost += cost ?? 0;
+    }
+    return totalCost;
+  }
+  
 
   Widget _infoText(String label, String? value) {
   return Padding(
@@ -167,7 +242,6 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
     );
   }
 
-
   Widget _displayVehicleDetails (
     VehicleInformationModel vehicleData,
     EngineDetailsModel engineData,
@@ -210,81 +284,181 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               ),
             ),
           ),
-        ExpansionTile(
-          initiallyExpanded: true,
-          title: const Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
-          children: [
-            _infoText("Name", vehicleData.vehicleNickName),
-            _infoText("Make", vehicleData.make),
-            _infoText("Model", vehicleData.model),
-            _infoText("Year", vehicleData.year.toString()),
-            _infoText("VIN", vehicleData.vin),
-            _infoText("Mileage", vehicleData.odometerCurrent.toString()),
-            _infoText("Fuel Cost", "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"),
-            _infoText("Repair Cost", "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"),
+          ExpansionTile(
+            initiallyExpanded: true,
+            title: const Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Name", vehicleData.vehicleNickName),
+              _infoText("Make", vehicleData.make),
+              _infoText("Model", vehicleData.model),
+              _infoText("Year", vehicleData.year.toString()),
+              _infoText("VIN", vehicleData.vin),
+              _infoText("Mileage", vehicleData.odometerCurrent.toString()),
+              _infoText("Fuel Cost", "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"),
+              _infoText("Repair Cost", "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"),
 
-          ],
-        ),
-        ExpansionTile(
-          title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
-        children: [
-          _infoText("Engine Details", engineData.engineSize),
-          _infoText("Cylinders", engineData.cylinders),
-          _infoText("Engine Type", engineData.engineType),
-          _infoText("Oil Weight", engineData.oilWeight),
-          _infoText("Oil Filter", engineData.oilFilter),
-        ],
-      ),
-      ExpansionTile(
-        title: const Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
-        children: [
-          _infoText("Series Type", batteryData.batterySeriesType),
-          _infoText("Battery Size", batteryData.batterySize),
-          _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps ?? 'N/A'}"),
-        ],
-      ),
-      SizedBox(height: sizedBoxHeight),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-              child: Column(
-                children:[
-                  Row(
+            ],
+          ),
+          ExpansionTile(
+              key: ValueKey('financial_summary_${_selectedYear}_$_selectedMonth'),
+              title: const Text("Financial Summary", style: TextStyle(fontWeight: FontWeight.bold)),
+              initiallyExpanded: true,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
                     children: [
-                      buildVehicleButton('Fuel History', () {
-                        navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
-                      }),
-                      const SizedBox(width: 16.0), 
-                      buildVehicleButton('Work History', () {
-                        navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
-                      }),
+                      // Year Selector Column
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Select Year",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            DropdownButton<int>(
+                              value: _selectedYear,
+                              onChanged: (newYear) {
+                                if (newYear != null) {
+                                  final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                  _onMonthYearChanged(newYear, _selectedMonth, userId);
+                                }
+                              },
+                              items: List.generate(10, (index) {
+                                final year = DateTime.now().year - index;
+                                return DropdownMenuItem(value: year, child: Text('$year'));
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(width: 16),
+
+                      // Month Selector Column
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Select Month",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            DropdownButton<int>(
+                              value: _selectedMonth,
+                              onChanged: (newMonth) {
+                                if (newMonth != null) {
+                                  final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                  _onMonthYearChanged(_selectedYear, newMonth, userId);
+                                }
+                              },
+                              items: List.generate(12, (index) {
+                                final monthNumber = index + 1;
+                                final monthName = monthNames[monthNumber]!;
+                                return DropdownMenuItem(value: monthNumber, child: Text(monthName));
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      buildVehicleButton('Unarchive', () {
-                        navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
-                      }),
-                      const SizedBox(width: 16.0),
-                      buildVehicleButton('Delete Vehicle', () {
-                        navigateToEditVehiclePage(
-                          context, 
-                          vehicleData.vehicleId!,
-                          vehicleData.archived!,
-                          onReturn: () {
-                            setState(() {
-                              _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, Provider.of<AuthState>(context, listen: false).userId!);
-                            });
-                          }
-                        );
-                      }),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                _infoText(
+                  "Fuel Cost for $_selectedMonth/$_selectedYear",
+                  _selectedMonthFuelCost != null ? "\$${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+                ),
+                _infoText(
+                  "Fuel Cost for $_selectedYear",
+                  _selectedYearFuelCost != null ? "\$${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+                ),
+                _infoText(
+                  "Lifetime Fuel Cost",
+                  "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
+                ),
+                _infoText(
+                  "Purchase Price",
+                  "\$${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
+                ),
+                _infoText(
+                  "Lifetime Maintenance Cost",
+                  "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
+                ),
+                _infoText(
+                  "Lifetime Vehicle Cost",
+                  "\$${(
+                      (vehicleData.purchasePrice ?? 0) +
+                      (vehicleData.lifeTimeFuelCost ?? 0) +
+                      (vehicleData.lifeTimeMaintenanceCost ?? 0)
+                    ).toStringAsFixed(2)}"
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-      ],
+          ExpansionTile(
+            title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Engine Details", engineData.engineSize),
+              _infoText("Cylinders", engineData.cylinders),
+              _infoText("Engine Type", engineData.engineType),
+              _infoText("Oil Weight", engineData.oilWeight),
+              _infoText("Oil Filter", engineData.oilFilter),
+            ],
+          ),
+          ExpansionTile(
+            title: const Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              _infoText("Series Type", batteryData.batterySeriesType),
+              _infoText("Battery Size", batteryData.batterySize),
+              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+            ],
+          ),
+          SizedBox(height: sizedBoxHeight),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+            child: Column(
+              children:[
+                Row(
+                  children: [
+                    buildVehicleButton('Fuel History', () {
+                      navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                    const SizedBox(width: 16.0), 
+                    buildVehicleButton('Work History', () {
+                      navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    buildVehicleButton('Unarchive', () async {
+                      if (!mounted) return;
+                      final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                      await VehicleOperations().unarchiveVehicleById(userId, vehicleData.vehicleId!);
+                      if (!mounted) return;
+                      navigateToSpecificVehiclePage(context, vehicleData.vehicleId!);
+                    }),
+                    const SizedBox(width: 16.0),
+                    buildVehicleButton('Delete Vehicle', () {
+                      navigateToEditVehiclePage(
+                        context, 
+                        vehicleData.vehicleId!,
+                        vehicleData.archived!,
+                        onReturn: () {
+                          setState(() {
+                            _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, Provider.of<AuthState>(context, listen: false).userId!);
+                          });
+                        }
+                      );
+                    }),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
