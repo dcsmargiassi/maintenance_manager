@@ -209,7 +209,7 @@ class EngineDetailsSection extends StatelessWidget {
         SizedBox(height: sizedBoxHeight),
 
         TextFormField(
-          controller: engineFilterController,
+          controller: oilFilterController,
           decoration: const InputDecoration(
             labelText: 'Oil Filter',
             hintText: 'Ex S7317XL'
