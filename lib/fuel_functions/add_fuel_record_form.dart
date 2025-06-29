@@ -24,6 +24,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   final TextEditingController odometerAmountController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
+  int _numFilledFields = 0;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // Variable Declarations
@@ -35,6 +36,53 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   void initState() {
     super.initState();
     isoDateToStore = DateTime.now().toIso8601String();
+    fuelAmountController.addListener(_updateNumFilledFields);
+    fuelPriceController.addListener(_updateNumFilledFields);
+    refuelCostController.addListener(_updateNumFilledFields);
+    //Auto filling the date field
+    final now = DateTime.now();
+    isoDateToStore = now.toIso8601String();
+    dateController.text = formatDateToString(now);
+  }
+
+  void _updateNumFilledFields() {
+    int count = 0;
+    if (fuelAmountController.text.trim().isNotEmpty) count++;
+    if (fuelPriceController.text.trim().isNotEmpty) count++;
+    if (refuelCostController.text.trim().isNotEmpty) count++;
+
+    setState(() {
+      _numFilledFields = count;
+    });
+  }
+
+  void _calculateMissingField() {
+    double? amount = double.tryParse(fuelAmountController.text);
+    double? price = double.tryParse(fuelPriceController.text);
+    double? cost = double.tryParse(refuelCostController.text);
+
+    int filled = 0;
+    if (amount != null) filled++;
+    if (price != null) filled++;
+    if (cost != null) filled++;
+
+    if (filled != 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill 2 of the fields above.')),
+      );
+      return;
+    }
+
+    if (amount != null && price != null && cost == null) {
+      double newCost = amount * price;
+      refuelCostController.text = newCost.toStringAsFixed(2);
+    } else if (amount != null && cost != null && price == null && amount != 0) {
+      double newPrice = cost / amount;
+      fuelPriceController.text = newPrice.toStringAsFixed(2);
+    } else if (price != null && cost != null && amount == null && price != 0) {
+      double newAmount = cost / price;
+      fuelAmountController.text = newAmount.toStringAsFixed(2);
+    }
   }
 
   @override
@@ -59,7 +107,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
         ),
         title: const Text(
           'Add Fuel Record',
-          ),
+        ),
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
@@ -77,7 +125,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
               case 'signout':
                 await navigateToLogin(context);
                 break;
-            }
+              }
             },
             itemBuilder: (context) => const [
               PopupMenuItem(
@@ -100,6 +148,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
           ),
         ],
       ),
+
       body: PopScope(
           canPop: false,
           onPopInvokedWithResult: (bool didPop, Object? result) async {
@@ -115,7 +164,6 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              
               children: <Widget>[
                 TextFormField(
                   controller: fuelAmountController,
@@ -182,6 +230,16 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
 
                 const SizedBox(height: buttonSpacingBoxHeight),
 
+                // Button to calculate missing field
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _numFilledFields == 2 ? _calculateMissingField : null,
+                    icon: const Icon(Icons.calculate),
+                    label: const Text('Calculate Missing Field'),
+                  ),
+                ),
+
                 DateFormatField(
                   type: DateFormatType.type4,
                   controller: dateController,
@@ -219,7 +277,9 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                           fuelAmount: double.parse(fuelAmountController.text),
                           fuelPrice: double.parse(fuelPriceController.text),
                           refuelCost: double.parse(refuelCostController.text),
-                          odometerAmount: double.parse(odometerAmountController.text),
+                          odometerAmount: odometerAmountController.text.trim().isEmpty
+                            ? null
+                            : double.parse(odometerAmountController.text),
                           date: isoDateToStore,//dateController.text,
                           notes: null,
                         );
@@ -228,7 +288,6 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                       try {
                         await fuelOperations.createFuelRecord(fuelRecords);
                         if (!context.mounted) return;
-
                           // Updating lifetime fuel costs.
                           await incrementLifeTimeFuelCosts(widget.vehicleId, userId!, double.parse(refuelCostController.text));
 
@@ -251,10 +310,10 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
             ),
           ),
         ),
-      ),
-      
+      ), 
     );
   }
+
   @override
   void dispose() {
     fuelAmountController.dispose();

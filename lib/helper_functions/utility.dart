@@ -79,7 +79,7 @@ Future<void> decrementLifeTimeFuelCosts(int vehicleId, String userId, double cos
    final data = await vehicleOps.getVehicleById(vehicleId, userId);
    if(cost >= 0.0 && data.lifeTimeFuelCost != null){
     double? oldCost = data.lifeTimeFuelCost;
-    double newCost = oldCost! - cost;
+    double newCost = (oldCost! - cost).clamp(0.0, double.infinity);
     data.lifeTimeFuelCost = newCost;
     await vehicleOps.updateLifeTimeFuelCost(data);
    }

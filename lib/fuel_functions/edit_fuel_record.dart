@@ -33,8 +33,6 @@ class _EditFuelFormState extends State<EditFuelForm> {
   final TextEditingController refuelCostController = TextEditingController();
   final TextEditingController odometerAmountController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  
-
   FuelRecords? fuelData;
 
   @override
@@ -47,7 +45,6 @@ class _EditFuelFormState extends State<EditFuelForm> {
     final fuelOps = FuelRecordOperations();
     final userId = Provider.of<AuthState>(context, listen: false).userId;
     final data = await fuelOps.getFuelRecord(widget.vehicleId, userId!, widget.fuelRecordId);
-
 
     // Convert the doubles stored to strings for editing
     setState(() {
@@ -139,11 +136,12 @@ class _EditFuelFormState extends State<EditFuelForm> {
                       labelText: 'Odometer (Optional)',
                       hintText: 'Enter current Odometer Number'),
                     validator: (value) {
-                     if (value!.isEmpty) return 'Please enter current odometer number';
-                     if (!isValidNumber(value)) return 'Please enter valid number';
-                     return null;
+                      if (value == null || value.trim().isEmpty) return null;
+                      if (!isValidNumber(value)) return 'Please enter valid number';
+                      return null;
                     },
                   ),
+
                   const SizedBox(height: 20),
                  
                   DateFormatField(
@@ -158,7 +156,9 @@ class _EditFuelFormState extends State<EditFuelForm> {
                       }
                     },
                   ),
+
                   const SizedBox(height: 30),
+                  
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -169,7 +169,9 @@ class _EditFuelFormState extends State<EditFuelForm> {
                           fuelAmount: double.tryParse(fuelAmountController.text) ?? 0.0,
                           fuelPrice: double.tryParse(fuelPriceController.text) ?? 0.0,
                           refuelCost: double.tryParse(refuelCostController.text) ?? 0.0,
-                          odometerAmount: double.tryParse(odometerAmountController.text) ?? 0.0,
+                          odometerAmount: odometerAmountController.text.trim().isEmpty
+                            ? null
+                            : double.tryParse(odometerAmountController.text),
                           date: dateController.text,
                           notes: null,
                         );
