@@ -64,6 +64,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vehicleNickNameController,
+          maxLength: 30,
           decoration: const InputDecoration(
             labelText: 'Nickname',
             hintText: 'Enter nickname of car',
@@ -80,6 +81,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vinController,
+          maxLength: 17,
           decoration: const InputDecoration(
             labelText: 'VIN',
             hintText: 'Enter VIN of car',
@@ -137,6 +139,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         SizedBox(height: sizedBoxHeight),
         TextFormField(
           controller: widget.modelController,
+          maxLength: 15,
           decoration: const InputDecoration(
             labelText: 'Model',
             hintText: 'Enter model of car',
@@ -153,6 +156,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.versionController,
+          maxLength: 15,
           decoration: const InputDecoration(
             labelText: 'Submodel',
             hintText: 'Enter submodel of car',
@@ -193,6 +197,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.odometerCurrentController,
+          maxLength: 10,
           decoration: const InputDecoration(
             labelText: 'Current Mileage',
             hintText: 'Enter current mileage of car',
@@ -204,6 +209,21 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             if(!isValidNumber(widget.odometerCurrentController.text)){
               return 'Current Mileage must be a number';
             }
+            final parsedValue = double.tryParse(value);
+            if(parsedValue == null){
+              return 'Please enter valid number';
+            }
+            if(parsedValue < 0) {
+              return 'Current Mileage cannot be negative';
+            }
+            if(parsedValue > 2500000){
+              return 'Please enter realistic value';
+            }
+            // Check decimal places
+            final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
+              if(!decimalMatch.hasMatch(value)) {
+                return 'Max 2 decimal places allowed';
+              }
             return null;
           },
         ),
@@ -279,6 +299,22 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
               if(!isValidNumber(widget.purchasePriceController.text)){
               return 'Purchase price must be a number';
               }
+              final parsedValue = double.tryParse(value);
+              if(parsedValue == null){
+                return 'Please enter valid number';
+              }
+              // Max/min purchase price
+              if(parsedValue > 1000000){
+                return 'Enter a realistic cost';
+              }
+              if(parsedValue < 0){
+                return 'No negatives';
+              }
+              // Check decimal places
+              final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
+                if(!decimalMatch.hasMatch(value)) {
+                  return 'Max 2 decimal places allowed';
+                }
             }
             return null;
           },
@@ -297,6 +333,21 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
               if(!isValidNumber(widget.odometerBuyController.text)){
               return 'Odometer reading must be a number';
               }
+              final parsedValue = double.tryParse(value);
+              if(parsedValue == null){
+                return 'Please enter valid number';
+              }
+              if(parsedValue < 0) {
+                return 'Current Mileage cannot be negative';
+              }
+              if(parsedValue > 2500000){
+                return 'Please enter realistic value';
+              }
+              // Check decimal places
+              final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
+                if(!decimalMatch.hasMatch(value)) {
+                  return 'Max 2 decimal places allowed';
+                }
             }
             return null;
           },

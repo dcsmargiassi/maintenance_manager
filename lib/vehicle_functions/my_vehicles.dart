@@ -129,7 +129,8 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
             children: [
               Text(
                 "${data.vehicleNickName}",
-                style: const TextStyle(fontSize: 24),
+                maxLines: 1,
+                style: const TextStyle(fontSize: 22),
               ),
               Row(
                 children: [

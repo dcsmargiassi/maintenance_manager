@@ -251,10 +251,10 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     year: int.tryParse(yearController.text) ?? 0,
                     purchaseDate: purchaseDateController.text,
                     sellDate: null,
-                    odometerBuy: double.tryParse(odometerBuyController.text),
+                    odometerBuy: double.tryParse(odometerBuyController.text) ?? 0,
                     odometerSell: null,
                     odometerCurrent: double.tryParse(odometerCurrentController.text),
-                    purchasePrice: double.tryParse(purchasePriceController.text),
+                    purchasePrice: double.tryParse(purchasePriceController.text) ?? 0,
                     sellPrice: null,
                     archived: archiveController,
                   );
@@ -274,12 +274,14 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   );
                   EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
                   await engineDetailsOperations.insertEngineDetails(engineDetails);
+                  final ccaText = coldCrankAmpsController.text.trim();
+                  final cca = ccaText.isEmpty ? 0.0 : double.parse(ccaText);
                   BatteryDetailsModel batteryDetails = BatteryDetailsModel(
                     userId: userId!,
                     vehicleId: vehicleId,
                     batterySeriesType: batterySeriesTypeController.text,
                     batterySize: batterySizeController.text,
-                    coldCrankAmps: double.tryParse(coldCrankAmpsController.text),
+                    coldCrankAmps: cca,
                   );
                   BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
                   await batteryDetailsOperations.insertBatteryDetails(batteryDetails);

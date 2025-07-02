@@ -78,10 +78,26 @@ class BatteryDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: coldCrankAmpsController,
+          maxLength: 4,
           decoration: const InputDecoration(
             labelText: 'Cold Crank Amps - CCA',
             hintText: 'Ex 500'
           ),
+          validator: (String? value) {
+            if (value != null && value.trim().isNotEmpty){
+              final parsedValue = int.tryParse(value);
+              if (parsedValue == null){
+                return 'Please enter an integer';
+              }
+              if (parsedValue < 0){
+                return 'No negatives';
+              }
+              if (parsedValue > 1500) {
+                return 'Enter a realistic number';
+              }
+            }
+            return null;
+          },
         ),
 
         SizedBox(height: sizedBoxHeight),
