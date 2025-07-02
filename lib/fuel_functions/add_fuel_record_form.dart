@@ -278,6 +278,17 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                       if (parsedValue == null){
                       return 'Please enter a number';
                       }
+                      if (parsedValue < 0) {
+                        return 'No negatives';
+                      }
+                      if(parsedValue > 2500000){
+                        return 'Please enter realistic value';
+                      }
+                      // Check decimal places
+                      final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
+                        if(!decimalMatch.hasMatch(value)) {
+                          return 'Max 2 decimal places allowed';
+                        }
                     }
                     return null;
                   },
