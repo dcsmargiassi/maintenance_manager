@@ -57,8 +57,8 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
             color: Colors.white
             ),
           onPressed: () {
-            Navigator.pop(context);
-            //navigateToSpecificVehiclePage(context, widget.vehicleId);
+            //Navigator.pop(context);
+            navigateToSpecificVehiclePage(context, widget.vehicleId);
           },
         ),
         title: const Text(

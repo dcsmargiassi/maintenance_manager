@@ -167,6 +167,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
               children: <Widget>[
                 TextFormField(
                   controller: fuelAmountController,
+                  maxLength: 8,
                   decoration: const InputDecoration(
                     labelText: 'Fuel Amount',
                     hintText: 'Enter amount of fuel',
@@ -175,6 +176,23 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
+                    // Parsing value
+                    final parsed = double.tryParse(value);
+                    if(parsed == null){
+                      return 'Please enter valid cost';
+                    }
+                    // Max/min fuel limit
+                    if (parsed > 5000){
+                      return 'Enter a realistic cost';
+                    }
+                    if (parsed < 0){
+                      return 'No negatives';
+                    }
+                    // check decimal places
+                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                    if(!decimalMatch.hasMatch(value)) {
+                      return 'Max 3 decimal places allowed';
+                    }
                     return null;
                   },
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -182,13 +200,32 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
 
                 TextFormField(
                   controller: fuelPriceController,
+                  maxLength: 8,
                   decoration: const InputDecoration(
                     labelText: 'Fuel Price',
                     hintText: 'Enter price of fuel',
+                    prefix: Text('\$'),
                   ),
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
+                    }
+                    // Parsing value
+                    final parsed = double.tryParse(value);
+                    if(parsed == null){
+                      return 'Please enter valid cost';
+                    }
+                    // Max/min cost limit
+                    if (parsed > 5000){
+                      return 'Enter a realistic cost';
+                    }
+                    if (parsed < 0){
+                      return 'No negatives';
+                    }
+                    // check decimal places
+                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                    if(!decimalMatch.hasMatch(value)) {
+                      return 'Max 3 decimal places allowed';
                     }
                     return null;
                   },
@@ -197,13 +234,32 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
 
                 TextFormField(
                   controller: refuelCostController,
+                  maxLength: 8,
                   decoration: const InputDecoration(
                     labelText: 'Total Cost',
                     hintText: 'Total Cost of Fuel',
+                    prefix: Text("\$"),
                   ),
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
+                      return 'Please enter cost of fuel';
+                    }
+                    // Parsing value
+                    final parsed = double.tryParse(value);
+                    if(parsed == null){
+                      return 'Please enter valid cost';
+                    }
+                    // Max/min cost limit
+                    if (parsed > 5000){
+                      return 'Enter a realistic cost';
+                    }
+                    if (parsed < 0){
+                      return 'No negatives';
+                    }
+                    // check decimal places
+                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                    if(!decimalMatch.hasMatch(value)) {
+                      return 'Max 3 decimal places allowed';
                     }
                     return null;
                   },
@@ -278,7 +334,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                           fuelPrice: double.parse(fuelPriceController.text),
                           refuelCost: double.parse(refuelCostController.text),
                           odometerAmount: odometerAmountController.text.trim().isEmpty
-                            ? null
+                            ? 0.0
                             : double.parse(odometerAmountController.text),
                           date: isoDateToStore,//dateController.text,
                           notes: null,

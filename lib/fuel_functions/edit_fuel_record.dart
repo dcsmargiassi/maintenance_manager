@@ -99,34 +99,92 @@ class _EditFuelFormState extends State<EditFuelForm> {
                 children: <Widget>[
                   TextFormField(
                     controller: fuelAmountController,
+                    maxLength: 8,
                     decoration: const InputDecoration(
                       labelText: 'Fuel Amount', 
                       hintText: 'Enter Fuel Amount'),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Please Enter Fuel Amount';
                       if (!isValidNumber(value)) return 'Please enter valid Number';
+                      // Parsing value
+                      final parsed = double.tryParse(value);
+                      if(parsed == null){
+                        return 'Please enter valid cost';
+                      }
+                      // Max/min fuel limit
+                      if (parsed > 5000){
+                        return 'Enter a realistic cost';
+                      }
+                      if (parsed < 0){
+                        return 'No negatives';
+                      }
+                      // check decimal places
+                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                      if(!decimalMatch.hasMatch(value)) {
+                        return 'Max 3 decimal places allowed';
+                      }
                       return null;
                     }
                   ),
                   TextFormField(
                     controller: fuelPriceController,
+                    maxLength: 8,
                     decoration: const InputDecoration(
                       labelText: 'Fuel Price',
-                      hintText: 'Enter Fuel Price'),
+                      hintText: 'Enter Fuel Price',
+                      prefix: Text('\$')
+                      ),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Please Enter Fuel Amount';
                       if (!isValidNumber(value)) return 'Please enter valid Number'; 
+                      // Parsing value
+                      final parsed = double.tryParse(value);
+                      if(parsed == null){
+                        return 'Please enter valid cost';
+                      }
+                      // Max/min cost limit
+                      if (parsed > 5000){
+                        return 'Enter a realistic cost';
+                      }
+                      if (parsed < 0){
+                        return 'No negatives';
+                      }
+                      // check decimal places
+                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                      if(!decimalMatch.hasMatch(value)) {
+                        return 'Max 3 decimal places allowed';
+                      }
                       return null;
                     },
                   ),
                   TextFormField(
                     controller: refuelCostController,
+                    maxLength: 8,
                     decoration: const InputDecoration(
                       labelText: 'Refuel Cost',
-                      hintText: 'Enter Refuel Cost'),
+                      hintText: 'Enter Refuel Cost',
+                      prefix: Text('\$')
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Please Enter Total Cost';
-                      if (!isValidNumber(value)) return 'Please enter valid Number'; 
+                      if (!isValidNumber(value)) return 'Please enter valid Number';
+                      // Parsing value
+                      final parsed = double.tryParse(value);
+                      if(parsed == null){
+                        return 'Please enter valid cost';
+                      }
+                      // Max/min cost limit
+                      if (parsed > 5000){
+                        return 'Enter a realistic cost';
+                      }
+                      if (parsed < 0){
+                        return 'No negatives';
+                      }
+                      // check decimal places
+                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
+                      if(!decimalMatch.hasMatch(value)) {
+                        return 'Max 3 decimal places allowed';
+                      }
                       return null;
                     },
                   ),
