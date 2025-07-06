@@ -11,6 +11,8 @@ import 'package:maintenance_manager/account_functions/profile_page.dart';
 import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/homepage.dart';
+import 'package:maintenance_manager/settings/privacy_policy_display.dart';
+import 'package:maintenance_manager/settings/settings.dart';
 import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
 import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_information.dart';
@@ -56,6 +58,21 @@ Future<void> navigateToEditProfilePage(BuildContext context, {VoidCallback? onRe
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const EditProfilePage()),
+  ).then((_) => onReturn?.call());
+}
+
+// Settings Page
+Future<void> navigateToSettingsPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const DisplaySettings()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToPrivacyPolicy(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
   ).then((_) => onReturn?.call());
 }
 
