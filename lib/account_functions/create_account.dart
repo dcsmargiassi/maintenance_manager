@@ -14,6 +14,7 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -32,7 +33,10 @@ class CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController emailNotificationsController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   bool _isObscure = true;
+  bool privacyAnalytics = false;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,22 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                 obscureText: false,
                 decoration: const InputDecoration(labelText: 'Last Name'),
               ),
+
               const SizedBox(height: 16.0),
+
+              SwitchListTile(
+                title: const Text('Enable Privacy Analytics'),
+                subtitle: const Text('Help improve the app by sharing anonymous usage data.'),
+                value: privacyAnalytics,
+                onChanged: (value) {
+                  setState(() {
+                    privacyAnalytics = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 16.0),
+
               ElevatedButton(
                 onPressed: () async {
                   final authState = Provider.of<AuthState>(context, listen: false);
@@ -114,8 +133,12 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                     final user = userCredential.user;
                     if (user == null) throw Exception('Account Creation Failed!');
 
+                    // Send verification email
+                    await user.sendEmailVerification();
+
                     final now = Timestamp.now();
 
+                    // Save user details in Firestore
                     await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
                       'userId': user.uid,
                       'email': emailController.text.trim(),
@@ -123,20 +146,37 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                       'username': usernameController.text.trim(),
                       'firstName': firstNameController.text.trim(),
                       'lastName': lastNameController.text.trim(),
+                      'phoneNumber': phoneNumberController.text.trim(),
                       'lastLogin': now,
                       'createdAt': now,
                       'lastPasswordChange': now,
                       'failedLoginAttempts': 0,
                       'pushNotifications': true,
+                      'privacyAnalytics': privacyAnalytics,
                     });
 
-                    if(!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Account Created Successfully!')),
-                    );
+                    if (!context.mounted) return;
                     authState.setUser(user);
+                    await analytics.setAnalyticsCollectionEnabled(privacyAnalytics);
+                    // Analytics event - account creation (If enabled)
+                    if(privacyAnalytics) {
+                      await analytics.logEvent(name: 'account_created');
+                    }
+
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                       const SnackBar(
+                        content: Text(
+                          'Welcome! A verification email was sent. Please verify it when you can.'
+                        ),
+                        duration: Duration(seconds: 5),
+                      ),
+                    );
+
                     navigateToHomePage(context);
+
                   } catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Error: ${e.toString()}')),
                     );
@@ -159,6 +199,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
     firstNameController.dispose();
     lastNameController.dispose();
     emailNotificationsController.dispose();
+    phoneNumberController.dispose();
     super.dispose();
   }
 }
