@@ -127,6 +127,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                       'createdAt': now,
                       'lastPasswordChange': now,
                       'failedLoginAttempts': 0,
+                      'pushNotifications': true,
                     });
 
                     if(!context.mounted) return;

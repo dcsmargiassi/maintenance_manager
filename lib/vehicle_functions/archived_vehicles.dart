@@ -76,7 +76,7 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                 await navigateToHomePage(context);
                 break;
               case 'Settings':
-                await navigateToHomePage(context);
+                await navigateToSettingsPage(context);
                 break;
               case 'signout':
                 await navigateToLogin(context);

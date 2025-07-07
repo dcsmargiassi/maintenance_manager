@@ -10,6 +10,7 @@
 */
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/account_functions/password_reset.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
@@ -81,12 +82,50 @@ class SignInPageState extends State<SignInPage> {
                 );
 
                 if (userCredential.user != null) {
+                  final userId = userCredential.user!.uid;
+
+                  // Fetch user document
+                  final documentReference = FirebaseFirestore.instance.collection('users').doc(userId);
+                  // Updating the last time a user logged in
+                  await documentReference.update({
+                    'lastLogin': FieldValue.serverTimestamp(),
+                  });
+                  final documentSnapshot = await documentReference.get();
+                  final data = documentSnapshot.data();
+
+                  // If pushNotifications or other fields is missing add to user database
+                  if (data != null) {
+                    final Map<String, dynamic> updates = {};
+
+                    if (!data.containsKey('pushNotifications')) {
+                      updates['pushNotifications'] = true;
+                    }
+                    if (!data.containsKey('darkModeEnabled')) {
+                      updates['darkModeEnabled'] = false;
+                    }
+                    if (!data.containsKey('phoneNumber')) {
+                      updates['phoneNumber'] = "";
+                    }
+                    if (!data.containsKey('languageCode')) {
+                      updates['languageCode'] = "en-US";
+                    }
+                    if (!data.containsKey('acceptedTermsVersion')) {
+                      updates['acceptedTermsVersion'] = 1;
+                    }
+
+                    if (updates.isNotEmpty) {
+                      await documentReference.update(updates);
+                    }
+                  }
+                  if(!mounted) return;
                   authState.setUser(FirebaseAuth.instance.currentUser);
+                  if(!mounted) return;
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     navigateToHomePage(context);
                   });
                 } 
                 }
+                
                 on FirebaseAuthException catch (e) {
                   debugPrint("Sign in error: $e");
                   if (!mounted) return;

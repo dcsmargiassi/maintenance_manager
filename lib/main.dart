@@ -9,17 +9,6 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
-//Future<void> printVehicleTableColumns() async {
-//  final db = await DatabaseRepository.instance.database;
-//  final result = await db.rawQuery('PRAGMA table_info(vehicleInformation);');
-//
-//  for (final row in result) {
-//    // ignore: avoid_print
-//    print('Column: ${row['name']}, Type: ${row['type']}');
-//  }
-//}
-
 void main() async {
   //Initializing the systems locale based on device settings to utilize date time API
   WidgetsFlutterBinding.ensureInitialized();

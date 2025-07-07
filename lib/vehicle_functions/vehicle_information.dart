@@ -141,7 +141,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 await navigateToHomePage(context);
                 break;
               case 'Settings':
-                await navigateToHomePage(context);
+                await navigateToSettingsPage(context);
                 break;
               case 'signout':
                 await navigateToLogin(context);
