@@ -78,13 +78,15 @@ class BatteryDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: coldCrankAmpsController,
-          maxLength: 4,
           decoration: const InputDecoration(
             labelText: 'Cold Crank Amps - CCA',
             hintText: 'Ex 500'
           ),
           validator: (String? value) {
             if (value != null && value.trim().isNotEmpty){
+              if (value.length > 4){
+                return 'Max 4 characters allowed';
+              }
               final parsedValue = int.tryParse(value);
               if (parsedValue == null){
                 return 'Please enter an integer';

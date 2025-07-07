@@ -28,6 +28,7 @@ class VehicleDetailsSection extends StatefulWidget {
   final TextEditingController odometerCurrentController;
   final TextEditingController purchasePriceController;
   final TextEditingController sellPriceController;
+  final TextEditingController licensePlateController;
   final double sizedBoxHeight = 20.0;
 
   const VehicleDetailsSection({
@@ -45,6 +46,7 @@ class VehicleDetailsSection extends StatefulWidget {
     required this.odometerCurrentController, 
     required this.purchasePriceController,
     required this.sellPriceController, // Version 2
+    required this.licensePlateController,
   });
 
   @override
@@ -64,7 +66,6 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vehicleNickNameController,
-          maxLength: 30,
           decoration: const InputDecoration(
             labelText: 'Nickname',
             hintText: 'Enter nickname of car',
@@ -72,6 +73,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
           validator: (String? value) {
             if (value == null || value.isEmpty) {
               return 'Please enter some text';
+            }
+            if (value.length > 30){
+              return 'Max 30 characters allowed';
             }
             return null;
           },
@@ -87,9 +91,20 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             hintText: 'Enter VIN of car',
           ),
           validator: (String? value) {
-            //if (value == null || value.isEmpty) {
-            //  return 'Please enter some text';
-            //}
+            return null;
+          },
+        ),
+
+        SizedBox(height: sizedBoxHeight),
+
+        TextFormField(
+          controller: widget.licensePlateController,
+          maxLength: 12,
+          decoration: const InputDecoration(
+            labelText: 'License Plate',
+            hintText: 'Enter license plate of car',
+          ),
+          validator: (String? value) {
             return null;
           },
         ),
@@ -103,6 +118,12 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             if(value != null) {
             widget.makeController.text = value;
             }
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select a make';
+            }
+            return null;
           },
           items: (String? filter, LoadProps? props) async {
             final allOptions = [
@@ -204,7 +225,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter some text';
+              return null;
             }
             if(!isValidNumber(widget.odometerCurrentController.text)){
               return 'Current Mileage must be a number';

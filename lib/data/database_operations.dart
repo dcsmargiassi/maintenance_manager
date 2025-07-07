@@ -9,6 +9,7 @@
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
+import 'package:maintenance_manager/models/exterior_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 //import 'package:maintenance_manager/models/maintenance_records.dart';
@@ -292,6 +293,46 @@ class BatteryDetailsOperations{
 
   }
 }
+
+// Exterior details operation functions
+class ExteriorDetailsOperations {
+  DatabaseRepository dbRepository = DatabaseRepository.instance;
+
+  Future<void> insertExteriorDetails(ExteriorDetailsModel exterior) async {
+    final db = await dbRepository.database;
+    await db.insert('exteriorDetails', exterior.toMap());
+  }
+
+  Future<void> updateExteriorDetails(ExteriorDetailsModel exterior) async {
+    final db = await dbRepository.database;
+    await db.update(
+      'exteriorDetails',
+      exterior.toMap(),
+      where: 'exteriorDetailsId = ? AND userId = ?',
+      whereArgs: [exterior.exteriorDetailsId, exterior.userId],
+    );
+  }
+
+  Future<void> deleteExteriorDetails(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    await db.delete(
+      'exteriorDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+  }
+
+  Future<ExteriorDetailsModel> getExteriorDetailsByVehicleId(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    final result = await db.query(
+      'exteriorDetails',
+      where: 'vehicleId = ? AND userId = ?',
+      whereArgs: [vehicleId, userId],
+    );
+    return ExteriorDetailsModel.fromMap(result.first);
+  }
+}
+
 
 
 // maintenance Records operation functions

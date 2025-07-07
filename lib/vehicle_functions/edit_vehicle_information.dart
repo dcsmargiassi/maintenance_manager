@@ -11,6 +11,7 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
+import 'package:maintenance_manager/models/exterior_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
@@ -46,6 +47,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController purchasePriceController = TextEditingController();
   final TextEditingController sellPriceController = TextEditingController();
   late int archiveController = 0;
+  final TextEditingController licensePlateController = TextEditingController();
 
   // Engine Controllers
   TextEditingController engineDetailsIdController = TextEditingController();
@@ -63,6 +65,18 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController batterySeriesTypeController = TextEditingController(); // Ex BXT
   final TextEditingController batterySizeController = TextEditingController(); // BCI number
   final TextEditingController coldCrankAmpsController = TextEditingController();
+
+  //Exterior Controllers
+  final TextEditingController driverWindshieldWiperController = TextEditingController(); // Ex 1.5 L
+  final TextEditingController passengerWindshieldWiperController = TextEditingController(); // Ex 4 Cylinder ( I4)
+  final TextEditingController rearWindshieldWiperController = TextEditingController(); // Gas, diesel, hybrid Etc.
+  final TextEditingController headlampHighBeamController = TextEditingController(); // H7LL
+  final TextEditingController headlampLowBeamController = TextEditingController(); // H11LL
+  final TextEditingController turnLampController = TextEditingController(); // T20
+  final TextEditingController backupLampController = TextEditingController(); // 921
+  final TextEditingController fogLampController = TextEditingController();
+  final TextEditingController brakeLampController = TextEditingController();
+  final TextEditingController licensePlateLampController = TextEditingController();
 
   String selectedUnit = "Miles Per Hour";
   VehicleInformationModel? vehicleData;
@@ -219,6 +233,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                         odometerCurrentController: odometerCurrentController,
                         purchasePriceController: purchasePriceController,
                         sellPriceController: sellPriceController,
+                        licensePlateController: licensePlateController,
                       ),
                     ),
                   ],
@@ -284,6 +299,9 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                   onPressed: () async {
                     // Validate will return true if the form is valid, or false if form is invalid
                     if (_formKey.currentState!.validate()) {
+
+                      // Vehicle Details
+
                     final vehicleInformation = VehicleInformationModel(
                       vehicleId: widget.vehicleId,
                       userId: userId,
@@ -304,6 +322,9 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     );
                     VehicleOperations vehicleOperations = VehicleOperations();
                     await vehicleOperations.updateVehicle(vehicleInformation);
+
+                    // Engine Details
+
                     EngineDetailsModel engineDetails = EngineDetailsModel(
                       engineDetailsId: int.tryParse(engineDetailsIdController.text),
                       userId: userId,
@@ -319,6 +340,9 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     );
                     EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
                     await engineDetailsOperations.updateEngineDetails(engineDetails);
+                    
+                    // Battery Details
+
                     BatteryDetailsModel batteryDetails = BatteryDetailsModel(
                       batteryDetailsId: int.tryParse(batteryDetailsIdController.text),
                       userId: userId!,
@@ -329,6 +353,27 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     );
                     BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
                     await batteryDetailsOperations.updateBatteryDetails(batteryDetails);
+
+                    // Exterior Details
+
+                    // Exterior Details
+
+                  ExteriorDetailsModel exteriorDetails = ExteriorDetailsModel( 
+                    userId: userId, 
+                    vehicleId: widget.vehicleId, 
+                    driverWindshieldWiper: driverWindshieldWiperController.text, 
+                    passengerWindshieldWiper: passengerWindshieldWiperController.text, 
+                    rearWindshieldWiper: rearWindshieldWiperController.text, 
+                    headlampHighBeam: headlampHighBeamController.text, 
+                    headlampLowBeam: headlampLowBeamController.text, 
+                    turnLamp: turnLampController.text, 
+                    backupLamp: backupLampController.text, 
+                    fogLamp: fogLampController.text, 
+                    brakeLamp: brakeLampController.text, 
+                    licensePlateLamp: licensePlateLampController.text,
+                  );
+                  ExteriorDetailsOperations exteriorDetailsOperations = ExteriorDetailsOperations();
+                  await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
 
                     if (!context.mounted) return;
                     if(archiveController == 0){
@@ -360,7 +405,12 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
     versionController.dispose();
     yearController.dispose();
     purchaseDateController.dispose();
+    odometerBuyController.dispose();
+    odometerSellController.dispose();
     odometerCurrentController.dispose();
+    purchasePriceController.dispose();
+    sellPriceController.dispose();
+    licensePlateController.dispose();
 
     // Engine Controllers
     engineDetailsIdController.dispose();
@@ -378,6 +428,18 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
     batterySeriesTypeController.dispose();
     batterySizeController.dispose();
     coldCrankAmpsController.dispose();
+
+    //Exterior Controllers
+    driverWindshieldWiperController.dispose();
+    passengerWindshieldWiperController.dispose();
+    rearWindshieldWiperController.dispose();
+    headlampHighBeamController.dispose();
+    headlampLowBeamController.dispose();
+    turnLampController.dispose();
+    backupLampController.dispose();
+    fogLampController.dispose();
+    brakeLampController.dispose();
+    licensePlateLampController.dispose();
     super.dispose();
   }
 }

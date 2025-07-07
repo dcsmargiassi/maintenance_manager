@@ -6,6 +6,7 @@
  - toMap method converts the user object into a Map<String, dynamic> which allows the updating or inserting of new records.
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
+
 class VehicleInformationModel {
   int? vehicleId;
   String? userId;
@@ -25,12 +26,13 @@ class VehicleInformationModel {
   int? archived;
   double? lifeTimeFuelCost;
   double? lifeTimeMaintenanceCost;
+  String? licensePlate;
 
 
 // Vehicle Information table constructor
   VehicleInformationModel({this.vehicleId, required this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
   this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, this.archived,
-  this.lifeTimeFuelCost, this.lifeTimeMaintenanceCost});
+  this.lifeTimeFuelCost, this.lifeTimeMaintenanceCost, this.licensePlate});
   
   VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
@@ -51,6 +53,7 @@ class VehicleInformationModel {
     archived = obj['archived'];
     lifeTimeFuelCost = obj['lifeTimeFuelCost'];
     lifeTimeMaintenanceCost = obj['lifeTimeMaintenanceCost'];
+    licensePlate = obj['licensePlate'];
   }
 
   Map<String, dynamic> toMap() {
@@ -73,6 +76,7 @@ class VehicleInformationModel {
       'archived': archived,
       'lifeTimeFuelCost': lifeTimeFuelCost,
       'lifeTimeMaintenanceCost': lifeTimeMaintenanceCost,
+      'licensePlate': licensePlate,
     };
     return map;
   }
@@ -97,6 +101,7 @@ class VehicleInformationModel {
       archived: json['archived'],
       lifeTimeFuelCost: json['lifeTimeFuelCost'],
       lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'],
+      licensePlate: json['licensePlate'],
     );
   }
 }

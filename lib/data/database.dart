@@ -42,29 +42,52 @@ class DatabaseRepository {
   }
 
   // Updating database with missing table columns, if necessary
-Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-  if (oldVersion < 6) {
-    // ignore: avoid_print
-    print('Database updated');
+  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 6) {
+      final existingColumns = await _getColumnNames(db, 'vehicleInformation');
 
-    final existingColumns = await _getColumnNames(db, 'vehicleInformation');
+      if (!existingColumns.contains('lifeTimeFuelCost')) {
+        await db.execute(
+            'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeFuelCost REAL DEFAULT 0.0;');
+      }
 
-    if (!existingColumns.contains('lifeTimeFuelCost')) {
-      await db.execute(
-          'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeFuelCost REAL DEFAULT 0.0;');
+      if (!existingColumns.contains('lifeTimeMaintenanceCost')) {
+        await db.execute(
+            'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeMaintenanceCost REAL DEFAULT 0.0;');
+      }
     }
+    if (oldVersion < 7) {
+      final existingColumns = await _getColumnNames(db, 'vehicleInformation');
 
-    if (!existingColumns.contains('lifeTimeMaintenanceCost')) {
-      await db.execute(
-          'ALTER TABLE vehicleInformation ADD COLUMN lifeTimeMaintenanceCost REAL DEFAULT 0.0;');
+      if (!existingColumns.contains('licensePlate')) {
+        await db.execute(
+          'ALTER TABLE vehicleInformation ADD COLUMN licensePlate TEXT;');
+      }
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS exteriorDetails (
+          exteriorDetailsId INTEGER PRIMARY KEY AUTOINCREMENT,
+          userId TEXT NOT NULL,
+          vehicleId INTEGER NOT NULL,
+          driverWindshieldWiper TEXT,
+          passengerWindshieldWiper TEXT,
+          rearWindshieldWiper TEXT,
+          headlampHighBeam TEXT,
+          headlampLowBeam TEXT,
+          turnLamp TEXT,
+          backupLamp TEXT,
+          fogLamp TEXT,
+          brakeLamp TEXT,
+          licensePlateLamp TEXT,
+          FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
+        );
+    ''');
     }
   }
-}
 
-Future<List<String>> _getColumnNames(Database db, String tableName) async {
-  final result = await db.rawQuery('PRAGMA table_info($tableName);');
-  return result.map((row) => row['name'] as String).toList();
-}
+  Future<List<String>> _getColumnNames(Database db, String tableName) async {
+    final result = await db.rawQuery('PRAGMA table_info($tableName);');
+    return result.map((row) => row['name'] as String).toList();
+  }
 
   Future<void> onCreate(Database db, int version) async{
     await db.execute('''
@@ -86,7 +109,8 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
         sellPrice REAL,
         archived INTEGER,
         lifeTimeFuelCost REAL,
-        lifeTimeMaintenanceCost REAL
+        lifeTimeMaintenanceCost REAL,
+        licensePlate TEXT
       );
     ''');
     await db.execute('''
@@ -140,6 +164,24 @@ Future<List<String>> _getColumnNames(Database db, String tableName) async {
         notes TEXT,
         oilChange INTEGER,
         tireRotationAlignment INTEGER,
+        FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
+      );
+    ''');
+    await db.execute('''
+      CREATE TABLE exteriorDetails (
+        exteriorDetailsId INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT NOT NULL,
+        vehicleId INTEGER NOT NULL,
+        driverWindshieldWiper TEXT,
+        passengerWindshieldWiper TEXT,
+        rearWindshieldWiper TEXT,
+        headlampHighBeam TEXT,
+        headlampLowBeam TEXT,
+        turnLamp TEXT,
+        backupLamp TEXT,
+        fogLamp TEXT,
+        brakeLamp TEXT,
+        licensePlateLamp TEXT,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');

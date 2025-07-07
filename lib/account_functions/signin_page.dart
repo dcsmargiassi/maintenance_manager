@@ -112,6 +112,9 @@ class SignInPageState extends State<SignInPage> {
                     if (!data.containsKey('acceptedTermsVersion')) {
                       updates['acceptedTermsVersion'] = 1;
                     }
+                    if (!data.containsKey('privacyAnalytics')) {
+                      updates['privacyAnalytics'] = false;
+                    }
 
                     if (updates.isNotEmpty) {
                       await documentReference.update(updates);
@@ -129,6 +132,7 @@ class SignInPageState extends State<SignInPage> {
                 on FirebaseAuthException catch (e) {
                   debugPrint("Sign in error: $e");
                   if (!mounted) return;
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(e.message ?? "Login attempt failed due server issue, try again!"), // ${e.message}

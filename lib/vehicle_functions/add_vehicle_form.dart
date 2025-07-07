@@ -1,14 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
+import 'package:maintenance_manager/models/exterior_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_stats/exterior_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/vehicle_details.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Creating object for vehicle information database
  VehicleOperations vehicleInformation = VehicleOperations();
@@ -16,8 +20,11 @@ import 'package:provider/provider.dart';
  // Creating object for engine details database
  EngineDetailsOperations engineDetails = EngineDetailsOperations();
 
- // Creating object for Miscellaneous details database
+ // Creating object for battery details database
  BatteryDetailsOperations batteryDetails = BatteryDetailsOperations();
+
+ // Creating object for exterior details database
+ ExteriorDetailsOperations exteriorDetails = ExteriorDetailsOperations();
 
 class AddVehicleFormApp extends StatelessWidget {
   const AddVehicleFormApp({super.key}); 
@@ -48,7 +55,7 @@ class AddVehicleFormApp extends StatelessWidget {
                 await navigateToHomePage(context);
                 break;
               case 'Settings':
-                await navigateToHomePage(context);
+                await navigateToSettingsPage(context);
                 break;
               case 'signout':
                 await navigateToLogin(context);
@@ -103,6 +110,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final TextEditingController odometerCurrentController = TextEditingController();
   final TextEditingController purchasePriceController = TextEditingController();
   final TextEditingController sellPriceController = TextEditingController();
+  final TextEditingController licensePlateController = TextEditingController();
 
   // Engine Controllers
   final TextEditingController engineSizeController = TextEditingController(); // Ex 1.5 L
@@ -119,7 +127,25 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final TextEditingController batterySizeController = TextEditingController(); // BCI number
   final TextEditingController coldCrankAmpsController = TextEditingController();
 
+  //Exterior Controllers
+  final TextEditingController driverWindshieldWiperController = TextEditingController(); // Ex 1.5 L
+  final TextEditingController passengerWindshieldWiperController = TextEditingController(); // Ex 4 Cylinder ( I4)
+  final TextEditingController rearWindshieldWiperController = TextEditingController(); // Gas, diesel, hybrid Etc.
+  final TextEditingController headlampHighBeamController = TextEditingController(); // H7LL
+  final TextEditingController headlampLowBeamController = TextEditingController(); // H11LL
+  final TextEditingController turnLampController = TextEditingController(); // T20
+  final TextEditingController backupLampController = TextEditingController(); // 921
+  final TextEditingController fogLampController = TextEditingController();
+  final TextEditingController brakeLampController = TextEditingController();
+  final TextEditingController licensePlateLampController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // Checking Privacy Analytics
+  Future<bool> _isPrivacyAnalyticsEnabled(String? userId) async {
+  if (userId == null) return false;
+  final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  return doc.data()?['privacyAnalytics'] == false;
+}
   // Variable Declarations
   String selectedUnit = "Miles Per Hour"; // Default unit
 
@@ -165,12 +191,36 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     odometerCurrentController: odometerCurrentController,
                     purchasePriceController: purchasePriceController,
                     sellPriceController: sellPriceController,
+                    licensePlateController: licensePlateController,
                   ),
                 ),
               ],
             ),
             // EXTENDED DETAILS
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    children: const [
+                      Tooltip(
+                        message: "",
+                        child: Icon(Icons.info_outline, color: Colors.grey),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        "Fill these details for future reference on the go!",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
             // ENGINE DETAILS
+
             ExpansionTile(
               title: const Row(
                 children: [
@@ -235,12 +285,52 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             // FLUID DETAILS
 
             // CABIN DETAILS
+
+            // Exterior Details
+
+            ExpansionTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.lightbulb, color: Colors.black),
+                  SizedBox(width: 10),
+                  Text(
+                    "Exterior Details",
+                  ),
+                ],
+              ),
+              initiallyExpanded: false,
+              trailing: const Icon(Icons.expand_more_sharp),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ExteriorDetailsSection(
+                    driverWindshieldWiperController: driverWindshieldWiperController,
+                    passengerWindshieldWiperController: passengerWindshieldWiperController,
+                    rearWindshieldWiperController: rearWindshieldWiperController,
+                    headlampHighBeamController: headlampHighBeamController,
+                    headlampLowBeamController: headlampLowBeamController,
+                    turnLampController: turnLampController,
+                    backupLampController: backupLampController,
+                    fogLampController: fogLampController,
+                    brakeLampController: brakeLampController,
+                    licensePlateLampController: licensePlateController,
+                  ),
+                ),
+              ],
+            ),
+
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
               child: ElevatedButton(
                 onPressed: () async {
                   // Validate will return true if the form is valid, or false if form is invalid
                   if (_formKey.currentState!.validate()) {
+
+                    // Vehicle Details
+
                   final vehicleInformation = VehicleInformationModel(
                     userId: userId,
                     vehicleNickName: vehicleNickNameController.text,
@@ -257,9 +347,13 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     purchasePrice: double.tryParse(purchasePriceController.text) ?? 0,
                     sellPrice: null,
                     archived: archiveController,
+                    licensePlate: licensePlateController.text,
                   );
                   VehicleOperations vehicleOperations = VehicleOperations();
                   int vehicleId = await vehicleOperations.createVehicle(vehicleInformation);
+
+                  // Engine Details
+
                   EngineDetailsModel engineDetails = EngineDetailsModel(
                     userId: userId,
                     vehicleId: vehicleId,
@@ -274,6 +368,9 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   );
                   EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
                   await engineDetailsOperations.insertEngineDetails(engineDetails);
+
+                  // Battery Details
+
                   final ccaText = coldCrankAmpsController.text.trim();
                   final cca = ccaText.isEmpty ? 0.0 : double.parse(ccaText);
                   BatteryDetailsModel batteryDetails = BatteryDetailsModel(
@@ -285,11 +382,41 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   );
                   BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
                   await batteryDetailsOperations.insertBatteryDetails(batteryDetails);
-                  //Create an instance of VehicleOperations
-                  //VehicleOperations vehicleOperations = VehicleOperations();
-                  //await vehicleOperations.createVehicle(vehicleInformation);
+
+                  // Exterior Details
+
+                  ExteriorDetailsModel exteriorDetails = ExteriorDetailsModel( 
+                    userId: userId, 
+                    vehicleId: vehicleId, 
+                    driverWindshieldWiper: driverWindshieldWiperController.text, 
+                    passengerWindshieldWiper: passengerWindshieldWiperController.text, 
+                    rearWindshieldWiper: rearWindshieldWiperController.text, 
+                    headlampHighBeam: headlampHighBeamController.text, 
+                    headlampLowBeam: headlampLowBeamController.text, 
+                    turnLamp: turnLampController.text, 
+                    backupLamp: backupLampController.text, 
+                    fogLamp: fogLampController.text, 
+                    brakeLamp: brakeLampController.text, 
+                    licensePlateLamp: licensePlateLampController.text,
+                  );
+                  ExteriorDetailsOperations exteriorDetailsOperations = ExteriorDetailsOperations();
+                  await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
+
                   if (!context.mounted) return;
-                    navigateToHomePage(context);
+                  // Check if user has enabled privacy analytics
+                  final privacyEnabled = await _isPrivacyAnalyticsEnabled(userId);
+                  if (privacyEnabled) {
+                    final analytics = FirebaseAnalytics.instance;
+                    await analytics.logEvent(
+                      name: 'vehicle_created',
+                      parameters: {
+                        'make': makeController.text.trim(),
+                        'model': modelController.text.trim(),
+                      },
+                    );
+                  }
+                  if (!context.mounted) return;
+                  navigateToHomePage(context);
                   }
                 },
                 child: const Text('Submit'),
@@ -315,6 +442,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
     odometerCurrentController.dispose();
     purchasePriceController.dispose();
     sellPriceController.dispose();
+    licensePlateController.dispose();
 
     // Engine Controllers
     engineSizeController.dispose();
