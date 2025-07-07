@@ -4,6 +4,7 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
+import 'package:maintenance_manager/models/exterior_detail_records.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   late Future<VehicleInformationModel> _vehicleInfoFuture;
   late Future<EngineDetailsModel> _engineDetailsFuture;
   late Future<BatteryDetailsModel> _batteryDetailsFuture;
+  late Future<ExteriorDetailsModel> _exteriorDetailsFuture;
   int _selectedMonth = DateTime.now().month;
   int _selectedYear = DateTime.now().year;
   double? _selectedMonthFuelCost;
@@ -38,6 +40,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
     _engineDetailsFuture = EngineDetailsOperations().getEngineDetailsByVehicleId(userId, widget.vehicleId);
     _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
+    _exteriorDetailsFuture = ExteriorDetailsOperations().getExteriorDetailsByVehicleId(userId, widget.vehicleId);
     _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
 
   }
@@ -199,12 +202,22 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                     if (!batterySnapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
                     }
+                    return FutureBuilder<ExteriorDetailsModel>(
+                      future: _exteriorDetailsFuture,
+                      builder: (context, exteriorSnapshot) {
+                        if (!exteriorSnapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
 
                     return _displayVehicleDetails(
                       snapshot.data!,
                       engineSnapshot.data!,
                       batterySnapshot.data!,
+                      exteriorSnapshot.data!,
                     );
+                      },
+                    );
+                    
                   },
                 );
               },
@@ -245,7 +258,9 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     Widget _displayVehicleDetails(
       VehicleInformationModel vehicleData,
       EngineDetailsModel engineData,
-      BatteryDetailsModel batteryData) {
+      BatteryDetailsModel batteryData, 
+      ExteriorDetailsModel exteriorData
+    ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -290,6 +305,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               _infoText("Model", vehicleData.model),
               _infoText("Year", vehicleData.year.toString()),
               _infoText("VIN", vehicleData.vin),
+              _infoText("License Plate", vehicleData.licensePlate.toString()),
               _infoText("Mileage", vehicleData.odometerCurrent.toString()),
             ],
           ),
@@ -405,6 +421,24 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               _infoText("Series Type", batteryData.batterySeriesType),
               _infoText("Battery Size", batteryData.batterySize),
               _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps}"),
+            ],
+          ),
+          ExpansionTile(
+            title: const Text(
+              "Exterior Details",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            children: [
+              _infoText("Driver Windshield Wiper", exteriorData.driverWindshieldWiper),
+              _infoText("Passenger Windshield Wiper", exteriorData.passengerWindshieldWiper),
+              _infoText("Rear Windshield Wiper", exteriorData.rearWindshieldWiper),
+              _infoText("Headlamp High Beam", exteriorData.headlampHighBeam),
+              _infoText("Headlamp Low Beam", exteriorData.headlampLowBeam),
+              _infoText("Turn Lamp", exteriorData.turnLamp),
+              _infoText("Backup Lamp", exteriorData.backupLamp),
+              _infoText("Fog Lamp", exteriorData.fogLamp),
+              _infoText("Brake Lamp", exteriorData.brakeLamp),
+              _infoText("License Plate Lamp", exteriorData.licensePlateLamp),
             ],
           ),
           const SizedBox(height: 20),

@@ -16,6 +16,7 @@ import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
+import 'package:maintenance_manager/vehicle_functions/vehicle_stats/exterior_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/vehicle_details.dart';
 import 'package:provider/provider.dart';
 
@@ -289,6 +290,38 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     batterySeriesTypeController: batterySeriesTypeController,
                     batterySizeController: batterySizeController,
                     coldCrankAmpsController: coldCrankAmpsController,
+                  ),
+                ),
+              ],
+            ),
+            ExpansionTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.lightbulb, color: Colors.black),
+                  SizedBox(width: 10),
+                  Text(
+                    "Exterior Details",
+                  ),
+                ],
+              ),
+              initiallyExpanded: false,
+              trailing: const Icon(Icons.expand_more_sharp),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ExteriorDetailsSection(
+                    driverWindshieldWiperController: driverWindshieldWiperController,
+                    passengerWindshieldWiperController: passengerWindshieldWiperController,
+                    rearWindshieldWiperController: rearWindshieldWiperController,
+                    headlampHighBeamController: headlampHighBeamController,
+                    headlampLowBeamController: headlampLowBeamController,
+                    turnLampController: turnLampController,
+                    backupLampController: backupLampController,
+                    fogLampController: fogLampController,
+                    brakeLampController: brakeLampController,
+                    licensePlateLampController: licensePlateController,
                   ),
                 ),
               ],

@@ -321,7 +321,6 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               ],
             ),
 
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
               child: ElevatedButton(
@@ -343,7 +342,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     sellDate: null,
                     odometerBuy: double.tryParse(odometerBuyController.text) ?? 0,
                     odometerSell: null,
-                    odometerCurrent: double.tryParse(odometerCurrentController.text),
+                    odometerCurrent: double.tryParse(odometerCurrentController.text) ?? 0,
                     purchasePrice: double.tryParse(purchasePriceController.text) ?? 0,
                     sellPrice: null,
                     archived: archiveController,

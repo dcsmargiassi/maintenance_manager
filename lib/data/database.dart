@@ -19,7 +19,7 @@ class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
   final _databaseName = 'maintenanceManagerDatabase';
-  final _databaseVersion = 6;
+  final _databaseVersion = 7;
   
   
   static late Database _database;
