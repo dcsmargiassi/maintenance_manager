@@ -7,12 +7,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/account_functions/create_account.dart';
 import 'package:maintenance_manager/account_functions/edit_profile.dart';
+import 'package:maintenance_manager/account_functions/password_reset.dart';
 import 'package:maintenance_manager/account_functions/profile_page.dart';
 import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/homepage.dart';
+import 'package:maintenance_manager/settings/manage_data.dart';
 import 'package:maintenance_manager/settings/privacy_policy_display.dart';
 import 'package:maintenance_manager/settings/settings.dart';
+import 'package:maintenance_manager/settings/terms_of_service_display.dart';
 import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
 import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_information.dart';
@@ -61,6 +64,13 @@ Future<void> navigateToEditProfilePage(BuildContext context, {VoidCallback? onRe
   ).then((_) => onReturn?.call());
 }
 
+Future<void> navigateToResetPasswordPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
+  ).then((_) => onReturn?.call());
+}
+
 // Settings Page
 Future<void> navigateToSettingsPage(BuildContext context, {VoidCallback? onReturn}) {
   return Navigator.push(
@@ -73,6 +83,20 @@ Future<void> navigateToPrivacyPolicy(BuildContext context, {VoidCallback? onRetu
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToTermsOfServicePage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const TermsOfServicePage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToManageDataPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const ManageDataPage()),
   ).then((_) => onReturn?.call());
 }
 

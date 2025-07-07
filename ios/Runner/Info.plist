@@ -36,6 +36,8 @@
 	<string>Main</string>
 	<key>UIStatusBarStyle</key>
 	<string></string>
+	<key>FirebaseAnalyticsCollectionEnabled</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

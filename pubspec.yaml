@@ -52,6 +52,7 @@ dependencies:
   cloud_firestore: ^5.6.9
   dropdown_search: ^6.0.2
   flutter_html: ^3.0.0
+  firebase_analytics: ^11.5.2
   
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ dev_dependencies:
 flutter:
     assets:
             - assets/privacy-policy.html
+            - assets\terms-of-service.html
             - assets/icon/1024.png
 
   # The following line ensures that the Material Icons font is
