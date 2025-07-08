@@ -85,12 +85,17 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vinController,
-          maxLength: 17,
           decoration: const InputDecoration(
             labelText: 'VIN',
             hintText: 'Enter VIN of car',
           ),
           validator: (String? value) {
+            if (value == null || value.isEmpty){ 
+              return null;
+            }
+            if(value.length > 17){
+              return 'Max 17 characters allowed';
+            }
             return null;
           },
         ),
@@ -99,12 +104,17 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.licensePlateController,
-          maxLength: 12,
           decoration: const InputDecoration(
             labelText: 'License Plate',
             hintText: 'Enter license plate of car',
           ),
           validator: (String? value) {
+            if (value == null || value.isEmpty){ 
+              return null;
+            }
+            if(value.length > 12){
+              return 'Max 12 characters allowed';
+            }
             return null;
           },
         ),
@@ -160,7 +170,6 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         SizedBox(height: sizedBoxHeight),
         TextFormField(
           controller: widget.modelController,
-          maxLength: 15,
           decoration: const InputDecoration(
             labelText: 'Model',
             hintText: 'Enter model of car',
@@ -168,6 +177,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
           validator: (String? value) {
             if (value == null || value.isEmpty) {
               return 'Please enter some text';
+            }
+            if(value.length > 15){
+              return 'Max 15 characters allowed';
             }
             return null;
           },
@@ -177,11 +189,19 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.versionController,
-          maxLength: 15,
           decoration: const InputDecoration(
             labelText: 'Submodel',
             hintText: 'Enter submodel of car',
           ),
+          validator: (String? value) {
+            if (value == null || value.isEmpty){ 
+              return null;
+            }
+            if(value.length > 15){
+              return 'Max 15 characters allowed';
+            }
+            return null;
+          }
         ),
 
         SizedBox(height: sizedBoxHeight),
@@ -218,7 +238,6 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.odometerCurrentController,
-          maxLength: 10,
           decoration: const InputDecoration(
             labelText: 'Current Mileage',
             hintText: 'Enter current mileage of car',
@@ -229,6 +248,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             }
             if(!isValidNumber(widget.odometerCurrentController.text)){
               return 'Current Mileage must be a number';
+            }
+            if(value.length > 10){
+              return 'Max 10 characters allowed';
             }
             final parsedValue = double.tryParse(value);
             if(parsedValue == null){

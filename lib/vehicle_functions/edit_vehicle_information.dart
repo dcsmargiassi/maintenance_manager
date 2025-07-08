@@ -94,10 +94,12 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
     final vehicleOps = VehicleOperations();
     final engineOps = EngineDetailsOperations();
     final batteryOps = BatteryDetailsOperations();
+    final exteriorOps = ExteriorDetailsOperations();
     final userId = Provider.of<AuthState>(context, listen: false).userId;
     final dataVehicle = await vehicleOps.getVehicleById(widget.vehicleId, userId!);
     final dataEngine = await engineOps.getEngineDetailsByVehicleId(userId, widget.vehicleId);
     final dataBattery = await batteryOps.getBatteryDetailsByVehicleId(userId, widget.vehicleId);
+    final dataExterior = await exteriorOps.getExteriorDetailsByVehicleId(userId, widget.vehicleId);
     int? engineDetailsId;
     int? batteryDetailsId;
     engineDetailsId = dataEngine.engineDetailsId;
@@ -134,6 +136,17 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       batterySeriesTypeController.text = dataBattery.batterySeriesType ?? '';
       batterySizeController.text = dataBattery.batterySize ?? '';
       coldCrankAmpsController.text = dataBattery.coldCrankAmps.toString();
+
+      driverWindshieldWiperController.text = dataExterior.driverWindshieldWiper.toString();
+      passengerWindshieldWiperController.text = dataExterior.passengerWindshieldWiper.toString();
+      rearWindshieldWiperController.text = dataExterior.rearWindshieldWiper.toString();
+      headlampHighBeamController.text = dataExterior.headlampHighBeam.toString();
+      headlampLowBeamController.text = dataExterior.headlampLowBeam.toString();
+      turnLampController.text = dataExterior.turnLamp.toString();
+      backupLampController.text = dataExterior.backupLamp.toString();
+      fogLampController.text = dataExterior.fogLamp.toString();
+      brakeLampController.text = dataExterior.brakeLamp.toString();
+      licensePlateLampController.text = dataExterior.licensePlateLamp.toString();
     });
     }
 
@@ -321,7 +334,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     backupLampController: backupLampController,
                     fogLampController: fogLampController,
                     brakeLampController: brakeLampController,
-                    licensePlateLampController: licensePlateController,
+                    licensePlateLampController: licensePlateLampController,
                   ),
                 ),
               ],
