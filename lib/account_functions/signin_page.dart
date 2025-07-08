@@ -122,6 +122,7 @@ class SignInPageState extends State<SignInPage> {
                   }
                   if(!mounted) return;
                   authState.setUser(FirebaseAuth.instance.currentUser);
+
                   if(!mounted) return;
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     navigateToHomePage(context);

@@ -329,7 +329,34 @@ class ExteriorDetailsOperations {
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
     );
+    if (result.isNotEmpty){
     return ExteriorDetailsModel.fromMap(result.first);
+    } else {
+      return ExteriorDetailsModel(
+      userId: userId,
+      vehicleId: vehicleId,
+      driverWindshieldWiper: '',
+      passengerWindshieldWiper: '',
+      rearWindshieldWiper: '',
+      headlampHighBeam: '',
+      headlampLowBeam: '',
+      turnLamp: '',
+      backupLamp: '',
+      fogLamp: '',
+      brakeLamp: '',
+      licensePlateLamp: '',
+      );
+    }
+  }
+  Future<bool> exteriorDetailsExists(String userId, int vehicleId) async {
+    final db = await dbRepository.database;
+    final result = await db.query(
+      'exteriorDetails',
+      where: 'userId = ? AND vehicleId = ?',
+      whereArgs: [userId, vehicleId],
+      limit: 1,
+    );
+    return result.isNotEmpty;
   }
 }
 

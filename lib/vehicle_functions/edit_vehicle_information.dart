@@ -68,6 +68,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController coldCrankAmpsController = TextEditingController();
 
   //Exterior Controllers
+  TextEditingController exteriorDetailsIdController = TextEditingController();
   final TextEditingController driverWindshieldWiperController = TextEditingController(); // Ex 1.5 L
   final TextEditingController passengerWindshieldWiperController = TextEditingController(); // Ex 4 Cylinder ( I4)
   final TextEditingController rearWindshieldWiperController = TextEditingController(); // Gas, diesel, hybrid Etc.
@@ -137,6 +138,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       batterySizeController.text = dataBattery.batterySize ?? '';
       coldCrankAmpsController.text = dataBattery.coldCrankAmps.toString();
 
+      exteriorDetailsIdController.text = dataExterior.exteriorDetailsId.toString();
       driverWindshieldWiperController.text = dataExterior.driverWindshieldWiper.toString();
       passengerWindshieldWiperController.text = dataExterior.passengerWindshieldWiper.toString();
       rearWindshieldWiperController.text = dataExterior.rearWindshieldWiper.toString();
@@ -405,6 +407,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     // Exterior Details
 
                   ExteriorDetailsModel exteriorDetails = ExteriorDetailsModel( 
+                    exteriorDetailsId: int.tryParse(exteriorDetailsIdController.text),
                     userId: userId, 
                     vehicleId: widget.vehicleId, 
                     driverWindshieldWiper: driverWindshieldWiperController.text, 
@@ -419,7 +422,12 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     licensePlateLamp: licensePlateLampController.text,
                   );
                   ExteriorDetailsOperations exteriorDetailsOperations = ExteriorDetailsOperations();
-                  await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
+                  final exists = await exteriorDetailsOperations.exteriorDetailsExists(userId, widget.vehicleId);
+                  if (exists) {
+                    await exteriorDetailsOperations.updateExteriorDetails(exteriorDetails);
+                  } else {
+                    await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
+                  }
 
                     if (!context.mounted) return;
                     if(archiveController == 0){
@@ -476,6 +484,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
     coldCrankAmpsController.dispose();
 
     //Exterior Controllers
+    exteriorDetailsIdController.dispose();
     driverWindshieldWiperController.dispose();
     passengerWindshieldWiperController.dispose();
     rearWindshieldWiperController.dispose();

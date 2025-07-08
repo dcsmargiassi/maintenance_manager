@@ -37,23 +37,23 @@ class VehicleInformationModel {
   VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
     userId = obj['userId']?? '';
-    vehicleNickName = obj['vehicleNickName'];
-    vin = obj['vin'];
-    make = obj['make'];
-    model = obj['model'];
-    version = obj['version'];
-    year = obj['year'];
-    purchaseDate = obj['purchaseDate'];
-    sellDate = obj['sellDate'];
-    odometerBuy = obj['odometerBuy'];
-    odometerSell = obj['odometerSell'];
-    odometerCurrent = obj['odometerCurrent'];
-    purchasePrice = obj['purchasePrice'];
-    sellPrice = obj['sellPrice'];
-    archived = obj['archived'];
-    lifeTimeFuelCost = obj['lifeTimeFuelCost'];
-    lifeTimeMaintenanceCost = obj['lifeTimeMaintenanceCost'];
-    licensePlate = obj['licensePlate'];
+    vehicleNickName = obj['vehicleNickName'] ?? '';
+    vin = obj['vin'] ?? '';
+    make = obj['make'] ?? '';
+    model = obj['model'] ?? '';
+    version = obj['version'] ?? '';
+    year = obj['year'] ?? 0;
+    purchaseDate = obj['purchaseDate'] ?? '';
+    sellDate = obj['sellDate'] ?? '';
+    odometerBuy = obj['odometerBuy'] ?? 0.0;
+    odometerSell = obj['odometerSell'] ?? 0.0;
+    odometerCurrent = obj['odometerCurrent'] ?? 0.0;
+    purchasePrice = obj['purchasePrice'] ?? 0.0;
+    sellPrice = obj['sellPrice'] ?? 0.0;
+    archived = obj['archived'] ?? 0;
+    lifeTimeFuelCost = obj['lifeTimeFuelCost'] ?? 0.0;
+    lifeTimeMaintenanceCost = obj['lifeTimeMaintenanceCost'] ?? 0.0;
+    licensePlate = obj['licensePlate'] ?? '';
   }
 
   Map<String, dynamic> toMap() {
@@ -84,24 +84,24 @@ class VehicleInformationModel {
    factory VehicleInformationModel.fromJson(Map<String, dynamic> json) {
     return VehicleInformationModel(
       vehicleId: json['vehicleId'],
-      userId: json['userId'],
-      vehicleNickName: json['vehicleNickName'],
-      vin: json['vin'],
-      make: json['make'],
-      model: json['model'],
-      version: json['version'],
-      year: json['year'],
-      purchaseDate: json['purchaseDate'],
-      sellDate: json['sellDate'],
-      odometerBuy: json['odometerBuy'],
-      odometerSell: json['odometerSell'],
-      odometerCurrent: json['odometerCurrent'],
-      purchasePrice: json['purchasePrice'],
-      sellPrice: json['sellPrice'],
-      archived: json['archived'],
-      lifeTimeFuelCost: json['lifeTimeFuelCost'],
-      lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'],
-      licensePlate: json['licensePlate'],
+      userId: json['userId'] ?? '',
+      vehicleNickName: json['vehicleNickName'] ?? '',
+      vin: json['vin'] ?? '',
+      make: json['make'] ?? '',
+      model: json['model'] ?? '',
+      version: json['version'] ?? '',
+      year: json['year'] ?? 0,
+      purchaseDate: json['purchaseDate'] ?? '',
+      sellDate: json['sellDate'] ?? '',
+      odometerBuy: json['odometerBuy'] ?? 0.0,
+      odometerSell: json['odometerSell'] ?? 0.0,
+      odometerCurrent: json['odometerCurrent'] ?? 0.0,
+      purchasePrice: json['purchasePrice'] ?? 0.0,
+      sellPrice: json['sellPrice'] ?? 0.0,
+      archived: json['archived'] ?? 0,
+      lifeTimeFuelCost: json['lifeTimeFuelCost'] ?? 0.0,
+      lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'] ?? 0.0,
+      licensePlate: json['licensePlate'] ?? '',
     );
   }
 }

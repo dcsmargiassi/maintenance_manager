@@ -13,6 +13,7 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
+  bool emailVerified = false;
 
   @override
   void initState() {
@@ -30,11 +31,33 @@ class ProfilePageState extends State<ProfilePage> {
       return;
     }
 
-    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-    setState(() {
-      userData = doc.data();
+    await user.reload();
+    final refreshedUser = FirebaseAuth.instance.currentUser;
+    final emailVerifiedStatus = refreshedUser?.emailVerified ?? false;
+
+    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final docSnapshot = await docRef.get();
+    final data = docSnapshot.data();
+
+    if (data != null) {
+      final updates = <String, dynamic>{};
+      if (data['emailVerified'] != emailVerifiedStatus) {
+        updates['emailVerified'] = emailVerifiedStatus;
+        await docRef.update(updates);
+      }
+      setState(() {
+        userData = {...data, ...updates}; // merging
+        emailVerified = emailVerifiedStatus;
+        isLoading = false;
+      });
+    }
+    else {
+      setState(() {
+      userData = {};
+      emailVerified = emailVerifiedStatus;
       isLoading = false;
-    });
+      });
+    }
   }
 
   @override
@@ -55,6 +78,18 @@ class ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('Profile'),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            tooltip: 'Refresh',
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                isLoading = true;
+              });
+              fetchUserData();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,7 +100,7 @@ class ProfilePageState extends State<ProfilePage> {
             _buildInfoRow('Email', getField('email')),
             _buildInfoRow('First Name', getField('firstName')),
             _buildInfoRow('Last Name', getField('lastName')),
-            _buildInfoRow('Email Verified', getField('emailVerified')),
+            _buildInfoRow('Email Verified', emailVerified ? 'Yes' : 'No'),
 
             const SizedBox(height: 30),
 
@@ -85,6 +120,24 @@ class ProfilePageState extends State<ProfilePage> {
               label: const Text('Edit Profile'),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             ),
+            if (!emailVerified)
+              ElevatedButton.icon(
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null && !user.emailVerified) {
+                    await user.sendEmailVerification();
+                    if (!mounted) return;
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Verification email sent! Please check your inbox.')),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.email),
+                label: const Text('Send Verification Email'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              ),
+              
           ],
         ),
       ),
