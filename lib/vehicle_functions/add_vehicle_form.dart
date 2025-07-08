@@ -315,7 +315,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     backupLampController: backupLampController,
                     fogLampController: fogLampController,
                     brakeLampController: brakeLampController,
-                    licensePlateLampController: licensePlateController,
+                    licensePlateLampController: licensePlateLampController,
                   ),
                 ),
               ],
@@ -458,6 +458,17 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
     batterySizeController.dispose();
     coldCrankAmpsController.dispose();
 
+    // Exterior Controllers
+    driverWindshieldWiperController.dispose();
+    passengerWindshieldWiperController.dispose();
+    rearWindshieldWiperController.dispose();
+    headlampHighBeamController.dispose();
+    headlampLowBeamController.dispose();
+    turnLampController.dispose();
+    backupLampController.dispose();
+    fogLampController.dispose();
+    brakeLampController.dispose();
+    licensePlateLampController.dispose();
     super.dispose();
   }
 }
