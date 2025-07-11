@@ -87,9 +87,10 @@ class HomePage extends StatelessWidget {
               elevation: 4,
             ),
             child: Text ((myVehicles),
-              style: const TextStyle(fontSize: buttonFontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              style: TextStyle(
+                fontSize: buttonFontSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),
@@ -108,9 +109,10 @@ class HomePage extends StatelessWidget {
               elevation: 4,
             ),
               child: Text ((addRemoveVehicle),
-                style: const TextStyle(fontSize: buttonFontSize,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
+                style: TextStyle(
+                  fontSize: buttonFontSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
                 ),
               ),
           ),
@@ -131,10 +133,10 @@ class HomePage extends StatelessWidget {
               elevation: 4,
             ),
               child: Text ((archivedVehicles),
-                style: const TextStyle(fontSize: buttonFontSize,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-
+                style: TextStyle(
+                  fontSize: buttonFontSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
           ),

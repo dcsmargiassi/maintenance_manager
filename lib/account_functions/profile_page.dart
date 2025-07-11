@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -40,16 +41,59 @@ class ProfilePageState extends State<ProfilePage> {
     final data = docSnapshot.data();
 
     if (data != null) {
-      final updates = <String, dynamic>{};
-      if (data['emailVerified'] != emailVerifiedStatus) {
-        updates['emailVerified'] = emailVerifiedStatus;
-        await docRef.update(updates);
+    final updates = <String, dynamic>{};
+
+    if (data['emailVerified'] != emailVerifiedStatus) {
+      updates['emailVerified'] = emailVerifiedStatus;
+    }
+
+    // Handle decryption of encrypted fields
+    final decryptedFields = <String, String>{};
+    for (final field in ['username', 'firstName', 'lastName']) {
+      final value = data[field];
+      if (value != null && value is String && value.contains(':')) {
+        try {
+          final decrypted = await decryptField(value);
+          decryptedFields[field] = decrypted;
+        } catch (e) {
+          decryptedFields[field] = '[Error Decrypting]';
+        }
+      } else if (value != null) {
+        decryptedFields[field] = value;
+      } else {
+        decryptedFields[field] = '';
       }
-      setState(() {
-        userData = {...data, ...updates}; // merging
-        emailVerified = emailVerifiedStatus;
-        isLoading = false;
-      });
+    }
+
+    // Merge decrypted data into local copy
+    final mergedData = {
+      ...data,
+      ...updates,
+      ...decryptedFields,
+    };
+
+    // Migration of pre-encryption values
+    final migrationUpdates = <String, dynamic>{};
+
+for (final field in ['username', 'firstName', 'lastName']) {
+  final value = data[field];
+  if (value != null && value is String && !value.contains(':')) {
+    try {
+      final encrypted = await encryptField(value);
+      migrationUpdates[field] = encrypted;
+    } catch (_) {
+    }
+  }
+}
+
+if (migrationUpdates.isNotEmpty) {
+  await docRef.update(migrationUpdates);
+}
+    setState(() {
+      userData = mergedData;
+      emailVerified = emailVerifiedStatus;
+      isLoading = false;
+    });
     }
     else {
       setState(() {

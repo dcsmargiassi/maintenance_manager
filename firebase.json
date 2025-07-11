@@ -1,1 +1,40 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"maintenance-manager-8e329","appId":"1:827318939439:android:d5106001d99cfbebb2fbda","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"maintenance-manager-8e329","configurations":{"android":"1:827318939439:android:d5106001d99cfbebb2fbda","ios":"1:827318939439:ios:ac444e08e12e21d4b2fbda"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "maintenance-manager-8e329",
+          "appId": "1:827318939439:android:d5106001d99cfbebb2fbda",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "maintenance-manager-8e329",
+          "configurations": {
+            "android": "1:827318939439:android:d5106001d99cfbebb2fbda",
+            "ios": "1:827318939439:ios:ac444e08e12e21d4b2fbda"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "runtime": "nodejs18",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ]
+}
