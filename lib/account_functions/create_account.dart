@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:provider/provider.dart';
@@ -138,14 +139,19 @@ class CreateAccountPageState extends State<CreateAccountPage> {
 
                     final now = Timestamp.now();
 
+                    // Encrypting sensitive details
+                    final encryptedUserName = await encryptField(usernameController.text.trim());
+                    final encyptedFirstName = await encryptField(firstNameController.text.trim());
+                    final encryptedLastName = await encryptField(lastNameController.text.trim());
+
                     // Save user details in Firestore
                     await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
                       'userId': user.uid,
                       'email': emailController.text.trim(),
                       'emailVerified': user.emailVerified,
-                      'username': usernameController.text.trim(),
-                      'firstName': firstNameController.text.trim(),
-                      'lastName': lastNameController.text.trim(),
+                      'username': encryptedUserName,
+                      'firstName': encyptedFirstName,
+                      'lastName': encryptedLastName,
                       'phoneNumber': phoneNumberController.text.trim(),
                       'lastLogin': now,
                       'createdAt': now,

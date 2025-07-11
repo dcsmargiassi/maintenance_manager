@@ -84,6 +84,22 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
       fuelAmountController.text = newAmount.toStringAsFixed(2);
     }
   }
+  // Validator for numerical input fields
+  String? validateDecimalField(
+  String? value, {
+  required double max,
+  int maxDecimalPlaces = 3,
+  String emptyMessage = 'Please enter some text',
+}) {
+  if (value == null || value.trim().isEmpty) return emptyMessage;
+  final parsed = double.tryParse(value);
+  if (parsed == null) return 'Please enter valid number';
+  if (parsed < 0) return 'No negatives';
+  if (parsed > max) return 'Enter a realistic value';
+  final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
+  if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
+  return null;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -206,29 +222,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     hintText: 'Enter price of fuel',
                     prefix: Text('\$'),
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    // Parsing value
-                    final parsed = double.tryParse(value);
-                    if(parsed == null){
-                      return 'Please enter valid cost';
-                    }
-                    // Max/min cost limit
-                    if (parsed > 5000){
-                      return 'Enter a realistic cost';
-                    }
-                    if (parsed < 0){
-                      return 'No negatives';
-                    }
-                    // check decimal places
-                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                    if(!decimalMatch.hasMatch(value)) {
-                      return 'Max 3 decimal places allowed';
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateDecimalField(value, max: 5000),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
 
@@ -240,29 +234,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     hintText: 'Total Cost of Fuel',
                     prefix: Text("\$"),
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter cost of fuel';
-                    }
-                    // Parsing value
-                    final parsed = double.tryParse(value);
-                    if(parsed == null){
-                      return 'Please enter valid cost';
-                    }
-                    // Max/min cost limit
-                    if (parsed > 5000){
-                      return 'Enter a realistic cost';
-                    }
-                    if (parsed < 0){
-                      return 'No negatives';
-                    }
-                    // check decimal places
-                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                    if(!decimalMatch.hasMatch(value)) {
-                      return 'Max 3 decimal places allowed';
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateDecimalField(value, max: 5000),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
 
@@ -272,26 +244,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     labelText: 'Odometer',
                     hintText: 'Enter current odometer number (Optional)',
                   ),
-                  validator: (String? value) {
-                    if (value != null && value.trim().isNotEmpty) {
-                      final parsedValue = double.tryParse(value);
-                      if (parsedValue == null){
-                      return 'Please enter a number';
-                      }
-                      if (parsedValue < 0) {
-                        return 'No negatives';
-                      }
-                      if(parsedValue > 2500000){
-                        return 'Please enter realistic value';
-                      }
-                      // Check decimal places
-                      final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
-                        if(!decimalMatch.hasMatch(value)) {
-                          return 'Max 2 decimal places allowed';
-                        }
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateDecimalField(value, max: 5000),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
 
