@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
@@ -42,7 +43,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
     _exteriorDetailsFuture = ExteriorDetailsOperations().getExteriorDetailsByVehicleId(userId, widget.vehicleId);
     _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
-
   }
 
   void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
@@ -134,42 +134,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
         elevation: 0.0,
         centerTitle: true,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (choice) async {
-              switch (choice) {
-              case 'Profile':
-                await navigateToProfilePage(context);
-                break;
-              case 'HomePage':
-                await navigateToHomePage(context);
-                break;
-              case 'Settings':
-                await navigateToSettingsPage(context);
-                break;
-              case 'signout':
-                await navigateToLogin(context);
-                break;
-            }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: 'Profile',
-                child: Text('Profile'),
-              ),
-              PopupMenuItem(
-                value: 'HomePage',
-                child: Text('HomePage'),
-              ),
-              PopupMenuItem(
-                value: 'Settings',
-                child: Text('Settings'),
-              ),
-              PopupMenuItem(
-                value: 'signout',
-                child: Text('Sign Out'),
-              ),
-            ],
-          ),
+          buildAppNavigatorMenu(context),
         ],
       ),
       body: SafeArea(
@@ -261,6 +226,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       BatteryDetailsModel batteryData, 
       ExteriorDetailsModel exteriorData
     ) {
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -377,27 +343,27 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               ),
               _infoText(
                 "Fuel Cost for $_selectedMonth/$_selectedYear",
-                _selectedMonthFuelCost != null ? "\$${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+                _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
               ),
               _infoText(
                 "Fuel Cost for $_selectedYear",
-                _selectedYearFuelCost != null ? "\$${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+                _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
               ),
               _infoText(
                 "Lifetime Fuel Cost",
-                "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
+                "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
                 "Purchase Price",
-                "\$${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
+                "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
                 "Lifetime Maintenance Cost",
-                "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
+                "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
                 "Lifetime Vehicle Cost",
-                "\$${(
+                "${prefs.currencySymbol}${(
                     (vehicleData.purchasePrice ?? 0) +
                     (vehicleData.lifeTimeFuelCost ?? 0) +
                     (vehicleData.lifeTimeMaintenanceCost ?? 0)

@@ -56,3 +56,56 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class UserPreferences extends ChangeNotifier {
+  String currency;
+  String distanceUnit;
+  String dateFormat;
+  String theme;
+
+  factory UserPreferences.defaults() {
+  return UserPreferences(
+    currency: 'USD',
+    distanceUnit: 'Miles',
+    dateFormat: 'MM/DD/YYYY',
+    theme: 'Light',
+  );
+}
+
+  UserPreferences({
+    required this.currency,
+    required this.distanceUnit,
+    required this.dateFormat,
+    required this.theme,
+  });
+
+  String get currencySymbol {
+    switch (currency) {
+      case 'USD':
+        return '\$';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      case 'AUD':
+        return 'A\$';
+      case 'MXN':
+        return 'Mex\$';
+      default:
+        return currency;
+    }
+  }
+
+  void update({
+    String? currency,
+    String? distanceUnit,
+    String? dateFormat,
+    String? theme,
+  }) {
+    if (currency != null) this.currency = currency;
+    if (distanceUnit != null) this.distanceUnit = distanceUnit;
+    if (dateFormat != null) this.dateFormat = dateFormat;
+    if (theme != null) this.theme = theme;
+    notifyListeners();
+  }
+}

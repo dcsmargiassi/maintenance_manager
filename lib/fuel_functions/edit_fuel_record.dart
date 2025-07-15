@@ -6,9 +6,11 @@
 */
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:date_format_field/date_format_field.dart';
@@ -35,6 +37,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
   final TextEditingController dateController = TextEditingController();
   FuelRecords? fuelData;
 
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +47,8 @@ class _EditFuelFormState extends State<EditFuelForm> {
   Future<void> _loadFuelData() async {
     final fuelOps = FuelRecordOperations();
     final userId = Provider.of<AuthState>(context, listen: false).userId;
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
+
     final data = await fuelOps.getFuelRecord(widget.vehicleId, userId!, widget.fuelRecordId);
 
     // Convert the doubles stored to strings for editing
@@ -53,199 +58,158 @@ class _EditFuelFormState extends State<EditFuelForm> {
       fuelPriceController.text = data.fuelPrice.toString();
       refuelCostController.text = data.refuelCost.toString();
       odometerAmountController.text = data.odometerAmount.toString();
-      dateController.text = data.date!;
+      dateController.text = dateController.text = formatStoredDateForDisplay(data.date!, prefs.dateFormat);
     });
+  }
+
+  // Validator for numerical input fields
+  String? validateDecimalField(
+    String? value, {
+      required double max,
+      int maxDecimalPlaces = 3,
+      String emptyMessage = 'Please enter some text',
     }
+  ) {
+    if (value == null || value.trim().isEmpty) return emptyMessage;
+    final parsed = double.tryParse(value);
+    if (parsed == null) return 'Please enter valid number';
+    if (parsed < 0) return 'No negatives';
+    if (parsed > max) return 'Enter a realistic value';
+    final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
+    if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userId = Provider.of<AuthState>(context, listen: false).userId;
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final userId = authState.userId;
+    //final userId = Provider.of<AuthState>(context, listen: false).userId;
+
+    // Get user display preferences
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
 
     if (fuelData == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator())
-        );
+      );
     }
-      return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, Object? result) async {
-          if (didPop) return;
-          final shouldPop = await confirmDiscardChanges(context);
-          if (shouldPop == true && context.mounted) {
-            navigateToDisplayFuelRecordPage(context, widget.vehicleId);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Edit Fuel Record'),
-            // Custom backspace button
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white
+    return ConfirmableBackScaffold(
+      title: 'Edit Fuel Record',
+      showActions: false,
+      onConfirmBack: () async {
+        final shouldPop = await confirmDiscardChanges(context);
+        if (shouldPop && context.mounted) {
+          navigateToDisplayFuelRecordPage(context, widget.vehicleId);
+        }
+      },
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextFormField(
+                controller: fuelAmountController,
+                maxLength: 8,
+                decoration: const InputDecoration(
+                  labelText: 'Quantity of Fuel', 
+                  hintText: 'Enter Fuel Amount'),
+                validator: (value) => validateDecimalField(value, max: 5000),
               ),
-              onPressed: () {
-                navigateToDisplayFuelRecordPage(context, widget.vehicleId);
-              },
-            ),
+
+              TextFormField(
+                controller: fuelPriceController,
+                maxLength: 8,
+                decoration: InputDecoration(
+                  labelText: 'Fuel Price',
+                  hintText: 'Enter Fuel Price',
+                  prefix: Text(prefs.currencySymbol)
+                  ),
+                validator: (value) => validateDecimalField(value, max: 5000),
+              ),
+
+              TextFormField(
+                controller: refuelCostController,
+                maxLength: 8,
+                decoration: InputDecoration(
+                  labelText: 'Refuel Cost',
+                  hintText: 'Enter Refuel Cost',
+                  prefix: Text(prefs.currencySymbol)
+                ),
+                validator: (value) => validateDecimalField(value, max: 5000),
+              ),
+
+              TextFormField(
+                controller: odometerAmountController,
+                decoration: const InputDecoration(
+                  labelText: 'Odometer (Optional)',
+                  hintText: 'Enter current Odometer Number'),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return null;
+                  }
+                   return validateDecimalField(value, max: 2000000);
+                },
+              ),
+              const SizedBox(height: 20),
+
+              DateFormatField(
+                type: DateFormatType.type4,
+                controller: dateController,
+                decoration: const InputDecoration(
+                  labelText: 'Date',
+                  hintText: 'Enter purchase date of car',
+                ),
+                onComplete: (date) {
+                  if (date != null) {
+                    // format using user preference
+                    final formatter = DateFormat(prefs.dateFormat);
+                    setState(() {
+                      dateController.text = formatter.format(date);
+                    });
+                  }
+                },
+              ),
+
+              const SizedBox(height: 30),
+              
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    // Adjust the VehicleInformation table's lifeTimeFuelCost
+                    final newRefuelCost = double.tryParse(refuelCostController.text) ?? 0.0;
+                    await decrementLifeTimeFuelCosts(widget.vehicleId, userId!, fuelData!.refuelCost!);
+                    await incrementLifeTimeFuelCosts(widget.vehicleId, userId, newRefuelCost);
+
+                    // Store date with ISO 8601 format
+                    final storedDate = DateFormat(prefs.dateFormat).parse(dateController.text).toIso8601String();
+
+                    final updatedFuelRecord = FuelRecords(
+                      fuelRecordId: widget.fuelRecordId,
+                      vehicleId: widget.vehicleId,
+                      userId: userId,
+                      fuelAmount: double.tryParse(fuelAmountController.text) ?? 0.0,
+                      fuelPrice: double.tryParse(fuelPriceController.text) ?? 0.0,
+                      refuelCost: double.tryParse(refuelCostController.text) ?? 0.0,
+                      odometerAmount: odometerAmountController.text.trim().isEmpty
+                        ? 0.0
+                        : double.tryParse(odometerAmountController.text),
+                      date: storedDate,
+                      notes: null,
+                    );
+                    await FuelRecordOperations().updateFuelRecord(updatedFuelRecord);
+                    _loadFuelData();
+                    if (!context.mounted) return;
+                      navigateToDisplayFuelRecordPage(context, widget.vehicleId);
+                  }
+                },
+                child: const Text('Update Vehicle'),
+              ),
+            ],
           ),
-
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    controller: fuelAmountController,
-                    maxLength: 8,
-                    decoration: const InputDecoration(
-                      labelText: 'Fuel Amount', 
-                      hintText: 'Enter Fuel Amount'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Please Enter Fuel Amount';
-                      if (!isValidNumber(value)) return 'Please enter valid Number';
-                      // Parsing value
-                      final parsed = double.tryParse(value);
-                      if(parsed == null){
-                        return 'Please enter valid cost';
-                      }
-                      // Max/min fuel limit
-                      if (parsed > 5000){
-                        return 'Enter a realistic cost';
-                      }
-                      if (parsed < 0){
-                        return 'No negatives';
-                      }
-                      // check decimal places
-                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                      if(!decimalMatch.hasMatch(value)) {
-                        return 'Max 3 decimal places allowed';
-                      }
-                      return null;
-                    }
-                  ),
-                  TextFormField(
-                    controller: fuelPriceController,
-                    maxLength: 8,
-                    decoration: const InputDecoration(
-                      labelText: 'Fuel Price',
-                      hintText: 'Enter Fuel Price',
-                      prefix: Text('\$')
-                      ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Please Enter Fuel Amount';
-                      if (!isValidNumber(value)) return 'Please enter valid Number'; 
-                      // Parsing value
-                      final parsed = double.tryParse(value);
-                      if(parsed == null){
-                        return 'Please enter valid cost';
-                      }
-                      // Max/min cost limit
-                      if (parsed > 5000){
-                        return 'Enter a realistic cost';
-                      }
-                      if (parsed < 0){
-                        return 'No negatives';
-                      }
-                      // check decimal places
-                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                      if(!decimalMatch.hasMatch(value)) {
-                        return 'Max 3 decimal places allowed';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: refuelCostController,
-                    maxLength: 8,
-                    decoration: const InputDecoration(
-                      labelText: 'Refuel Cost',
-                      hintText: 'Enter Refuel Cost',
-                      prefix: Text('\$')
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Please Enter Total Cost';
-                      if (!isValidNumber(value)) return 'Please enter valid Number';
-                      // Parsing value
-                      final parsed = double.tryParse(value);
-                      if(parsed == null){
-                        return 'Please enter valid cost';
-                      }
-                      // Max/min cost limit
-                      if (parsed > 5000){
-                        return 'Enter a realistic cost';
-                      }
-                      if (parsed < 0){
-                        return 'No negatives';
-                      }
-                      // check decimal places
-                      final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                      if(!decimalMatch.hasMatch(value)) {
-                        return 'Max 3 decimal places allowed';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: odometerAmountController,
-                    decoration: const InputDecoration(
-                      labelText: 'Odometer (Optional)',
-                      hintText: 'Enter current Odometer Number'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) return null;
-                      if (!isValidNumber(value)) return 'Please enter valid number';
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-                 
-                  DateFormatField(
-                    type: DateFormatType.type4,
-                    controller: dateController,
-                    decoration: const InputDecoration(
-                      labelText: 'Date',
-                      hintText: 'Enter purchase date of car'),
-                    onComplete: (date) {
-                      if (date != null) {
-                        dateController.text = formatDateToString(date);
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 30),
-                  
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final updatedFuelRecord = FuelRecords(
-                          fuelRecordId: widget.fuelRecordId,
-                          vehicleId: widget.vehicleId,
-                          userId: userId,
-                          fuelAmount: double.tryParse(fuelAmountController.text) ?? 0.0,
-                          fuelPrice: double.tryParse(fuelPriceController.text) ?? 0.0,
-                          refuelCost: double.tryParse(refuelCostController.text) ?? 0.0,
-                          odometerAmount: odometerAmountController.text.trim().isEmpty
-                            ? null
-                            : double.tryParse(odometerAmountController.text),
-                          date: dateController.text,
-                          notes: null,
-                        );
-
-                        await FuelRecordOperations().updateFuelRecord(updatedFuelRecord);
-                        _loadFuelData();
-                        if (!context.mounted) return;
-                          navigateToDisplayFuelRecordPage(context, widget.vehicleId);
-                      }
-                    },
-                    child: const Text('Update Vehicle'),
-                  ),
-                ],
-              ),
-            ),
-        )
+        ),
       )
     );
   }

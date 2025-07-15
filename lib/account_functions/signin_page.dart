@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_manager/account_functions/password_reset.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/account_functions/create_account.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:provider/provider.dart';
 
@@ -32,17 +33,20 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // disabling backspace button
-        automaticallyImplyLeading: false,
-        title: const Text('Sign In'),
-      ),
+    return CustomScaffold(
+      title: "Sign In",
+      showActions: false,
+      showBackButton: false,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Image.asset(
+            'assets/icon/1024.png',
+            width: 250,
+            height: 250,
+          ),
             TextField(
               controller: emailController,
               decoration: const InputDecoration(labelText: 'Email'),

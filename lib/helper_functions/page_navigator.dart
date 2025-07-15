@@ -12,6 +12,7 @@ import 'package:maintenance_manager/account_functions/profile_page.dart';
 import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/homepage.dart';
+import 'package:maintenance_manager/settings/display_options.dart';
 import 'package:maintenance_manager/settings/manage_data.dart';
 import 'package:maintenance_manager/settings/privacy_policy_display.dart';
 import 'package:maintenance_manager/settings/settings.dart';
@@ -97,6 +98,13 @@ Future<void> navigateToManageDataPage(BuildContext context, {VoidCallback? onRet
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const ManageDataPage()),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToDisplayOptionsPage(BuildContext context, {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const DisplayOptionsPage()),
   ).then((_) => onReturn?.call());
 }
 

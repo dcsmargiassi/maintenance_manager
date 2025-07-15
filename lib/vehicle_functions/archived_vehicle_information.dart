@@ -261,6 +261,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
     ExteriorDetailsModel exteriorData,
     ) {
     double sizedBoxHeight = 20.0;
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
     
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10),
@@ -306,10 +307,8 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               _infoText("Model", vehicleData.model),
               _infoText("Year", vehicleData.year.toString()),
               _infoText("VIN", vehicleData.vin),
+              _infoText("License Plate", vehicleData.licensePlate.toString()),
               _infoText("Mileage", vehicleData.odometerCurrent.toString()),
-              _infoText("Fuel Cost", "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"),
-              _infoText("Repair Cost", "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"),
-
             ],
           ),
           ExpansionTile(
@@ -380,27 +379,27 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                 ),
                 _infoText(
                   "Fuel Cost for $_selectedMonth/$_selectedYear",
-                  _selectedMonthFuelCost != null ? "\$${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+                  _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
                 ),
                 _infoText(
                   "Fuel Cost for $_selectedYear",
-                  _selectedYearFuelCost != null ? "\$${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+                  _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
                 ),
                 _infoText(
                   "Lifetime Fuel Cost",
-                  "\$${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
+                  "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
                   "Purchase Price",
-                  "\$${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
+                  "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
                   "Lifetime Maintenance Cost",
-                  "\$${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
+                  "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
                   "Lifetime Vehicle Cost",
-                  "\$${(
+                  "${prefs.currencySymbol}${(
                       (vehicleData.purchasePrice ?? 0) +
                       (vehicleData.lifeTimeFuelCost ?? 0) +
                       (vehicleData.lifeTimeMaintenanceCost ?? 0)

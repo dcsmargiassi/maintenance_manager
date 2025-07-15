@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,6 @@ class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
 
   @override
-
   CreateAccountPageState createState() => CreateAccountPageState();
 }
 
@@ -41,16 +41,22 @@ class CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Account'),
-      ),
+    return CustomScaffold(
+      
+      title: "Create Account",
+      onBack:() => navigateToLogin(context),
+      showActions: false,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset(
+            'assets/icon/1024.png',
+            width: 200,
+            height: 200,
+          ),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(labelText: 'Email'),

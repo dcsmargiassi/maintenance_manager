@@ -9,8 +9,10 @@
 import 'package:date_format_field/date_format_field.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:provider/provider.dart';
 
 class VehicleDetailsSection extends StatefulWidget {
     // Controllers
@@ -59,6 +61,8 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
   @override
   Widget build(BuildContext context) {
     String selectedUnit = "Miles Per Hour";
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
+
     return Column(
       children: [
 
@@ -332,10 +336,10 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.purchasePriceController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Purchase Price',
             hintText: 'Enter Original Price',
-            prefix: Text('\$ '),
+            prefix: Text(prefs.currencySymbol),
           ),
           validator: (String? value) {
             if (value != null && value.trim().isNotEmpty) {

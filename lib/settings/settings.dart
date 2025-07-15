@@ -103,6 +103,16 @@ class DisplaySettingsState extends State<DisplaySettings> {
               ),
               Card(
                 child: ListTile(
+                  leading: const Icon(Icons.display_settings),
+                  title: const Text('Display Options'),
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: (){
+                    navigateToDisplayOptionsPage(context);
+                  },
+                ),
+              ),
+              Card(
+                child: ListTile(
                   leading: const Icon(Icons.privacy_tip),
                   title: const Text('Privacy Policy'),
                   trailing: const Icon(Icons.arrow_forward_ios),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database.dart';
@@ -31,8 +32,17 @@ void main() async {
   }
   //printVehicleTableColumns();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthState(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthState()),
+        ChangeNotifierProvider(create: (_) => UserPreferences(
+            currency: '\$',
+            distanceUnit: 'Miles',
+            dateFormat: 'MM/DD/YYYY',
+            theme: 'Light',
+          ),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -58,6 +68,28 @@ class MyApp extends StatelessWidget {
               );
             }
 
+            // Setting app preferences. currency, language, etc.
+            if (authState.user != null) {
+              Future.microtask(() async {
+                final doc = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(authState.userId)
+                    .get();
+
+                if (!context.mounted) return;
+
+                final data = doc.data();
+                if (data != null) {
+                  final prefs = Provider.of<UserPreferences>(context, listen: false);
+                  prefs.update(
+                    currency: data['currency'],
+                    distanceUnit: data['distanceUnit'],
+                    dateFormat: data['dateFormat'],
+                    theme: data['theme'],
+                  );
+                }
+              });
+            }
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,

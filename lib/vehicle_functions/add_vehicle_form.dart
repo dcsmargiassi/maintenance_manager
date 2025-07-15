@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
@@ -31,59 +32,9 @@ class AddVehicleFormApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Vehicle Form'),
-        // Custom backspace button
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back, 
-            color: Colors.white
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (choice) async {
-              switch (choice) {
-              case 'Profile':
-                await navigateToProfilePage(context);
-                break;
-              case 'HomePage':
-                await navigateToHomePage(context);
-                break;
-              case 'Settings':
-                await navigateToSettingsPage(context);
-                break;
-              case 'signout':
-                await navigateToLogin(context);
-                break;
-            }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: 'Profile',
-                child: Text('Profile'),
-              ),
-              PopupMenuItem(
-                value: 'HomePage',
-                child: Text('HomePage'),
-              ),
-              PopupMenuItem(
-                value: 'Settings',
-                child: Text('Settings'),
-              ),
-              PopupMenuItem(
-                value: 'signout',
-                child: Text('Sign Out'),
-              ),
-            ],
-          ),
-        ]
-      ),
-      body: const AddVehicleForm(),
+    return const CustomScaffold(
+      title: 'Add Vehicle Form',
+      body: AddVehicleForm(),
     );
   }
 }

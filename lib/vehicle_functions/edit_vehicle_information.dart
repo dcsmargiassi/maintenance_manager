@@ -83,8 +83,6 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   String selectedUnit = "Miles Per Hour";
   VehicleInformationModel? vehicleData;
   
-
-
   @override
   void initState() {
     super.initState();
@@ -212,7 +210,6 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
           title: const Text('Edit Vehicle'),
           ),
         body: SingleChildScrollView(
-          
           padding: const EdgeInsets.all(10),
           child: Form(
             key: _formKey,
@@ -428,7 +425,6 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                   } else {
                     await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
                   }
-
                     if (!context.mounted) return;
                     if(archiveController == 0){
                       navigateToSpecificVehiclePage(context, widget.vehicleId);

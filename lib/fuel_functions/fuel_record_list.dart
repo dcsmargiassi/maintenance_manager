@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
+import 'package:maintenance_manager/settings/display_constants.dart';
 import 'package:provider/provider.dart';
 
 class DisplayFuelLists extends StatefulWidget {
@@ -32,10 +34,10 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
   void _sortRecords(List<FuelRecords> records) {
     switch (_selectedSortType) {
       case "Newest":
-        records.sort((a, b) => b.date!.compareTo(a.date!));
+        records.sort((a, b) => DateTime.parse(b.date!).compareTo(DateTime.parse(a.date!)));
         break;
       case "Oldest":
-        records.sort((a, b) => a.date!.compareTo(b.date!));
+        records.sort((a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
         break;
       case "Low to High":
         records.sort((a, b) => (a.refuelCost ?? 0).compareTo(b.refuelCost ?? 0));
@@ -48,63 +50,11 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Custom backspace button
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white
-            ),
-          onPressed: () {
-            //Navigator.pop(context);
-            navigateToSpecificVehiclePage(context, widget.vehicleId);
-          },
-        ),
-        title: const Text(
-          'Fuel Records',
-        ),
-        elevation: 0.0,
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (choice) async {
-              switch (choice) {
-              case 'Profile':
-                await navigateToProfilePage(context);
-                break;
-              case 'HomePage':
-                await navigateToHomePage(context);
-                break;
-              case 'Settings':
-                await navigateToSettingsPage(context);
-                break;
-              case 'signout':
-                await navigateToLogin(context);
-                break;
-            }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: 'Profile',
-                child: Text('Profile'),
-              ),
-              PopupMenuItem(
-                value: 'HomePage',
-                child: Text('HomePage'),
-              ),
-              PopupMenuItem(
-                value: 'Settings',
-                child: Text('Settings'),
-              ),
-              PopupMenuItem(
-                value: 'signout',
-                child: Text('Sign Out'),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return CustomScaffold(
+      title: "Fuel Records",
+      onBack: () => navigateToSpecificVehiclePage(context, widget.vehicleId),
+      showActions: true,
+      showBackButton: true,
       body: SafeArea(
         child: Column(
           children: [
@@ -158,7 +108,7 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                         // if deleted, .deletefuel record function will be caleld, removing record/updating state
                         return _displayFuelRecords(record, () async {
                           // Decrement lifetime fuel costs prior to fully deleting record
-                          decrementLifeTimeFuelCosts(widget.vehicleId, record.userId!, record.fuelPrice!);
+                          decrementLifeTimeFuelCosts(widget.vehicleId, record.userId!, record.refuelCost!);
                           await FuelRecordOperations().deleteFuelRecord(record.fuelRecordId!);
                           setState(() {
                             records.removeAt(index);
@@ -180,7 +130,16 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
   }
 
   Widget _displayFuelRecords(FuelRecords data, VoidCallback onDelete) {
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
     // Implementation of slide to left to delete a fuel record on confirmation
+    var distanceVolume = "gallon";
+    if( prefs.distanceUnit == "Miles") {
+      distanceVolume = "gallons";
+    }
+    else {
+      distanceVolume = "liters";
+    }
+    final displayUnit = distanceUnits[prefs.distanceUnit] ?? prefs.distanceUnit;
     return Dismissible(
       key: Key(data.fuelRecordId.toString()),
       direction: DismissDirection.endToStart,
@@ -236,16 +195,16 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        formatDateDisplayToString(data.date),
+                        formatDateForUser(data.date, prefs.dateFormat),
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "\$${data.refuelCost}",
+                        "${prefs.currencySymbol}${data.refuelCost}",
                         style: const TextStyle(fontSize: 16),
-                      ),
+                      ), 
                       Text(
-                        "${data.fuelAmount} gallons @ \$${data.fuelPrice}/gal",
+                        "${data.fuelAmount} $distanceVolume @ ${prefs.currencySymbol}${data.fuelPrice}/$displayUnit",
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],

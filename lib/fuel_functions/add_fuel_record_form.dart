@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
-import 'package:maintenance_manager/helper_functions/format_date.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
@@ -39,10 +40,6 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
     fuelAmountController.addListener(_updateNumFilledFields);
     fuelPriceController.addListener(_updateNumFilledFields);
     refuelCostController.addListener(_updateNumFilledFields);
-    //Auto filling the date field
-    final now = DateTime.now();
-    isoDateToStore = now.toIso8601String();
-    dateController.text = formatDateToString(now);
   }
 
   void _updateNumFilledFields() {
@@ -86,251 +83,177 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
   }
   // Validator for numerical input fields
   String? validateDecimalField(
-  String? value, {
-  required double max,
-  int maxDecimalPlaces = 3,
-  String emptyMessage = 'Please enter some text',
-}) {
-  if (value == null || value.trim().isEmpty) return emptyMessage;
-  final parsed = double.tryParse(value);
-  if (parsed == null) return 'Please enter valid number';
-  if (parsed < 0) return 'No negatives';
-  if (parsed > max) return 'Enter a realistic value';
-  final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
-  if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
-  return null;
-}
+    String? value, {
+      required double max,
+      int maxDecimalPlaces = 3,
+      String emptyMessage = 'Please enter some text',
+    }
+  ) {
+    if (value == null || value.trim().isEmpty) return emptyMessage;
+    final parsed = double.tryParse(value);
+    if (parsed == null) return 'Please enter valid number';
+    if (parsed < 0) return 'No negatives';
+    if (parsed > max) return 'Enter a realistic value';
+    final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
+    if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context, listen: false);
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
     String? userId = authState.userId;
 
-    return Scaffold(
-      appBar: AppBar(
-        // Custom backspace button
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white
-            ),
-          onPressed: () async {
-            final shouldPop = await confirmDiscardChanges(context);
-            if (shouldPop && context.mounted) {
-            navigateToSpecificVehiclePage(context, widget.vehicleId);
-            }
-          },
-        ),
-        title: const Text(
-          'Add Fuel Record',
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (choice) async {
-              switch (choice) {
-              case 'Profile':
-                await navigateToProfilePage(context);
-                break;
-              case 'HomePage':
-                await navigateToHomePage(context);
-                break;
-              case 'Settings':
-                await navigateToSettingsPage(context);
-                break;
-              case 'signout':
-                await navigateToLogin(context);
-                break;
-              }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: 'Profile',
-                child: Text('Profile'),
+    //Auto filling the date field
+    if (dateController.text.isEmpty) {
+      final now = DateTime.now();
+      dateController.text = DateFormat(prefs.dateFormat).format(now);
+      isoDateToStore = now.toIso8601String();
+    }
+
+    return ConfirmableBackScaffold(
+      title: "Add Fuel Record",
+      onConfirmBack: () async { 
+        final shouldPop = await confirmDiscardChanges(context);
+          if (shouldPop && context.mounted) {
+          navigateToSpecificVehiclePage(context, widget.vehicleId);
+        }
+      },
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextFormField(
+                controller: fuelAmountController,
+                maxLength: 8,
+                decoration: const InputDecoration(
+                  labelText: 'Fuel Amount',
+                  hintText: 'Enter amount of fuel',
+                ),
+                validator: (value) => validateDecimalField(value, max: 5000),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
-              PopupMenuItem(
-                value: 'HomePage',
-                child: Text('HomePage'),
+
+              TextFormField(
+                controller: fuelPriceController,
+                maxLength: 8,
+                decoration: InputDecoration(
+                  labelText: 'Fuel Price',
+                  hintText: 'Enter price of fuel',
+                  prefix: Text(prefs.currencySymbol),
+                ),
+                validator: (value) => validateDecimalField(value, max: 5000),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
-              PopupMenuItem(
-                value: 'Settings',
-                child: Text('Settings'),
+
+              TextFormField(
+                controller: refuelCostController,
+                maxLength: 8,
+                decoration: InputDecoration(
+                  labelText: 'Total Cost',
+                  hintText: 'Total Cost of Fuel',
+                  prefix: Text(prefs.currencySymbol),
+                ),
+                validator: (value) => validateDecimalField(value, max: 5000),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
-              PopupMenuItem(
-                value: 'signout',
-                child: Text('Sign Out'),
+              
+              TextFormField(
+                controller: odometerAmountController,
+                decoration: const InputDecoration(
+                  labelText: 'Odometer',
+                  hintText: 'Enter current odometer number (Optional)',
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return null;
+                  }
+                   return validateDecimalField(value, max: 2000000);
+                },
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              ),
+              const SizedBox(height: buttonSpacingBoxHeight),
+              // Button to calculate missing field
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ElevatedButton.icon(
+                  onPressed: _numFilledFields == 2 ? _calculateMissingField : null,
+                  icon: const Icon(Icons.calculate),
+                  label: const Text('Calculate Missing Field'),
+                ),
+              ),
+              DateFormatField(
+                type: DateFormatType.type4,
+                controller: dateController,
+                decoration: const InputDecoration(
+                  labelText: 'Date',
+                  hintText: 'Enter date of refuel',
+                ),
+                onComplete: (date) {
+                  if (date != null) {
+                    isoDateToStore = date.toIso8601String();
+                    setState(() {
+                      dateController.text = DateFormat(prefs.dateFormat).format(date);
+                    });
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      //Check for valid date selection
+                      if (isoDateToStore == null){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please select a valid date.')),
+                        );
+                        return;
+                      }
+                    // Creating fuel record instance
+                    final fuelRecords = FuelRecords(
+                        fuelRecordId: null,
+                        userId: userId,
+                        vehicleId: widget.vehicleId,
+                        fuelAmount: double.parse(fuelAmountController.text),
+                        fuelPrice: double.parse(fuelPriceController.text),
+                        refuelCost: double.parse(refuelCostController.text),
+                        odometerAmount: odometerAmountController.text.trim().isEmpty
+                          ? 0.0
+                          : double.parse(odometerAmountController.text),
+                        date: isoDateToStore,//dateController.text,
+                        notes: null,
+                      );
+                    //Create an instance of VehicleOperations
+                    final FuelRecordOperations fuelOperations = FuelRecordOperations();
+                    try {
+                      await fuelOperations.createFuelRecord(fuelRecords);
+                      if (!context.mounted) return;
+                        // Updating lifetime fuel costs.
+                        await incrementLifeTimeFuelCosts(widget.vehicleId, userId!, double.parse(refuelCostController.text));
+                        if (!context.mounted) return;
+                        // Navigate back to specific vehicle page
+                        navigateToSpecificVehiclePage(context, widget.vehicleId);
+                      }
+                      catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text ("Error saving fuel record: $e")),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
               ),
             ],
           ),
-        ],
-      ),
-
-      body: PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (bool didPop, Object? result) async {
-            if (didPop) return;
-            final shouldPop = await confirmDiscardChanges(context);
-            if (shouldPop && context.mounted) {
-            navigateToSpecificVehiclePage(context, widget.vehicleId);
-            }
-          },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  controller: fuelAmountController,
-                  maxLength: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Fuel Amount',
-                    hintText: 'Enter amount of fuel',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    // Parsing value
-                    final parsed = double.tryParse(value);
-                    if(parsed == null){
-                      return 'Please enter valid cost';
-                    }
-                    // Max/min fuel limit
-                    if (parsed > 5000){
-                      return 'Enter a realistic cost';
-                    }
-                    if (parsed < 0){
-                      return 'No negatives';
-                    }
-                    // check decimal places
-                    final decimalMatch = RegExp(r'^\d+(\.\d{1,3})?$');
-                    if(!decimalMatch.hasMatch(value)) {
-                      return 'Max 3 decimal places allowed';
-                    }
-                    return null;
-                  },
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-
-                TextFormField(
-                  controller: fuelPriceController,
-                  maxLength: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Fuel Price',
-                    hintText: 'Enter price of fuel',
-                    prefix: Text('\$'),
-                  ),
-                  validator: (value) => validateDecimalField(value, max: 5000),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-
-                TextFormField(
-                  controller: refuelCostController,
-                  maxLength: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Total Cost',
-                    hintText: 'Total Cost of Fuel',
-                    prefix: Text("\$"),
-                  ),
-                  validator: (value) => validateDecimalField(value, max: 5000),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-
-                TextFormField(
-                  controller: odometerAmountController,
-                  decoration: const InputDecoration(
-                    labelText: 'Odometer',
-                    hintText: 'Enter current odometer number (Optional)',
-                  ),
-                  validator: (value) => validateDecimalField(value, max: 5000),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-
-                const SizedBox(height: buttonSpacingBoxHeight),
-
-                // Button to calculate missing field
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ElevatedButton.icon(
-                    onPressed: _numFilledFields == 2 ? _calculateMissingField : null,
-                    icon: const Icon(Icons.calculate),
-                    label: const Text('Calculate Missing Field'),
-                  ),
-                ),
-
-                DateFormatField(
-                  type: DateFormatType.type4,
-                  controller: dateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Date',
-                    hintText: 'Enter date of refuel',
-                  ),
-                  onComplete: (date) {
-                    if (date != null) {
-                      // Convert to iso8601 string for database
-                      final isoDate = date.toIso8601String();
-                      isoDateToStore = isoDate;
-                      // Convert to make readable in form
-                      dateController.text = formatDateToString(date);
-                    }
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        //Check for valid date selection
-                        if (isoDateToStore == null){
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please select a valid date.')),
-                          );
-                          return;
-                        }
-                      // Creating fuel record instance
-                      final fuelRecords = FuelRecords(
-                          fuelRecordId: null,
-                          userId: userId,
-                          vehicleId: widget.vehicleId,
-                          fuelAmount: double.parse(fuelAmountController.text),
-                          fuelPrice: double.parse(fuelPriceController.text),
-                          refuelCost: double.parse(refuelCostController.text),
-                          odometerAmount: odometerAmountController.text.trim().isEmpty
-                            ? 0.0
-                            : double.parse(odometerAmountController.text),
-                          date: isoDateToStore,//dateController.text,
-                          notes: null,
-                        );
-                      //Create an instance of VehicleOperations
-                      final FuelRecordOperations fuelOperations = FuelRecordOperations();
-                      try {
-                        await fuelOperations.createFuelRecord(fuelRecords);
-                        if (!context.mounted) return;
-                          // Updating lifetime fuel costs.
-                          await incrementLifeTimeFuelCosts(widget.vehicleId, userId!, double.parse(refuelCostController.text));
-
-                          if (!context.mounted) return;
-                          // Navigate back to specific vehicle page
-                          navigateToSpecificVehiclePage(context, widget.vehicleId);
-                        }
-                        catch (e) {
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text ("Error saving fuel record: $e")),
-                          );
-                        }
-                      }
-                    },
-                    child: const Text('Submit'),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
-      ), 
+      ),
     );
   }
 
