@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
-import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:maintenance_manager/helper_functions/validators.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class VehicleDetailsSection extends StatefulWidget {
@@ -70,17 +71,17 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vehicleNickNameController,
-          decoration: const InputDecoration(
-            labelText: 'Nickname',
-            hintText: 'Enter nickname of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.nicknameLabel,
+            hintText: AppLocalizations.of(context)!.nicknameHint,
           ),
           validator: (String? value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter some text';
-            }
-            if (value.length > 30){
-              return 'Max 30 characters allowed';
-            }
+            final requiredError = validateRequiredText(value, context);
+            if (requiredError != null) return requiredError;
+
+            final maxLengthError = validateMaxLength(value, 30, context);
+            if (maxLengthError != null) return maxLengthError;
+
             return null;
           },
         ),
@@ -89,18 +90,15 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.vinController,
-          decoration: const InputDecoration(
-            labelText: 'VIN',
-            hintText: 'Enter VIN of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.vinLabel,
+            hintText: AppLocalizations.of(context)!.vinHint,
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 17){
-              return 'Max 17 characters allowed';
-            }
-            return null;
+            return validateMaxLength(value, 17, context);
           },
         ),
 
@@ -108,18 +106,15 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.licensePlateController,
-          decoration: const InputDecoration(
-            labelText: 'License Plate',
-            hintText: 'Enter license plate of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.licensePlateLabel,
+            hintText: AppLocalizations.of(context)!.licensePlateHint,
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 12){
-              return 'Max 12 characters allowed';
-            }
-            return null;
+            return validateMaxLength(value, 12, context);
           },
         ),
 
@@ -135,7 +130,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please select a make';
+              return AppLocalizations.of(context)!.requiredFieldError;
             }
             return null;
           },
@@ -158,10 +153,10 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Make',
-              hintText: 'Search make',
+              labelText: AppLocalizations.of(context)!.makeLabel,
+              hintText: AppLocalizations.of(context)!.makeHint,
               border: OutlineInputBorder(), 
             ),
           ),
@@ -174,17 +169,17 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         SizedBox(height: sizedBoxHeight),
         TextFormField(
           controller: widget.modelController,
-          decoration: const InputDecoration(
-            labelText: 'Model',
-            hintText: 'Enter model of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.modelLabel,
+            hintText: AppLocalizations.of(context)!.modelHint,
           ),
           validator: (String? value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter some text';
-            }
-            if(value.length > 15){
-              return 'Max 15 characters allowed';
-            }
+            final requiredError = validateRequiredText(value, context);
+            if (requiredError != null) return requiredError;
+
+            final maxLengthError = validateMaxLength(value, 15, context);
+            if (maxLengthError != null) return maxLengthError;
+
             return null;
           },
         ),
@@ -193,18 +188,15 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.versionController,
-          decoration: const InputDecoration(
-            labelText: 'Submodel',
-            hintText: 'Enter submodel of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.submodelLabel,
+            hintText: AppLocalizations.of(context)!.submodelHint,
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 15){
-              return 'Max 15 characters allowed';
-            }
-            return null;
+            return validateMaxLength(value, 15, context);
           }
         ),
 
@@ -225,10 +217,10 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             ];
             return yearOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList(); 
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Year',
-              hintText: 'Select Model Year',
+              labelText: AppLocalizations.of(context)!.yearLabel,
+              hintText: AppLocalizations.of(context)!.yearHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -242,35 +234,23 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
 
         TextFormField(
           controller: widget.odometerCurrentController,
-          decoration: const InputDecoration(
-            labelText: 'Current Mileage',
-            hintText: 'Enter current mileage of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.currentMileageLabel,
+            hintText: AppLocalizations.of(context)!.currentMileageHint,
           ),
-          validator: (String? value) {
-            if (value == null || value.isEmpty) {
-              return null;
-            }
-            if(!isValidNumber(widget.odometerCurrentController.text)){
-              return 'Current Mileage must be a number';
-            }
-            if(value.length > 10){
-              return 'Max 10 characters allowed';
-            }
-            final parsedValue = double.tryParse(value);
-            if(parsedValue == null){
-              return 'Please enter valid number';
-            }
-            if(parsedValue < 0) {
-              return 'Current Mileage cannot be negative';
-            }
-            if(parsedValue > 2500000){
-              return 'Please enter realistic value';
-            }
-            // Check decimal places
-            final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
-              if(!decimalMatch.hasMatch(value)) {
-                return 'Max 2 decimal places allowed';
-              }
+          validator: (value) {
+            final numberError = validateNumber(
+              value,
+              maxInt: 2500000,
+              minInt: 0,
+              allowEmpty: true,
+              context,
+            );
+            if (numberError != null) return numberError;
+
+            final lengthError = validateMaxLength(value, 10, context);
+            if (lengthError != null) return lengthError;
+
             return null;
           },
         ),
@@ -309,7 +289,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Purchase History',
+            AppLocalizations.of(context)!.purchaseHistoryTitle,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.bold,
             ),
@@ -321,9 +301,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         DateFormatField(
           type: DateFormatType.type4,
           controller: widget.purchaseDateController,
-          decoration: const InputDecoration(
-            labelText: 'Purchase Date',
-            hintText: 'Enter purchase date of car',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.purchaseDateLabel,
+            hintText: AppLocalizations.of(context)!.purchaseDateHint,
           ),
           onComplete: (date) {
           setState(() {
@@ -337,69 +317,35 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
         TextFormField(
           controller: widget.purchasePriceController,
           decoration: InputDecoration(
-            labelText: 'Purchase Price',
-            hintText: 'Enter Original Price',
+            labelText: AppLocalizations.of(context)!.purchasePriceLabel,
+            hintText: AppLocalizations.of(context)!.purchaseDateHint,
             prefix: Text(prefs.currencySymbol),
           ),
-          validator: (String? value) {
-            if (value != null && value.trim().isNotEmpty) {
-              if(!isValidNumber(widget.purchasePriceController.text)){
-              return 'Purchase price must be a number';
-              }
-              final parsedValue = double.tryParse(value);
-              if(parsedValue == null){
-                return 'Please enter valid number';
-              }
-              // Max/min purchase price
-              if(parsedValue > 1000000){
-                return 'Enter a realistic cost';
-              }
-              if(parsedValue < 0){
-                return 'No negatives';
-              }
-              // Check decimal places
-              final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
-                if(!decimalMatch.hasMatch(value)) {
-                  return 'Max 2 decimal places allowed';
-                }
-            }
-            return null;
-          },
+          validator: (value) => validateNumber(
+            value,
+            maxInt: 1000000,
+            minInt: 0,
+            allowEmpty: true,
+            context,
+          ),
         ),
 
         SizedBox(height: sizedBoxHeight),
 
         TextFormField(
           controller: widget.odometerBuyController,
-          decoration: const InputDecoration(
-            labelText: 'Original Odometer Number',
-            hintText: 'Enter odometer number when purchased',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.originalOdometerLabel,
+            hintText: AppLocalizations.of(context)!.originalOdometerHint,
           ),
-          validator: (String? value) {
-            if (value != null && value.trim().isNotEmpty) {
-              if(!isValidNumber(widget.odometerBuyController.text)){
-              return 'Odometer reading must be a number';
-              }
-              final parsedValue = double.tryParse(value);
-              if(parsedValue == null){
-                return 'Please enter valid number';
-              }
-              if(parsedValue < 0) {
-                return 'Current Mileage cannot be negative';
-              }
-              if(parsedValue > 2500000){
-                return 'Please enter realistic value';
-              }
-              // Check decimal places
-              final decimalMatch = RegExp(r'^\d+(\.\d{1,2})?$');
-                if(!decimalMatch.hasMatch(value)) {
-                  return 'Max 2 decimal places allowed';
-                }
-            }
-            return null;
-          },
+          validator: (value) => validateNumber(
+            value,
+            maxInt: 2500000,
+            minInt: 0,
+            allowEmpty: true,
+            context,
+          ),
         ),
-
         SizedBox(height: sizedBoxHeight),
       ],
     );

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
+import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:provider/provider.dart';
 
 class DisplayOptionsPage extends StatefulWidget {
@@ -16,13 +17,21 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? _currentUser = FirebaseAuth.instance.currentUser;
 
-  final List<String> _languages = ['English (US)', 'Spanish'];
+  // Maps for languages
+  final Map<String, String> _languages = {
+    'English (US)': 'en',
+    'English (UK)': 'en-GB',
+    'Spanish': 'es',
+    'French': 'fr',
+    'German': 'de',
+    'Italian': 'it',
+  };
   final List<String> _currencies = ['USD', 'EUR', 'GBP', 'AUD', 'MXN', 'MXV'];
   final List<String> _distanceUnits = ['Miles', 'Kilometers'];
   final List<String> _dateFormats = ['MM/dd/yyyy', 'dd/MM/yyyy', 'yyyy-MM-dd'];
   final List<String> _themes = ['Light'];
 
-  String? _selectedLanguage;
+  String? _selectedLanguageLabel;
   String? _selectedCurrency;
   String? _selectedDistanceUnit;
   String? _selectedDateFormat;
@@ -45,8 +54,16 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
       if (doc.exists) {
         final data = doc.data()!;
+        String? storedLangCode = data['language'];
+
+        // Find label matching the code
+        String defaultLabel = _languages.entries.firstWhere(
+          (entry) => entry.value == storedLangCode,
+          orElse: () => _languages.entries.first,
+        ).key;
+
         setState(() {
-          _selectedLanguage = data['language'] ?? _languages.first;
+          _selectedLanguageLabel = defaultLabel;
           _selectedCurrency = data['currency'] ?? _currencies.first;
           _selectedDistanceUnit = data['distanceUnit'] ?? _distanceUnits.first;
           _selectedDateFormat = data['dateFormat'] ?? _dateFormats.first;
@@ -64,7 +81,7 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
   void setDefaults() {
     setState(() {
-      _selectedLanguage = _languages.first;
+       _selectedLanguageLabel = _languages.keys.first;
       _selectedCurrency = _currencies.first;
       _selectedDistanceUnit = _distanceUnits.first;
       _selectedDateFormat = _dateFormats.first;
@@ -80,12 +97,16 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
     try {
       await _firestore.collection('users').doc(_currentUser!.uid).set({
-        'language': _selectedLanguage,
+        'languageCode': _languages[_selectedLanguageLabel],
         'currency': _selectedCurrency,
         'distanceUnit': _selectedDistanceUnit,
         'dateFormat': _selectedDateFormat,
         'theme': _selectedTheme,
       }, SetOptions(merge: true));
+      if(!mounted) return;
+      // Force updating local app to reflect current language choice
+      final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+      languageProvider.setLocale(Locale(_selectedLanguageLabel!));
       
       if(!mounted) return;
 
@@ -130,10 +151,12 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
         child: ListView(
           children: [
             DropdownButtonFormField<String>(
-              value: _selectedLanguage,
+              value: _selectedLanguageLabel,
               decoration: const InputDecoration(labelText: 'Language'),
-              items: _languages.map((lang) => DropdownMenuItem(value: lang, child: Text(lang))).toList(),
-              onChanged: (val) => setState(() => _selectedLanguage = val),
+              items: _languages.keys
+                  .map((label) => DropdownMenuItem(value: label, child: Text(label)))
+                  .toList(),
+              onChanged: (val) => setState(() => _selectedLanguageLabel = val),
             ),
 
             const SizedBox(height: 20),

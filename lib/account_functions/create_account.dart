@@ -17,6 +17,7 @@ import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -43,7 +44,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       
-      title: "Create Account",
+      title: AppLocalizations.of(context)!.createAccount,
       onBack:() => navigateToLogin(context),
       showActions: false,
       body: SingleChildScrollView(
@@ -59,17 +60,17 @@ class CreateAccountPageState extends State<CreateAccountPage> {
           ),
               TextField(
                 controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
               ),
               TextField(
                 controller: usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.username),
               ),
               TextField(
                 controller: passwordController,
                 obscureText: _isObscure,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: AppLocalizations.of(context)!.password,
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -106,19 +107,19 @@ class CreateAccountPageState extends State<CreateAccountPage> {
               TextField(
                 controller: firstNameController,
                 obscureText: false,
-                decoration: const InputDecoration(labelText: 'First Name'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.firstName),
               ),
               TextField(
                 controller: lastNameController,
                 obscureText: false,
-                decoration: const InputDecoration(labelText: 'Last Name'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.lastName),
               ),
 
               const SizedBox(height: 16.0),
 
               SwitchListTile(
-                title: const Text('Enable Privacy Analytics'),
-                subtitle: const Text('Help improve the app by sharing anonymous usage data.'),
+                title: Text(AppLocalizations.of(context)!.enablePrivacyAnalytics),
+                subtitle: Text(AppLocalizations.of(context)!.privacyAnalyticsSubtitle),
                 value: privacyAnalytics,
                 onChanged: (value) {
                   setState(() {
@@ -138,7 +139,8 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                       password: passwordController.text.trim(),
                     );
                     final user = userCredential.user;
-                    if (user == null) throw Exception('Account Creation Failed!');
+                    if (!context.mounted) return;
+                    if (user == null) throw Exception(AppLocalizations.of(context)!.genericError);
 
                     // Send verification email
                     await user.sendEmailVerification();
@@ -176,10 +178,11 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                     }
 
                     if (!context.mounted) return;
+                    var username = usernameController;
                     ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(
+                       SnackBar(
                         content: Text(
-                          'Welcome! A verification email was sent. Please verify it when you can.'
+                          AppLocalizations.of(context)!.welcomeUser(username)
                         ),
                         duration: Duration(seconds: 5),
                       ),
@@ -194,7 +197,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                     );
                   }
                 },
-                child: const Text('Create Account'),
+                child: Text(AppLocalizations.of(context)!.createAccount),
               ),
             ],
           ),

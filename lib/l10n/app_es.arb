@@ -1,0 +1,8 @@
+{
+  "@@locale": "es",
+  "appTitle": "Vehicle Record Tracker",
+  "@appTitle": {
+    "description": "App store name of the application"
+  }
+
+}

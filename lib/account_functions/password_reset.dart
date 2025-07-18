@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -23,11 +24,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
       setState(() {
-        _message = 'Password reset email sent! Check your inbox.';
+        _message = AppLocalizations.of(context)!.resetPasswordEmailSent;
       });
     } on FirebaseAuthException catch (e) {
       setState(() {
-        _message = 'Error: ${e.message}';
+        _message = AppLocalizations.of(context)!.genericErrorWithDetail(e.message ?? 'Unknown error');
       });
     } finally {
       setState(() => _isLoading = false);
@@ -37,16 +38,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Reset Password")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.resetPassword)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text("Enter your email to receive a reset link."),
+            Text(AppLocalizations.of(context)!.enterEmailMessage),
             const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
@@ -54,7 +55,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               onPressed: _isLoading ? null : _resetPassword,
               child: _isLoading
                   ? const CircularProgressIndicator()
-                  : const Text("Send Reset Email"),
+                  : Text(AppLocalizations.of(context)!.sendResetEmail),
             ),
             const SizedBox(height: 16),
             Text(

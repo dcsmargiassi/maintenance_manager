@@ -7,6 +7,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class ExteriorDetailsSection extends StatelessWidget {
   // Controllers
@@ -39,6 +40,7 @@ class ExteriorDetailsSection extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       children: [
 
@@ -46,16 +48,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: driverWindshieldWiperController,
-          decoration: const InputDecoration(
-            labelText: 'Driver Side Windshield Wiper',
-            hintText: 'Ex WW-1801-PF'
+          decoration: InputDecoration(
+            labelText: localizations.driverWiperLabel,
+            hintText: localizations.driverWiperHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -65,16 +67,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: passengerWindshieldWiperController,
-          decoration: const InputDecoration(
-            labelText: 'Passenger Side Windshield Wiper',
-            hintText: 'Ex WW-1901-PF'
+          decoration: InputDecoration(
+            labelText: localizations.passengerWiperLabel,
+            hintText: localizations.passengerWiperHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -85,16 +87,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: rearWindshieldWiperController,
-          decoration: const InputDecoration(
-            labelText: 'Rear Windshield Wiper',
-            hintText: 'Ex WW-1701-PF'
+          decoration: InputDecoration(
+            labelText: localizations.rearWiperLabel,
+            hintText: localizations.rearWiperHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -104,16 +106,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: headlampHighBeamController,
-          decoration: const InputDecoration(
-            labelText: 'Headlamp High Beam',
-            hintText: 'Ex H7LL'
+          decoration: InputDecoration(
+            labelText: localizations.highBeamLabel,
+            hintText: localizations.highBeamHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -123,16 +125,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: headlampLowBeamController,
-          decoration: const InputDecoration(
-            labelText: 'Headlamp Low Beam',
-            hintText: 'Ex H11LL'
+          decoration: InputDecoration(
+            labelText: localizations.lowBeamLabel,
+            hintText: localizations.lowBeamHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -142,16 +144,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: turnLampController,
-          decoration: const InputDecoration(
-            labelText: 'Turn Lamp',
-            hintText: 'Ex T20'
+          decoration: InputDecoration(
+            labelText: localizations.turnLampLabel,
+            hintText: localizations.turnLampHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -161,16 +163,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: backupLampController,
-          decoration: const InputDecoration(
-            labelText: 'Backup Lamp',
-            hintText: 'Ex 921'
+          decoration: InputDecoration(
+            labelText: localizations.backupLampLabel,
+            hintText: localizations.backupLampHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -180,16 +182,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: fogLampController,
-          decoration: const InputDecoration(
-            labelText: 'Fog Lamp',
-            hintText: 'Ex H11'
+          decoration: InputDecoration(
+            labelText: localizations.fogLampLabel,
+            hintText: localizations.fogLampHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -199,16 +201,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: brakeLampController,
-          decoration: const InputDecoration(
-            labelText: 'Brake Lamp',
-            hintText: 'Ex LED'
+          decoration: InputDecoration(
+            labelText: localizations.brakeLampLabel,
+            hintText: localizations.brakeLampHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }
@@ -218,16 +220,16 @@ class ExteriorDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: licensePlateLampController,
-          decoration: const InputDecoration(
-            labelText: 'License Plate Lamp',
-            hintText: 'Ex C5W'
+          decoration: InputDecoration(
+            labelText: localizations.licenseLampLabel,
+            hintText: localizations.licenseLampHint
           ),
           validator: (String? value) {
             if (value == null || value.isEmpty){ 
               return null;
             }
             if(value.length > 20){
-              return 'Max 20 characters allowed';
+              return localizations.max20CharError;
             }
             return null;
           }

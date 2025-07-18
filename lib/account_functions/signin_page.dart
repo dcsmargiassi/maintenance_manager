@@ -17,6 +17,8 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/account_functions/create_account.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
@@ -34,7 +36,7 @@ class SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      title: "Sign In",
+      title: AppLocalizations.of(context)!.signIn,
       showActions: false,
       showBackButton: false,
       body: Padding(
@@ -49,12 +51,12 @@ class SignInPageState extends State<SignInPage> {
           ),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
             ),
             TextField(
               controller: passwordController,
               obscureText: _isObscure,
-              decoration: InputDecoration(labelText: 'Password',
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password,
               suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -71,11 +73,12 @@ class SignInPageState extends State<SignInPage> {
             ElevatedButton(
               onPressed: () async {
                 final authState = Provider.of<AuthState>(context, listen: false);
+                final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
                 //authState.setUser(FirebaseAuth.instance.currentUser);
                 // Check for blank email or password
                 if(emailController.text.isEmpty || passwordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Fill in all fields.")),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.fillInAllFields)),
                   );
                   return;
                 }
@@ -95,10 +98,9 @@ class SignInPageState extends State<SignInPage> {
                     'lastLogin': FieldValue.serverTimestamp(),
                   });
                   final documentSnapshot = await documentReference.get();
-                  final data = documentSnapshot.data();
+                  final data = documentSnapshot.data() ?? {};
 
                   // If pushNotifications or other fields is missing add to user database
-                  if (data != null) {
                     final Map<String, dynamic> updates = {};
 
                     if (!data.containsKey('pushNotifications')) {
@@ -111,7 +113,7 @@ class SignInPageState extends State<SignInPage> {
                       updates['phoneNumber'] = "";
                     }
                     if (!data.containsKey('languageCode')) {
-                      updates['languageCode'] = "en-US";
+                      updates['languageCode'] = "";
                     }
                     if (!data.containsKey('acceptedTermsVersion')) {
                       updates['acceptedTermsVersion'] = 1;
@@ -123,6 +125,23 @@ class SignInPageState extends State<SignInPage> {
                     if (updates.isNotEmpty) {
                       await documentReference.update(updates);
                     }
+
+                  // Defining app language locale
+                  final supportedCodes = [
+                    'en', 'en-GB', 'es', 'fr', 'de', 'it'
+                  ];
+                  String? languageCode = (data['languageCode'] ?? "").toString();
+                  if (languageCode.isEmpty) {
+                    // User has no saved preference default to device language, or English US
+                    final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+                    final candidate = supportedCodes.contains(deviceLocale.toString())
+                        ? deviceLocale.toString()
+                        : (supportedCodes.contains(deviceLocale.languageCode) ? deviceLocale.languageCode : 'en');
+                    languageCode = candidate;
+
+                    await documentReference.update({'languageCode': languageCode});
+
+                    languageProvider.setLocale(Locale(languageCode));
                   }
                   if(!mounted) return;
                   authState.setUser(FirebaseAuth.instance.currentUser);
@@ -140,13 +159,14 @@ class SignInPageState extends State<SignInPage> {
                   // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(e.message ?? "Login attempt failed due server issue, try again!"), // ${e.message}
+                    // ignore: use_build_context_synchronously
+                    content: Text(e.message ?? AppLocalizations.of(context)!.genericError), // ${e.message}
                     duration: const Duration(seconds: 3),
                   ),
                 );
               }
             },
-            child: const Text('Sign In'),
+            child: Text(AppLocalizations.of(context)!.signIn),
             ),
             const SizedBox(height: 16.0),
             TextButton(
@@ -156,7 +176,7 @@ class SignInPageState extends State<SignInPage> {
                   MaterialPageRoute(builder: (context) => const CreateAccountPage()),
                 );
               },
-              child: const Text('Create an account'),
+              child: Text(AppLocalizations.of(context)!.createAccount),
             ),
             TextButton(
               onPressed: () {
@@ -165,7 +185,7 @@ class SignInPageState extends State<SignInPage> {
                   MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
                 );
               },
-              child: const Text('Reset Password'),
+              child: Text(AppLocalizations.of(context)!.resetPassword),
             ),
           ],
         ),

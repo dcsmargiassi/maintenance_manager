@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,7 +42,8 @@ class DisplaySettingsState extends State<DisplaySettings> {
   @override
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context);
-     final userId = authState.userId;
+    final userId = authState.userId;
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         // Custom backspace button
@@ -54,8 +56,8 @@ class DisplaySettingsState extends State<DisplaySettings> {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
-          'Settings',
+        title: Text(
+          localizations.settingsTitle,
           ),
           elevation: 0.0,
           centerTitle: true,
@@ -66,7 +68,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: SwitchListTile(
                   secondary: const Icon(Icons.notifications),
-                  title: const Text('Enable Push Notifications'),
+                  title: Text(localizations.enablePushNotifications),
                   value: pushNotificationsEnabled,
                   onChanged: (value) async {
                     setState(() {
@@ -84,7 +86,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: SwitchListTile(
                   secondary: const Icon(Icons.analytics),
-                  title: const Text('Privacy Analytics'),
+                  title: Text(localizations.privacyAnalytics),
                   value: privacyAnalytics,
                   onChanged: (value) async {
                     setState(() {
@@ -104,7 +106,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.display_settings),
-                  title: const Text('Display Options'),
+                  title: Text(localizations.displayOptions),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: (){
                     navigateToDisplayOptionsPage(context);
@@ -114,7 +116,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.privacy_tip),
-                  title: const Text('Privacy Policy'),
+                  title: Text(localizations.privacyPolicy),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: (){
                     navigateToPrivacyPolicy(context);
@@ -124,7 +126,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.article),
-                  title: const Text('Terms of Service'),
+                  title: Text(localizations.termsOfService),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: (){
                     navigateToTermsOfServicePage(context);
@@ -134,7 +136,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.article),
-                  title: const Text('Licenses'),
+                  title: Text(localizations.licenses),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: (){
                     showLicensePage(context: context);
@@ -144,7 +146,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.password),
-                  title: const Text('Reset Password'),
+                  title: Text(localizations.resetPassword),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: (){
                     navigateToResetPasswordPage(context);
@@ -153,22 +155,22 @@ class DisplaySettingsState extends State<DisplaySettings> {
               ),
               ListTile(
                 leading: const Icon(Icons.manage_accounts),
-                title: const Text('Manage Data'),
+                title: Text(localizations.manageData),
                 onTap: () {
                   navigateToManageDataPage(context);
                 },
               ),
               AboutListTile(
-                icon: const Icon(Icons.info_outline),
-                applicationName: 'Vehicle Record Tracker',
+                icon: Icon(Icons.info_outline),
+                applicationName: 'localizations.applicationName',
                 applicationIcon: Image.asset('assets/icon/1024.png',
                 width: 124, height: 124),
                 applicationVersion: '0.6.0',
-                applicationLegalese: '© 2025 Vehicle Record Tracker',
+                applicationLegalese: 'localizations.applicationLegalese',
                 aboutBoxChildren: [
                   const SizedBox(height: 10),
-                  const Text('This app helps you track your fuel records.'),
-                  const Text('For support: vehiclerecordtracker@gmail.com'),
+                  Text(localizations.aboutDescription1),
+                  Text(localizations.aboutDescription2),
                 ],
               ),
             ],

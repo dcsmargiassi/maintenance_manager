@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -50,19 +51,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'firstName': _firstNameController.text.trim(),
-        'lastName': _lastNameController.text.trim(),
-        'username': _usernameController.text.trim(),
+        AppLocalizations.of(context)!.firstName: _firstNameController.text.trim(),
+        AppLocalizations.of(context)!.lastName: _lastNameController.text.trim(),
+        AppLocalizations.of(context)!.username: _usernameController.text.trim(),
       });
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.genericSuccess)),
       );
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.genericError)), // Failed to update
       );
     }
   }
@@ -80,7 +81,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (isLoading) return const Center(child: CircularProgressIndicator());
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Profile')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.editProfile)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -89,25 +90,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
             children: [
               TextFormField(
                 controller: _firstNameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
-                validator: (val) => val == null || val.isEmpty ? 'Enter first name' : null,
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.firstName),
+                validator: (val) => val == null || val.isEmpty ? AppLocalizations.of(context)!.firstNameHint : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _lastNameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
-                validator: (val) => val == null || val.isEmpty ? 'Enter last name' : null,
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.lastName),
+                validator: (val) => val == null || val.isEmpty ? AppLocalizations.of(context)!.lastNameHint : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
-                validator: (val) => val == null || val.isEmpty ? 'Enter username' : null,
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.username),
+                validator: (val) => val == null || val.isEmpty ? AppLocalizations.of(context)!.usernameHint : null,
               ),
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: saveProfile,
-                child: const Text('Save Changes'),
+                child: Text(AppLocalizations.of(context)!.saveChanges),
               ),
             ],
           ),

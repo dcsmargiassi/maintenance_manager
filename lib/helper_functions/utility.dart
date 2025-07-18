@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 bool isValidNumber(String? input) {
   if (input == null) return false;
@@ -40,16 +41,16 @@ Future<bool> confirmDiscardChanges(BuildContext context) async {
   return await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Discard changes?'),
-      content: const Text('You have unsaved changes. Are you sure you want to leave?'),
+      title: Text(AppLocalizations.of(context)!.discardChangesButton),
+      content: Text(AppLocalizations.of(context)!.discardChangesDescription),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancelButton),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Leave'),
+          child: Text(AppLocalizations.of(context)!.leaveButton),
         ),
       ],
     ),
@@ -85,4 +86,15 @@ Future<void> decrementLifeTimeFuelCosts(int vehicleId, String userId, double cos
    }
 }
 
-// Lifetime Maintenance Calculations
+// Locale mapping for language support
+
+class LanguageProvider with ChangeNotifier {
+  Locale? _locale;
+
+  Locale? get locale => _locale;
+
+  void setLocale(Locale locale) {
+    _locale = locale;
+    notifyListeners();
+  }
+}

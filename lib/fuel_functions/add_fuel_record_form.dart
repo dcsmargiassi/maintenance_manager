@@ -5,6 +5,7 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
 
     if (filled != 2) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill 2 of the fields above.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.fillInTwoFields)),
       );
       return;
     }
@@ -86,16 +87,15 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
     String? value, {
       required double max,
       int maxDecimalPlaces = 3,
-      String emptyMessage = 'Please enter some text',
     }
   ) {
-    if (value == null || value.trim().isEmpty) return emptyMessage;
+    if (value == null || value.trim().isEmpty) return AppLocalizations.of(context)!.emptyMessageText;
     final parsed = double.tryParse(value);
-    if (parsed == null) return 'Please enter valid number';
-    if (parsed < 0) return 'No negatives';
-    if (parsed > max) return 'Enter a realistic value';
+    if (parsed == null) return AppLocalizations.of(context)!.enterValidNumber;
+    if (parsed < 0) return AppLocalizations.of(context)!.noNegatives;
+    if (parsed > max) return AppLocalizations.of(context)!.enterRealisticValue;
     final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
-    if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
+    if (!decimalMatch.hasMatch(value)) return AppLocalizations.of(context)!.maxDecimalPlacesMessage(maxDecimalPlaces);
     return null;
   }
 
@@ -113,7 +113,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
     }
 
     return ConfirmableBackScaffold(
-      title: "Add Fuel Record",
+      title: AppLocalizations.of(context)!.addFuelRecordButton,
       onConfirmBack: () async { 
         final shouldPop = await confirmDiscardChanges(context);
           if (shouldPop && context.mounted) {
@@ -130,9 +130,9 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
               TextFormField(
                 controller: fuelAmountController,
                 maxLength: 8,
-                decoration: const InputDecoration(
-                  labelText: 'Fuel Amount',
-                  hintText: 'Enter amount of fuel',
+                decoration:  InputDecoration(
+                  labelText: AppLocalizations.of(context)!.fuelAmountLabel,
+                  hintText: AppLocalizations.of(context)!.fuelAmountLabelHint,
                 ),
                 validator: (value) => validateDecimalField(value, max: 5000),
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -142,8 +142,8 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 controller: fuelPriceController,
                 maxLength: 8,
                 decoration: InputDecoration(
-                  labelText: 'Fuel Price',
-                  hintText: 'Enter price of fuel',
+                  labelText: AppLocalizations.of(context)!.fuelPriceLabel,
+                  hintText: AppLocalizations.of(context)!.fuelPriceLabelHint,
                   prefix: Text(prefs.currencySymbol),
                 ),
                 validator: (value) => validateDecimalField(value, max: 5000),
@@ -154,8 +154,8 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 controller: refuelCostController,
                 maxLength: 8,
                 decoration: InputDecoration(
-                  labelText: 'Total Cost',
-                  hintText: 'Total Cost of Fuel',
+                  labelText: AppLocalizations.of(context)!.totalFuelCostLabel,
+                  hintText: AppLocalizations.of(context)!.totalFuelCostLabelHint,
                   prefix: Text(prefs.currencySymbol),
                 ),
                 validator: (value) => validateDecimalField(value, max: 5000),
@@ -164,9 +164,9 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
               
               TextFormField(
                 controller: odometerAmountController,
-                decoration: const InputDecoration(
-                  labelText: 'Odometer',
-                  hintText: 'Enter current odometer number (Optional)',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.odometerLabel,
+                  hintText: AppLocalizations.of(context)!.odometerLabelHint,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -183,15 +183,15 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                 child: ElevatedButton.icon(
                   onPressed: _numFilledFields == 2 ? _calculateMissingField : null,
                   icon: const Icon(Icons.calculate),
-                  label: const Text('Calculate Missing Field'),
+                  label: Text(AppLocalizations.of(context)!.calculateMissingFieldLabel),
                 ),
               ),
               DateFormatField(
                 type: DateFormatType.type4,
                 controller: dateController,
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                  hintText: 'Enter date of refuel',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.dateLabel,
+                  hintText: AppLocalizations.of(context)!.enterDateRefuelLabel,
                 ),
                 onComplete: (date) {
                   if (date != null) {
@@ -210,7 +210,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                       //Check for valid date selection
                       if (isoDateToStore == null){
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please select a valid date.')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.enterValidDateMessage)),
                         );
                         return;
                       }
@@ -242,12 +242,16 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                       catch (e) {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text ("Error saving fuel record: $e")),
+                          SnackBar(content: 
+                            Text (
+                              AppLocalizations.of(context)!.errorSavingFuelRecordMessage(e.toString())
+                            )
+                          ),
                         );
                       }
                     }
                   },
-                  child: const Text('Submit'),
+                  child: Text(AppLocalizations.of(context)!.enterValidDateMessage),
                 ),
               ),
             ],

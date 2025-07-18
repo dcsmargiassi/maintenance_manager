@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -120,7 +121,7 @@ if (migrationUpdates.isNotEmpty) {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.profile),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -140,18 +141,19 @@ if (migrationUpdates.isNotEmpty) {
         child: ListView(
           children: [
             // User info fields with empty fallback
-            _buildInfoRow('Username', getField('username')),
-            _buildInfoRow('Email', getField('email')),
-            _buildInfoRow('First Name', getField('firstName')),
-            _buildInfoRow('Last Name', getField('lastName')),
-            _buildInfoRow('Email Verified', emailVerified ? 'Yes' : 'No'),
+            _buildInfoRow(AppLocalizations.of(context)!.username, getField('username')),
+            _buildInfoRow(AppLocalizations.of(context)!.email, getField('email')),
+            _buildInfoRow(AppLocalizations.of(context)!.firstName, getField('firstName')),
+            _buildInfoRow(AppLocalizations.of(context)!.lastName, getField('lastName')),
+            _buildInfoRow(AppLocalizations.of(context)!.emailVerified, emailVerified ? 
+            AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no),
 
             const SizedBox(height: 30),
 
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.home),
-              label: const Text('Back to Home'),
+              label: Text(AppLocalizations.of(context)!.backToHome),
             ),
 
             const SizedBox(height: 20),
@@ -161,7 +163,7 @@ if (migrationUpdates.isNotEmpty) {
                 navigateToEditProfilePage(context);
               },
               icon: const Icon(Icons.edit),
-              label: const Text('Edit Profile'),
+              label: Text(AppLocalizations.of(context)!.editProfile),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             ),
             if (!emailVerified)
@@ -173,12 +175,13 @@ if (migrationUpdates.isNotEmpty) {
                     if (!mounted) return;
                     // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Verification email sent! Please check your inbox.')),
+                      // ignore: use_build_context_synchronously
+                      SnackBar(content: Text(AppLocalizations.of(context)!.verificationEmailSent)),
                     );
                   }
                 },
                 icon: const Icon(Icons.email),
-                label: const Text('Send Verification Email'),
+                label: Text(AppLocalizations.of(context)!.sendVerificationEmail),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
               ),
               

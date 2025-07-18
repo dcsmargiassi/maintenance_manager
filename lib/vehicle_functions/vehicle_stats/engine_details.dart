@@ -8,6 +8,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class EngineDetailsSection extends StatelessWidget {
   // Controllers
@@ -35,6 +36,7 @@ class EngineDetailsSection extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       children: [
         SizedBox(height: sizedBoxHeight),
@@ -64,10 +66,10 @@ class EngineDetailsSection extends StatelessWidget {
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Engine Size',
-              hintText: 'Select engine size',
+              labelText: localizations.engineSizeLabel,
+              hintText: localizations.engineSizeHint,
               border: OutlineInputBorder(), 
             ),
           ),
@@ -96,10 +98,10 @@ class EngineDetailsSection extends StatelessWidget {
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Engine Type',
-              hintText: 'Select cylinder count plus type',
+              labelText: localizations.cylinderCountLabel,
+              hintText: localizations.cylinderCountHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -121,14 +123,17 @@ class EngineDetailsSection extends StatelessWidget {
           },
           items: (String? filter, LoadProps? props) async {
             final allOptions = [
-              "Gas", "Diesel", "Hybrid", "Electric",
+              localizations.engineTypeGas,
+              localizations.engineTypeDiesel,
+              localizations.engineTypeHybrid,
+              localizations.engineTypeElectric,
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Engine type',
-              hintText: 'Select engine type',
+              labelText: localizations.engineTypeLabel,
+              hintText: localizations.engineTypeHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -142,9 +147,9 @@ class EngineDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: oilWeightController,
-          decoration: const InputDecoration(
-            labelText: 'Oil Weight',
-            hintText: 'Ex 5W-30'
+          decoration: InputDecoration(
+            labelText: localizations.oilWeightLabel,
+            hintText: localizations.oilWeightHint
           ),
         ),
           
@@ -160,14 +165,17 @@ class EngineDetailsSection extends StatelessWidget {
           },
           items: (String? filter, LoadProps? props) async {
             final allOptions = [
-              "Conventional", "Full Synthetic", "Mineral", "Synthetic Blend",
+              localizations.oilCompositionConventional,
+              localizations.oilCompositionFullSynthetic,
+              localizations.oilCompositionMineral,
+              localizations.oilCompositionSyntheticBlend,
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Oil Composition',
-              hintText: 'Select oil composition',
+              labelText: localizations.oilCompositionLabel,
+              hintText: localizations.oilCompositionHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -193,10 +201,10 @@ class EngineDetailsSection extends StatelessWidget {
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Oil Class',
-              hintText: 'Select oil class',
+              labelText: localizations.oilClassLabel,
+              hintText: localizations.oilClassHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -210,9 +218,9 @@ class EngineDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: oilFilterController,
-          decoration: const InputDecoration(
-            labelText: 'Oil Filter',
-            hintText: 'Ex S7317XL'
+          decoration: InputDecoration(
+            labelText: localizations.oilFilterLabel,
+            hintText: localizations.oilFilterHint
           ),
         ),
 
@@ -220,9 +228,9 @@ class EngineDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: engineFilterController,
-          decoration: const InputDecoration(
-            labelText: 'Engine Filter',
-            hintText: 'Ex FA-1785'
+          decoration: InputDecoration(
+            labelText: localizations.engineFilterLabel,
+            hintText: localizations.engineFilterHint
           ),
         ),
 

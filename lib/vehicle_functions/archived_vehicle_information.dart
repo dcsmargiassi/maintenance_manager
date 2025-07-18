@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
@@ -143,62 +145,10 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Custom backspace button
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white
-            ),
-          onPressed: () {
-            navigateToArchivedVehicles(context);
-          },
-        ),
-        title: const Text(
-          'Vehicle Information',
-        ),
-        elevation: 0.0,
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (choice) async {
-              switch (choice) {
-              case 'Profile':
-                await navigateToProfilePage(context);
-                break;
-              case 'HomePage':
-                await navigateToHomePage(context);
-                break;
-              case 'Settings':
-                await navigateToSettingsPage(context);
-                break;
-              case 'signout':
-                await navigateToLogin(context);
-                break;
-            }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: 'Profile',
-                child: Text('Profile'),
-              ),
-              PopupMenuItem(
-                value: 'HomePage',
-                child: Text('HomePage'),
-              ),
-              PopupMenuItem(
-                value: 'Settings',
-                child: Text('Settings'),
-              ),
-              PopupMenuItem(
-                value: 'signout',
-                child: Text('Sign Out'),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return CustomScaffold(
+      title: "Vehicle Information",
+      showActions: true,
+      showBackButton: true,
       body: SafeArea(
         child: FutureBuilder<VehicleInformationModel>(
           future: _vehicleInfoFuture,
@@ -300,14 +250,14 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
           ),
           ExpansionTile(
             initiallyExpanded: true,
-            title: const Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Name", vehicleData.vehicleNickName),
-              _infoText("Make", vehicleData.make),
-              _infoText("Model", vehicleData.model),
-              _infoText("Year", vehicleData.year.toString()),
-              _infoText("VIN", vehicleData.vin),
-              _infoText("License Plate", vehicleData.licensePlate.toString()),
+              _infoText(AppLocalizations.of(context)!.nicknameLabel, vehicleData.vehicleNickName),
+              _infoText(AppLocalizations.of(context)!.makeLabel, vehicleData.make),
+              _infoText(AppLocalizations.of(context)!.modelLabel, vehicleData.model),
+              _infoText(AppLocalizations.of(context)!.yearLabel, vehicleData.year.toString()),
+              _infoText(AppLocalizations.of(context)!.vinLabel, vehicleData.vin),
+              _infoText(AppLocalizations.of(context)!.licensePlateLabel, vehicleData.licensePlate.toString()),
               _infoText("Mileage", vehicleData.odometerCurrent.toString()),
             ],
           ),
@@ -418,11 +368,11 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
             ],
           ),
           ExpansionTile(
-            title: const Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Series Type", batteryData.batterySeriesType),
-              _infoText("Battery Size", batteryData.batterySize),
-              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps ?? 'N/A'}"),
+              _infoText(AppLocalizations.of(context)!.seriesTypeLabel, batteryData.batterySeriesType),
+              _infoText(AppLocalizations.of(context)!.bciGroupSizeLabel, batteryData.batterySize),
+              _infoText(AppLocalizations.of(context)!.coldCrankAmpsLabel, "${batteryData.coldCrankAmps ?? 'N/A'}"),
             ],
           ),
           ExpansionTile(
@@ -431,16 +381,16 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             children: [
-              _infoText("Driver Windshield Wiper", exteriorData.driverWindshieldWiper),
-              _infoText("Passenger Windshield Wiper", exteriorData.passengerWindshieldWiper),
-              _infoText("Rear Windshield Wiper", exteriorData.rearWindshieldWiper),
-              _infoText("Headlamp High Beam", exteriorData.headlampHighBeam),
-              _infoText("Headlamp Low Beam", exteriorData.headlampLowBeam),
-              _infoText("Turn Lamp", exteriorData.turnLamp),
-              _infoText("Backup Lamp", exteriorData.backupLamp),
-              _infoText("Fog Lamp", exteriorData.fogLamp),
-              _infoText("Brake Lamp", exteriorData.brakeLamp),
-              _infoText("License Plate Lamp", exteriorData.licensePlateLamp),
+              _infoText(AppLocalizations.of(context)!.driverWiperLabel, exteriorData.driverWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.passengerWiperLabel, exteriorData.passengerWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.rearWiperLabel, exteriorData.rearWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.highBeamLabel, exteriorData.headlampHighBeam),
+              _infoText(AppLocalizations.of(context)!.lowBeamLabel, exteriorData.headlampLowBeam),
+              _infoText(AppLocalizations.of(context)!.turnLampLabel, exteriorData.turnLamp),
+              _infoText(AppLocalizations.of(context)!.backupLampLabel, exteriorData.backupLamp),
+              _infoText(AppLocalizations.of(context)!.fogLampLabel, exteriorData.fogLamp),
+              _infoText(AppLocalizations.of(context)!.brakeLampLabel, exteriorData.brakeLamp),
+              _infoText(AppLocalizations.of(context)!.licenseLampLabel, exteriorData.licensePlateLamp),
             ],
           ),
           SizedBox(height: sizedBoxHeight),

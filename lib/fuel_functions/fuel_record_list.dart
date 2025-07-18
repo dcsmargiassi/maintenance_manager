@@ -5,6 +5,7 @@ import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:maintenance_manager/settings/display_constants.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +20,8 @@ class DisplayFuelLists extends StatefulWidget {
 
 class DisplayFuelListsState extends State<DisplayFuelLists> {
   late Future<List<FuelRecords>> _fuelRecordsFuture;
-  final List<String> _sortByType = ["Newest", "Oldest", "Low to High", "High to Low"];
-  String _selectedSortType = "Newest";
+  final List<String> _sortKeys =  ['newest', 'oldest', 'lowToHigh', 'highToLow'];
+  String _selectedSortType = 'newest';
 
   @override
   void initState() {
@@ -33,16 +34,16 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
   // Sort function based on user input, default is newest to oldest.
   void _sortRecords(List<FuelRecords> records) {
     switch (_selectedSortType) {
-      case "Newest":
+      case 'newest':
         records.sort((a, b) => DateTime.parse(b.date!).compareTo(DateTime.parse(a.date!)));
         break;
-      case "Oldest":
+      case 'oldest':
         records.sort((a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
         break;
-      case "Low to High":
+      case 'lowToHigh':
         records.sort((a, b) => (a.refuelCost ?? 0).compareTo(b.refuelCost ?? 0));
         break;
-      case "High to Low":
+      case 'highToLow':
         records.sort((a, b) => (b.refuelCost ?? 0).compareTo(a.refuelCost ?? 0));
         break;
     }
@@ -50,8 +51,17 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    final Map<String, String> sortLabels = {
+    'newest': localizations.sortNewest,
+    'oldest': localizations.sortOldest,
+    'lowToHigh': localizations.sortLowToHigh,
+    'highToLow': localizations.sortHighToLow,
+  };
+
     return CustomScaffold(
-      title: "Fuel Records",
+      title: localizations.fuelRecordsTitle,
       onBack: () => navigateToSpecificVehiclePage(context, widget.vehicleId),
       showActions: true,
       showBackButton: true,
@@ -64,13 +74,13 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                 children: [
                   Expanded(
                     child: DropdownButton<String>(
-                      hint: const Text("Select Sort Type"),
+                      hint: Text(localizations.selectSortTypeLabel),
                       value: _selectedSortType,
                       isExpanded: true,
-                      items: _sortByType.map((String type) {
+                      items: _sortKeys.map((key) {
                         return DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(type),
+                          value: key,
+                          child: Text(sortLabels[key]!),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
@@ -83,7 +93,7 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                   const SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () => setState(() {}), 
-                    child: const Text("Sort"),
+                    child: Text(localizations.sortButton),
                   ),
                 ],
               ),
@@ -118,7 +128,7 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                     );
                   } 
                   else {
-                    return const Center(child: Text("No Fuel Records Found"));
+                    return Center(child: Text(localizations.noRecordsFoundMessage));
                   }
                 },
               ),
@@ -153,16 +163,16 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Confirm Deletion"),
-            content: const Text("Are you sure you want to delete this fuel record?"),
+            title: Text(AppLocalizations.of(context)!.confirmDeleteButton),
+            content: Text(AppLocalizations.of(context)!.confirmFuelRecordDeleteMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Cancel"),
+                child: Text(AppLocalizations.of(context)!.cancelButton),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                child: Text(AppLocalizations.of(context)!.deleteButton, style: const TextStyle(color: Colors.red)),
               ),
             ],
           ),

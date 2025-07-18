@@ -12,6 +12,7 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
@@ -67,16 +68,15 @@ class _EditFuelFormState extends State<EditFuelForm> {
     String? value, {
       required double max,
       int maxDecimalPlaces = 3,
-      String emptyMessage = 'Please enter some text',
     }
   ) {
-    if (value == null || value.trim().isEmpty) return emptyMessage;
+    if (value == null || value.trim().isEmpty) return AppLocalizations.of(context)!.emptyMessageText;
     final parsed = double.tryParse(value);
-    if (parsed == null) return 'Please enter valid number';
-    if (parsed < 0) return 'No negatives';
-    if (parsed > max) return 'Enter a realistic value';
+    if (parsed == null) return AppLocalizations.of(context)!.enterValidNumber;
+    if (parsed < 0) return AppLocalizations.of(context)!.noNegatives;
+    if (parsed > max) return AppLocalizations.of(context)!.enterRealisticValue;
     final decimalMatch = RegExp(r'^\d+(\.\d{1,' + maxDecimalPlaces.toString() + r'})?$');
-    if (!decimalMatch.hasMatch(value)) return 'Max $maxDecimalPlaces decimal places allowed';
+    if (!decimalMatch.hasMatch(value)) return AppLocalizations.of(context)!.maxDecimalPlacesMessage(maxDecimalPlaces);
     return null;
   }
 
@@ -95,7 +95,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
       );
     }
     return ConfirmableBackScaffold(
-      title: 'Edit Fuel Record',
+      title: AppLocalizations.of(context)!.editFuelRecordButton,
       showActions: false,
       onConfirmBack: () async {
         final shouldPop = await confirmDiscardChanges(context);
@@ -113,9 +113,9 @@ class _EditFuelFormState extends State<EditFuelForm> {
               TextFormField(
                 controller: fuelAmountController,
                 maxLength: 8,
-                decoration: const InputDecoration(
-                  labelText: 'Quantity of Fuel', 
-                  hintText: 'Enter Fuel Amount'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.fuelAmountLabel, 
+                  hintText: AppLocalizations.of(context)!.fuelAmountLabelHint),
                 validator: (value) => validateDecimalField(value, max: 5000),
               ),
 
@@ -123,8 +123,8 @@ class _EditFuelFormState extends State<EditFuelForm> {
                 controller: fuelPriceController,
                 maxLength: 8,
                 decoration: InputDecoration(
-                  labelText: 'Fuel Price',
-                  hintText: 'Enter Fuel Price',
+                  labelText: AppLocalizations.of(context)!.fuelPriceLabel,
+                  hintText: AppLocalizations.of(context)!.fuelPriceLabelHint,
                   prefix: Text(prefs.currencySymbol)
                   ),
                 validator: (value) => validateDecimalField(value, max: 5000),
@@ -134,8 +134,8 @@ class _EditFuelFormState extends State<EditFuelForm> {
                 controller: refuelCostController,
                 maxLength: 8,
                 decoration: InputDecoration(
-                  labelText: 'Refuel Cost',
-                  hintText: 'Enter Refuel Cost',
+                  labelText: AppLocalizations.of(context)!.totalFuelCostLabel,
+                  hintText: AppLocalizations.of(context)!.totalFuelCostLabelHint,
                   prefix: Text(prefs.currencySymbol)
                 ),
                 validator: (value) => validateDecimalField(value, max: 5000),
@@ -143,9 +143,9 @@ class _EditFuelFormState extends State<EditFuelForm> {
 
               TextFormField(
                 controller: odometerAmountController,
-                decoration: const InputDecoration(
-                  labelText: 'Odometer (Optional)',
-                  hintText: 'Enter current Odometer Number'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.odometerLabel,
+                  hintText: AppLocalizations.of(context)!.odometerLabelHint),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return null;
@@ -158,9 +158,9 @@ class _EditFuelFormState extends State<EditFuelForm> {
               DateFormatField(
                 type: DateFormatType.type4,
                 controller: dateController,
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                  hintText: 'Enter purchase date of car',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.dateLabel,
+                  hintText: AppLocalizations.of(context)!.enterDateRefuelLabel,
                 ),
                 onComplete: (date) {
                   if (date != null) {
@@ -205,7 +205,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
                       navigateToDisplayFuelRecordPage(context, widget.vehicleId);
                   }
                 },
-                child: const Text('Update Vehicle'),
+                child: Text(AppLocalizations.of(context)!.updateButton),
               ),
             ],
           ),

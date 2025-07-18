@@ -8,6 +8,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:maintenance_manager/helper_functions/validators.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class BatteryDetailsSection extends StatelessWidget {
     // Controllers
@@ -25,15 +27,16 @@ class BatteryDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       children: [
         SizedBox(height: sizedBoxHeight),
 
         TextFormField(
           controller: batterySeriesTypeController,
-          decoration: const InputDecoration(
-            labelText: 'Series Type',
-            hintText: 'Ex BXT'
+          decoration: InputDecoration(
+            labelText: localizations.seriesTypeLabel,
+            hintText: localizations.seriesTypeHint
           ),
         ),
 
@@ -61,10 +64,10 @@ class BatteryDetailsSection extends StatelessWidget {
             ];
             return allOptions.where((item) => filter == null || item.toLowerCase().contains(filter.toLowerCase())).toList();
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'BCI Group Size',
-              hintText: 'Select group size',
+              labelText: localizations.bciGroupSizeLabel,
+              hintText: localizations.bciGroupSizeHint,
               border: OutlineInputBorder(),
             ),
           ),
@@ -78,27 +81,12 @@ class BatteryDetailsSection extends StatelessWidget {
 
         TextFormField(
           controller: coldCrankAmpsController,
-          decoration: const InputDecoration(
-            labelText: 'Cold Crank Amps - CCA',
-            hintText: 'Ex 500'
+          decoration: InputDecoration(
+            labelText: localizations.coldCrankAmpsLabel,
+            hintText: localizations.coldCrankAmpsHint
           ),
           validator: (String? value) {
-            if (value != null && value.trim().isNotEmpty){
-              if (value.length > 4){
-                return 'Max 4 characters allowed';
-              }
-              final parsedValue = int.tryParse(value);
-              if (parsedValue == null){
-                return 'Please enter an integer';
-              }
-              if (parsedValue < 0){
-                return 'No negatives';
-              }
-              if (parsedValue > 1500) {
-                return 'Enter a realistic number';
-              }
-            }
-            return null;
+            return validateNumber(value, context, maxInt: 1500, minInt: 0, maxDecimalPlaces: 0, allowEmpty: true);
           },
         ),
 

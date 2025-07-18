@@ -7,6 +7,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 PopupMenuButton<String> buildAppNavigatorMenu(BuildContext context) {
   return PopupMenuButton<String>(
@@ -26,11 +27,11 @@ PopupMenuButton<String> buildAppNavigatorMenu(BuildContext context) {
           break;
       }
     },
-    itemBuilder: (context) => const [
-      PopupMenuItem(value: 'Profile', child: Text('Profile')),
-      PopupMenuItem(value: 'HomePage', child: Text('HomePage')),
-      PopupMenuItem(value: 'Settings', child: Text('Settings')),
-      PopupMenuItem(value: 'signout', child: Text('Sign Out')),
+    itemBuilder: (context) => [
+      PopupMenuItem(value: 'Profile', child: Text(AppLocalizations.of(context)!.profileButton)),
+      PopupMenuItem(value: 'HomePage', child: Text(AppLocalizations.of(context)!.homepageButton)),
+      PopupMenuItem(value: 'Settings', child: Text(AppLocalizations.of(context)!.settingsButton)),
+      PopupMenuItem(value: 'signout', child: Text(AppLocalizations.of(context)!.signoutButton)),
     ],
   );
 }
