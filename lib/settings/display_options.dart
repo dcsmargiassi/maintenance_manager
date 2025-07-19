@@ -20,11 +20,11 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
   // Maps for languages
   final Map<String, String> _languages = {
     'English (US)': 'en',
-    'English (UK)': 'en-GB',
-    'Spanish': 'es',
-    'French': 'fr',
-    'German': 'de',
-    'Italian': 'it',
+    //'English (UK)': 'en-GB',
+    //'Spanish': 'es',
+    //'French': 'fr',
+    //'German': 'de',
+    //'Italian': 'it',
   };
   final List<String> _currencies = ['USD', 'EUR', 'GBP', 'AUD', 'MXN', 'MXV'];
   final List<String> _distanceUnits = ['Miles', 'Kilometers'];
