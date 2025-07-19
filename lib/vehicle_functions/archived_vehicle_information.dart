@@ -3,6 +3,7 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
@@ -29,11 +30,6 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
   int _selectedYear = DateTime.now().year;
   double? _selectedMonthFuelCost;
   double? _selectedYearFuelCost;
-  final Map<int, String> monthNames = const {
-      1: 'January', 2: 'February', 3: 'March', 4: 'April',
-      5: 'May', 6: 'June', 7: 'July', 8: 'August',
-      9: 'September', 10: 'October', 11: 'November', 12: 'December',
-    };
 
   @override
   void initState() {
@@ -146,7 +142,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      title: "Vehicle Information",
+      title: AppLocalizations.of(context)!.vehicleInformationTitle,
       showActions: true,
       showBackButton: true,
       body: SafeArea(
@@ -212,7 +208,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
     ) {
     double sizedBoxHeight = 20.0;
     final prefs = Provider.of<UserPreferences>(context, listen: false);
-    
+    final monthNames = getLocalizedMonthNames(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -239,7 +235,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                   );
                 },
                 icon: const Icon(Icons.edit),
-                label: const Text('Edit Vehicle'),
+                label: Text(AppLocalizations.of(context)!.editVehicle),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[800],
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -250,7 +246,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
           ),
           ExpansionTile(
             initiallyExpanded: true,
-            title: Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.vehicleDetails, style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
               _infoText(AppLocalizations.of(context)!.nicknameLabel, vehicleData.vehicleNickName),
               _infoText(AppLocalizations.of(context)!.makeLabel, vehicleData.make),
@@ -258,12 +254,12 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               _infoText(AppLocalizations.of(context)!.yearLabel, vehicleData.year.toString()),
               _infoText(AppLocalizations.of(context)!.vinLabel, vehicleData.vin),
               _infoText(AppLocalizations.of(context)!.licensePlateLabel, vehicleData.licensePlate.toString()),
-              _infoText("Mileage", vehicleData.odometerCurrent.toString()),
+              _infoText(AppLocalizations.of(context)!.mileageLabel, vehicleData.odometerCurrent.toString()),
             ],
           ),
           ExpansionTile(
               key: ValueKey('financial_summary_${_selectedYear}_$_selectedMonth'),
-              title: const Text("Financial Summary", style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)!.financialSummary, style: TextStyle(fontWeight: FontWeight.bold)),
               initiallyExpanded: true,
               children: [
                 Padding(
@@ -275,8 +271,8 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Select Year",
+                            Text(
+                              AppLocalizations.of(context)!.selectYear,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             DropdownButton<int>(
@@ -299,12 +295,13 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                       const SizedBox(width: 16),
 
                       // Month Selector Column
+                      
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Select Month",
+                            Text(
+                              AppLocalizations.of(context)!.selectMonth,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             DropdownButton<int>(
@@ -316,10 +313,11 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                                 }
                               },
                               items: List.generate(12, (index) {
-                                final monthNumber = index + 1;
-                                final monthName = monthNames[monthNumber]!;
-                                return DropdownMenuItem(value: monthNumber, child: Text(monthName));
-                              }),
+                              final monthNumber = index + 1;
+                              final monthName = monthNames[monthNumber]!;
+                              return DropdownMenuItem(value: monthNumber, child: Text(monthName));
+                              }
+                              ),
                             ),
                           ],
                         ),
@@ -328,27 +326,29 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                   ),
                 ),
                 _infoText(
-                  "Fuel Cost for $_selectedMonth/$_selectedYear",
-                  _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+                  AppLocalizations.of(context)!.monthlyFuelCost(_selectedMonth, _selectedYear),
+                  _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" 
+                  : AppLocalizations.of(context)!.noDataText
                 ),
                 _infoText(
-                  "Fuel Cost for $_selectedYear",
-                  _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+                  AppLocalizations.of(context)!.yearlyFuelCost(_selectedYear),
+                  _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" 
+                  : AppLocalizations.of(context)!.noDataText
                 ),
                 _infoText(
-                  "Lifetime Fuel Cost",
+                  AppLocalizations.of(context)!.lifetimeFuelCost,
                   "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
-                  "Purchase Price",
+                  AppLocalizations.of(context)!.purchasePriceLabel,
                   "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
-                  "Lifetime Maintenance Cost",
+                  AppLocalizations.of(context)!.lifetimeMaintenanceCost,
                   "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
                 ),
                 _infoText(
-                  "Lifetime Vehicle Cost",
+                  AppLocalizations.of(context)!.lifetimeVehicleCost,
                   "${prefs.currencySymbol}${(
                       (vehicleData.purchasePrice ?? 0) +
                       (vehicleData.lifeTimeFuelCost ?? 0) +
@@ -358,17 +358,19 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               ],
             ),
           ExpansionTile(
-            title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.engineDetails, 
+            style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Engine Details", engineData.engineSize),
-              _infoText("Cylinders", engineData.cylinders),
-              _infoText("Engine Type", engineData.engineType),
-              _infoText("Oil Weight", engineData.oilWeight),
-              _infoText("Oil Filter", engineData.oilFilter),
+              _infoText(AppLocalizations.of(context)!.engineDetails, engineData.engineSize),
+              _infoText(AppLocalizations.of(context)!.cylinderLabel, engineData.cylinders),
+              _infoText(AppLocalizations.of(context)!.engineTypeLabel, engineData.engineType),
+              _infoText(AppLocalizations.of(context)!.oilWeightLabel, engineData.oilWeight),
+              _infoText(AppLocalizations.of(context)!.oilFilterLabel, engineData.oilFilter),
             ],
           ),
           ExpansionTile(
-            title: Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.batteryDetails, 
+            style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
               _infoText(AppLocalizations.of(context)!.seriesTypeLabel, batteryData.batterySeriesType),
               _infoText(AppLocalizations.of(context)!.bciGroupSizeLabel, batteryData.batterySize),
@@ -376,8 +378,8 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
             ],
           ),
           ExpansionTile(
-            title: const Text(
-              "Exterior Details",
+            title: Text(
+              AppLocalizations.of(context)!.exteriorDetails,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             children: [
@@ -400,11 +402,11 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
               children:[
                 Row(
                   children: [
-                    buildVehicleButton('Fuel History', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.fuelHistoryButton, () {
                       navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
                     }),
                     const SizedBox(width: 16.0), 
-                    buildVehicleButton('Work History', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.workHistoryButton, () {
                       navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],
@@ -412,7 +414,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    buildVehicleButton('Unarchive', () async {
+                    buildVehicleButton(AppLocalizations.of(context)!.unarchiveButton, () async {
                       if (!mounted) return;
                       final userId = Provider.of<AuthState>(context, listen: false).userId!;
                       await VehicleOperations().unarchiveVehicleById(userId, vehicleData.vehicleId!);
@@ -420,7 +422,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                       navigateToSpecificVehiclePage(context, vehicleData.vehicleId!);
                     }),
                     const SizedBox(width: 16.0),
-                    buildVehicleButton('Delete Vehicle', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.deleteVehicleButton, () {
                       navigateToEditVehiclePage(
                         context, 
                         vehicleData.vehicleId!,

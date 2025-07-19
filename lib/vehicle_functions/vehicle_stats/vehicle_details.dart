@@ -271,9 +271,9 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             ];
             return selectedUnit;
           },
-          decoratorProps: const DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
-              labelText: 'Speedometer Reading',
+              labelText: AppLocalizations.of(context)!.speedometerReadingLabel,
               hintText: '',
               border: OutlineInputBorder(),
             ),

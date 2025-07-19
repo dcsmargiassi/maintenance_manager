@@ -3,6 +3,8 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/helper_functions/utility.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
@@ -27,11 +29,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   int _selectedYear = DateTime.now().year;
   double? _selectedMonthFuelCost;
   double? _selectedYearFuelCost;
-  final Map<int, String> monthNames = const {
-      1: 'January', 2: 'February', 3: 'March', 4: 'April',
-      5: 'May', 6: 'June', 7: 'July', 8: 'August',
-      9: 'September', 10: 'October', 11: 'November', 12: 'December',
-    };
 
   @override
   void initState() {
@@ -65,10 +62,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     previousMonth = 12;
     currentYear -= 1;
   }
-  
-  // ignore: avoid_print
-  //print("Current Year: $currentYear, Previous Month: $previousMonth");
-  // ignore: avoid_print
 
   final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
   double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost ?? 0));
@@ -116,27 +109,10 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Custom backspace button
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white
-            ),
-          onPressed: () {
-            navigateToMyVehicles(context);
-          },
-        ),
-        title: const Text(
-          'Vehicle Information',
-        ),
-        elevation: 0.0,
-        centerTitle: true,
-        actions: [
-          buildAppNavigatorMenu(context),
-        ],
-      ),
+    return CustomScaffold(
+      title: AppLocalizations.of(context)!.vehicleInformationTitle,
+      showActions: true,
+      showBackButton: true,
       body: SafeArea(
         child: FutureBuilder<VehicleInformationModel>(
           future: _vehicleInfoFuture,
@@ -227,6 +203,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       ExteriorDetailsModel exteriorData
     ) {
     final prefs = Provider.of<UserPreferences>(context, listen: false);
+    final monthNames = getLocalizedMonthNames(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -253,7 +230,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                   );
                 },
                 icon: const Icon(Icons.edit),
-                label: const Text('Edit Vehicle'),
+                label: Text(AppLocalizations.of(context)!.editVehicle),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[800],
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -264,20 +241,20 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
           ),
           ExpansionTile(
             initiallyExpanded: true,
-            title: const Text('Vehicle Details', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.vehicleDetails, style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Name", vehicleData.vehicleNickName),
-              _infoText("Make", vehicleData.make),
-              _infoText("Model", vehicleData.model),
-              _infoText("Year", vehicleData.year.toString()),
-              _infoText("VIN", vehicleData.vin),
-              _infoText("License Plate", vehicleData.licensePlate.toString()),
-              _infoText("Mileage", vehicleData.odometerCurrent.toString()),
+              _infoText(AppLocalizations.of(context)!.nicknameLabel, vehicleData.vehicleNickName),
+              _infoText(AppLocalizations.of(context)!.makeLabel, vehicleData.make),
+              _infoText(AppLocalizations.of(context)!.modelLabel, vehicleData.model),
+              _infoText(AppLocalizations.of(context)!.yearLabel, vehicleData.year.toString()),
+              _infoText(AppLocalizations.of(context)!.vinLabel, vehicleData.vin),
+              _infoText(AppLocalizations.of(context)!.licensePlateLabel, vehicleData.licensePlate.toString()),
+              _infoText(AppLocalizations.of(context)!.mileageLabel, vehicleData.odometerCurrent.toString()),
             ],
           ),
           ExpansionTile(
             key: ValueKey('financial_summary_${_selectedYear}_$_selectedMonth'),
-            title: const Text("Financial Summary", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.financialSummary, style: TextStyle(fontWeight: FontWeight.bold)),
             initiallyExpanded: true,
             children: [
               Padding(
@@ -289,8 +266,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Select Year",
+                          Text(
+                            AppLocalizations.of(context)!.selectYear,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           DropdownButton<int>(
@@ -317,8 +294,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Select Month",
+                          Text(
+                            AppLocalizations.of(context)!.selectMonth,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           DropdownButton<int>(
@@ -330,10 +307,11 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                               }
                             },
                             items: List.generate(12, (index) {
-                              final monthNumber = index + 1;
-                              final monthName = monthNames[monthNumber]!;
-                              return DropdownMenuItem(value: monthNumber, child: Text(monthName));
-                            }),
+                            final monthNumber = index + 1;
+                            final monthName = monthNames[monthNumber]!;
+                            return DropdownMenuItem(value: monthNumber, child: Text(monthName));
+                            }
+                            ),
                           ),
                         ],
                       ),
@@ -342,27 +320,29 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 ),
               ),
               _infoText(
-                "Fuel Cost for $_selectedMonth/$_selectedYear",
-                _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" : "No Data"
+                AppLocalizations.of(context)!.monthlyFuelCost(_selectedMonth, _selectedYear),
+                _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" 
+                : AppLocalizations.of(context)!.noDataText
               ),
               _infoText(
-                "Fuel Cost for $_selectedYear",
-                _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" : "No Data"
+                AppLocalizations.of(context)!.yearlyFuelCost(_selectedYear),
+                _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" 
+                : AppLocalizations.of(context)!.noDataText
               ),
               _infoText(
-                "Lifetime Fuel Cost",
+                AppLocalizations.of(context)!.lifetimeFuelCost,
                 "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
-                "Purchase Price",
+                AppLocalizations.of(context)!.purchasePriceLabel,
                 "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
-                "Lifetime Maintenance Cost",
+                AppLocalizations.of(context)!.lifetimeMaintenanceCost,
                 "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
               ),
               _infoText(
-                "Lifetime Vehicle Cost",
+                AppLocalizations.of(context)!.lifetimeVehicleCost,
                 "${prefs.currencySymbol}${(
                     (vehicleData.purchasePrice ?? 0) +
                     (vehicleData.lifeTimeFuelCost ?? 0) +
@@ -372,39 +352,41 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
             ],
           ),
           ExpansionTile(
-            title: const Text("Engine Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.engineDetails, 
+            style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Engine Details", engineData.engineSize),
-              _infoText("Cylinders", engineData.cylinders),
-              _infoText("Engine Type", engineData.engineType),
-              _infoText("Oil Weight", engineData.oilWeight),
-              _infoText("Oil Filter", engineData.oilFilter),
+              _infoText(AppLocalizations.of(context)!.engineDetails, engineData.engineSize),
+              _infoText(AppLocalizations.of(context)!.cylinderLabel, engineData.cylinders),
+              _infoText(AppLocalizations.of(context)!.engineTypeLabel, engineData.engineType),
+              _infoText(AppLocalizations.of(context)!.oilWeightLabel, engineData.oilWeight),
+              _infoText(AppLocalizations.of(context)!.oilFilterLabel, engineData.oilFilter),
             ],
           ),
           ExpansionTile(
-            title: const Text("Battery Details", style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.batteryDetails, 
+            style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText("Series Type", batteryData.batterySeriesType),
-              _infoText("Battery Size", batteryData.batterySize),
-              _infoText("Cold Crank Amps", "${batteryData.coldCrankAmps}"),
+              _infoText(AppLocalizations.of(context)!.seriesTypeLabel, batteryData.batterySeriesType),
+              _infoText(AppLocalizations.of(context)!.bciGroupSizeLabel, batteryData.batterySize),
+              _infoText(AppLocalizations.of(context)!.coldCrankAmpsLabel, "${batteryData.coldCrankAmps ?? 'N/A'}"),
             ],
           ),
           ExpansionTile(
-            title: const Text(
-              "Exterior Details",
+            title: Text(
+              AppLocalizations.of(context)!.exteriorDetails,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             children: [
-              _infoText("Driver Windshield Wiper", exteriorData.driverWindshieldWiper),
-              _infoText("Passenger Windshield Wiper", exteriorData.passengerWindshieldWiper),
-              _infoText("Rear Windshield Wiper", exteriorData.rearWindshieldWiper),
-              _infoText("Headlamp High Beam", exteriorData.headlampHighBeam),
-              _infoText("Headlamp Low Beam", exteriorData.headlampLowBeam),
-              _infoText("Turn Lamp", exteriorData.turnLamp),
-              _infoText("Backup Lamp", exteriorData.backupLamp),
-              _infoText("Fog Lamp", exteriorData.fogLamp),
-              _infoText("Brake Lamp", exteriorData.brakeLamp),
-              _infoText("License Plate Lamp", exteriorData.licensePlateLamp),
+              _infoText(AppLocalizations.of(context)!.driverWiperLabel, exteriorData.driverWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.passengerWiperLabel, exteriorData.passengerWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.rearWiperLabel, exteriorData.rearWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.highBeamLabel, exteriorData.headlampHighBeam),
+              _infoText(AppLocalizations.of(context)!.lowBeamLabel, exteriorData.headlampLowBeam),
+              _infoText(AppLocalizations.of(context)!.turnLampLabel, exteriorData.turnLamp),
+              _infoText(AppLocalizations.of(context)!.backupLampLabel, exteriorData.backupLamp),
+              _infoText(AppLocalizations.of(context)!.fogLampLabel, exteriorData.fogLamp),
+              _infoText(AppLocalizations.of(context)!.brakeLampLabel, exteriorData.brakeLamp),
+              _infoText(AppLocalizations.of(context)!.licenseLampLabel, exteriorData.licensePlateLamp),
             ],
           ),
           const SizedBox(height: 20),
@@ -414,11 +396,11 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               children: [
                 Row(
                   children: [
-                    buildVehicleButton('Add Fuel', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.buttonAddFuel, () {
                       navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
                     }),
                     const SizedBox(width: 16.0),
-                    buildVehicleButton('Add Work', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.buttonAddWork, () {
                       // navigateToAddWorkRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],
@@ -426,11 +408,11 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    buildVehicleButton('View Fuel', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.buttonViewFuel, () {
                       navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
                     }),
                     const SizedBox(width: 16.0),
-                    buildVehicleButton('View Work', () {
+                    buildVehicleButton(AppLocalizations.of(context)!.buttonViewWork, () {
                       // navigateToDisplayWorkRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],

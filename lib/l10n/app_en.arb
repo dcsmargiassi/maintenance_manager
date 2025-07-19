@@ -116,6 +116,41 @@
     "description": "Edit Profile page title"
   },
 
+  "editVehicle": "Edit Vehicle",
+  "@editVehicle": {
+    "description": "Edit Vehicle button title"
+  },
+
+  "vehicleDetails": "Vehicle Details",
+  "@vehicleDetails": {
+    "description": "Vehicle details sub-heading"
+  },
+
+  "financialSummary": "Financial Summary",
+  "@financialSummary": {
+    "description": "Financial Summary sub-heading"
+  },
+
+  "vehicleInformationTitle": "Vehicle Information",
+  "@vehicleInformationTitle": {
+    "description": "Vehicle Information heading"
+  },
+
+  "engineDetails": "Engine Details",
+  "@engineDetails": {
+    "description": "Engine Details sub-heading"
+  },
+
+  "exteriorDetails": "Exterior Details",
+  "@exteriorDetails": {
+    "description": "Exterior Details sub-heading"
+  },
+
+  "batteryDetails": "Battery Details",
+  "@batteryDetails": {
+    "description": "Battery Details sub-heading"
+  },
+
   "backToHome": "Back to Home",
   "@backToHome": {
     "description": "Back to home button text"
@@ -299,9 +334,19 @@
     "description": "Button text for delete"
   },
 
+  "deleteVehicleButton": "Delete Vehicle",
+  "@deleteVehicleButton": {
+    "description": "Button text for delete vehicle"
+  },
+
   "cancelButton": "Cancel",
   "@cancelButton": {
     "description": "Button text for cancelling an action"
+  },
+
+  "unarchiveButton": "Unarchive",
+  "@unarchiveButton": {
+    "description": "Button text for unarchiving a vehicle"
   },
 
   "discardChangesButton": "Discard Changes",
@@ -597,6 +642,11 @@
     "description": "Hint for cylinder count dropdown"
   },
 
+  "cylinderLabel": "Cylinder ",
+  "@cylinderLabel": {
+    "description": "Label for cylinder count dropdown"
+  },
+
   "engineTypeLabel": "Engine Type",
   "@engineTypeLabel": {
     "description": "Label for engine type dropdown"
@@ -657,7 +707,7 @@
     "description": "Hint for engine filter field"
   },
 
-    "engineTypeGas": "Gas",
+  "engineTypeGas": "Gas",
   "@engineTypeGas": {
     "description": "Engine type option: Gas"
   },
@@ -795,11 +845,6 @@
     "description": "Hint for license plate lamp field" 
   },
 
-  "max20CharError": "Max 20 characters allowed",
-  "@max20CharError": { 
-    "description": "Error message for max of 20 characters allowed" 
-  },
-
   "requiredFieldError": "Please enter some text",
   "@requiredFieldError": {
     "description": "Shown when a required field is left empty"
@@ -920,6 +965,68 @@
     "description": "Hint for current mileage input field" 
   },
 
+  "mileageLabel": "Mileage",
+  "@mileageLabel": {
+    "description": "Label for vehicle mileage"
+  },
+
+  "selectYear": "Select Year",
+  "@selectYear": {
+    "description": "Label for year dropdown"
+  },
+
+  "selectMonth": "Select Month",
+  "@selectMonth": {
+    "description": "Label for month dropdown"
+  },
+
+  "noDataText": "No Data",
+  "@noDataText": {
+    "description": "Label for missing data"
+  },
+
+  "monthlyFuelCost": "Fuel Cost for {month}/{year}",
+  "@monthlyFuelCost": {
+    "description": "Fuel cost for the selected month and year",
+    "placeholders": {
+      "month": { "type": "int" },
+      "year": { "type": "int" }
+    }
+  },
+
+  "yearlyFuelCost": "Fuel Cost for {year}",
+  "@yearlyFuelCost": {
+    "description": "Fuel cost for the selected year",
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+
+  "lifetimeFuelCost": "Lifetime Fuel Cost",
+  "@lifetimeFuelCost": {
+    "description": "Total fuel cost for vehicle lifetime"
+  },
+
+  "lifetimeMaintenanceCost": "Lifetime Maintenance Cost",
+  "@lifetimeMaintenanceCost": {
+    "description": "Total maintenance cost for vehicle lifetime"
+  },
+
+  "lifetimeVehicleCost": "Lifetime Vehicle Cost",
+  "@lifetimeVehicleCost": {
+    "description": "Total cost of owning the vehicle including purchase, fuel, and maintenance"
+  },
+
+  "fuelHistoryButton": "Fuel History",
+  "@fuelHistoryButton": {
+    "description": "Button to view fuel history"
+  },
+
+  "workHistoryButton": "Work History",
+  "@workHistoryButton": {
+    "description": "Button to view maintenance/work history"
+  },
+
   "speedometerReadingLabel": "Speedometer Reading",
   "@speedometerReadingLabel": { 
     "description": "Label for speedometer reading dropdown" 
@@ -958,6 +1065,108 @@
   "originalOdometerHint": "Enter odometer number when purchased",
   "@originalOdometerHint": { 
     "description": "Hint for original odometer field" 
+  },
+
+  "recalculateFuelTotalsTitle": "Recalculate All Fuel Totals",
+  "@recalculateFuelTotalsTitle": {
+    "description": "Title for button in settings to recalculate all fuel totals",
+    "type": "text"
+  },
+
+  "recalculateFuelTotalsSubtitle": "Corrects lifetime fuel totals for all vehicles",
+  "@recalculateFuelTotalsSubtitle": {
+    "description": "Subtitle explaining that this fixes fuel totals for all vehicles",
+    "type": "text"
+  },
+
+  "recalculateFuelTotalsDialogTitle": "Recalculate Fuel Costs?",
+  "@recalculateFuelTotalsDialogTitle": {
+    "description": "Title of confirmation dialog before recalculating fuel totals",
+    "type": "text"
+  },
+
+  "recalculateFuelTotalsDialogBody": "This will overwrite lifetime fuel totals with the sum of all fuel records. Continue?",
+  "@recalculateFuelTotalsDialogBody": {
+    "description": "Body text warning about overwriting old fuel totals",
+    "type": "text"
+  },
+  
+  "recalculateFuelTotalsCancel": "Cancel",
+  "@recalculateFuelTotalsCancel": {
+    "description": "Cancel button text in the recalculate dialog",
+    "type": "text"
+  },
+
+  "recalculateFuelTotalsConfirm": "Recalculate",
+  "@recalculateFuelTotalsConfirm": {
+    "description": "Confirm button text in the recalculate dialog",
+    "type": "text"
+  },
+
+  "recalculateFuelTotalsSuccess": "All fuel totals recalculated.",
+  "@recalculateFuelTotalsSuccess": {
+    "description": "SnackBar message shown after fuel totals are recalculated",
+    "type": "text"
+  },
+
+  "addVehicleForm": "Add Vehicle Form",
+  "@addVehicleForm": {
+    "description": "Add vehicle form title"
+  },
+
+  "fillDetailsForFutureReference": "Fill these details for future reference on the go!",
+  "@fillDetailsForFutureReference": {
+    "description": "Fill these details for future reference on the go! message"
+  },
+
+  "buttonAddFuel": "Add Fuel",
+  "@buttonAddFuel": {
+    "description": "Label for button that navigates to add a new fuel record"
+  },
+
+  "buttonAddWork": "Add Work",
+  "@buttonAddWork": {
+    "description": "Label for button that navigates to add a new work/maintenance record"
+  },
+
+  "buttonViewFuel": "View Fuel",
+  "@buttonViewFuel": {
+    "description": "Label for button that navigates to view existing fuel records"
+  },
+
+  "buttonViewWork": "View Work",
+  "@buttonViewWork": {
+    "description": "Label for button that navigates to view existing work/maintenance records"
+  },
+
+  "archivedVehiclesTitle": "Archived Vehicles",
+  "@archivedVehiclesTitle": {
+    "description": "Title of the page that displays archived vehicles"
+  },
+
+  "selectVehicleHint": "Select Vehicle",
+  "@selectVehicleHint": {
+    "description": "Hint text for the dropdown menu used to select a vehicle"
+  },
+
+  "archiveButtonLabel": "Archive",
+  "@archiveButtonLabel": {
+    "description": "Label for the button that archives the selected vehicle"
+  },
+
+  "noArchivedVehiclesMessage": "No Archived Vehicles",
+  "@noArchivedVehiclesMessage": {
+    "description": "Displayed when there are no archived vehicles to show"
+  },
+
+  "confirmDeletionMessage": "Are you sure you want to delete this vehicle and all Fuel Records?",
+  "@confirmDeletionMessage": {
+    "description": "Message in confirmation dialog for deleting vehicle and associated records"
+  },
+
+  "deleteSnackBarMessage": "Vehicle and Fuel records deleted!",
+  "@deleteSnackBarMessage": {
+    "description": "Snack bar message shown after a vehicle and its fuel records are deleted"
   },
 
 "january": "January",

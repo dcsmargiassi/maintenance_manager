@@ -80,6 +80,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editProfile => 'Edit Profile';
 
   @override
+  String get editVehicle => 'Edit Vehicle';
+
+  @override
+  String get vehicleDetails => 'Vehicle Details';
+
+  @override
+  String get financialSummary => 'Financial Summary';
+
+  @override
+  String get vehicleInformationTitle => 'Vehicle Information';
+
+  @override
+  String get engineDetails => 'Engine Details';
+
+  @override
+  String get exteriorDetails => 'Exterior Details';
+
+  @override
+  String get batteryDetails => 'Battery Details';
+
+  @override
   String get backToHome => 'Back to Home';
 
   @override
@@ -191,7 +212,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteButton => 'Delete';
 
   @override
+  String get deleteVehicleButton => 'Delete Vehicle';
+
+  @override
   String get cancelButton => 'Cancel';
+
+  @override
+  String get unarchiveButton => 'Unarchive';
 
   @override
   String get discardChangesButton => 'Discard Changes';
@@ -373,6 +400,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cylinderCountHint => 'Select cylinder count plus type';
 
   @override
+  String get cylinderLabel => 'Cylinder ';
+
+  @override
   String get engineTypeLabel => 'Engine Type';
 
   @override
@@ -493,9 +523,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get licenseLampHint => 'Ex C5W';
 
   @override
-  String get max20CharError => 'Max 20 characters allowed';
-
-  @override
   String get requiredFieldError => 'Please enter some text';
 
   @override
@@ -566,6 +593,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get currentMileageHint => 'Enter current mileage of car';
 
   @override
+  String get mileageLabel => 'Mileage';
+
+  @override
+  String get selectYear => 'Select Year';
+
+  @override
+  String get selectMonth => 'Select Month';
+
+  @override
+  String get noDataText => 'No Data';
+
+  @override
+  String monthlyFuelCost(int month, int year) {
+    return 'Fuel Cost for $month/$year';
+  }
+
+  @override
+  String yearlyFuelCost(int year) {
+    return 'Fuel Cost for $year';
+  }
+
+  @override
+  String get lifetimeFuelCost => 'Lifetime Fuel Cost';
+
+  @override
+  String get lifetimeMaintenanceCost => 'Lifetime Maintenance Cost';
+
+  @override
+  String get lifetimeVehicleCost => 'Lifetime Vehicle Cost';
+
+  @override
+  String get fuelHistoryButton => 'Fuel History';
+
+  @override
+  String get workHistoryButton => 'Work History';
+
+  @override
   String get speedometerReadingLabel => 'Speedometer Reading';
 
   @override
@@ -588,6 +652,67 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get originalOdometerHint => 'Enter odometer number when purchased';
+
+  @override
+  String get recalculateFuelTotalsTitle => 'Recalculate All Fuel Totals';
+
+  @override
+  String get recalculateFuelTotalsSubtitle =>
+      'Corrects lifetime fuel totals for all vehicles';
+
+  @override
+  String get recalculateFuelTotalsDialogTitle => 'Recalculate Fuel Costs?';
+
+  @override
+  String get recalculateFuelTotalsDialogBody =>
+      'This will overwrite lifetime fuel totals with the sum of all fuel records. Continue?';
+
+  @override
+  String get recalculateFuelTotalsCancel => 'Cancel';
+
+  @override
+  String get recalculateFuelTotalsConfirm => 'Recalculate';
+
+  @override
+  String get recalculateFuelTotalsSuccess => 'All fuel totals recalculated.';
+
+  @override
+  String get addVehicleForm => 'Add Vehicle Form';
+
+  @override
+  String get fillDetailsForFutureReference =>
+      'Fill these details for future reference on the go!';
+
+  @override
+  String get buttonAddFuel => 'Add Fuel';
+
+  @override
+  String get buttonAddWork => 'Add Work';
+
+  @override
+  String get buttonViewFuel => 'View Fuel';
+
+  @override
+  String get buttonViewWork => 'View Work';
+
+  @override
+  String get archivedVehiclesTitle => 'Archived Vehicles';
+
+  @override
+  String get selectVehicleHint => 'Select Vehicle';
+
+  @override
+  String get archiveButtonLabel => 'Archive';
+
+  @override
+  String get noArchivedVehiclesMessage => 'No Archived Vehicles';
+
+  @override
+  String get confirmDeletionMessage =>
+      'Are you sure you want to delete this vehicle and all Fuel Records?';
+
+  @override
+  String get deleteSnackBarMessage => 'Vehicle and Fuel records deleted!';
 
   @override
   String get january => 'January';

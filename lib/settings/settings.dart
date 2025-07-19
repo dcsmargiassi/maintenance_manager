@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
@@ -153,20 +154,49 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+              Card(
+                child: ListTile(
+                  title: Text(localizations.recalculateFuelTotalsTitle),
+                  subtitle: Text(localizations.recalculateFuelTotalsSubtitle),
+                  leading: Icon(Icons.calculate),
+                  onTap: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(localizations.recalculateFuelTotalsDialogTitle),
+                        content: Text(localizations.recalculateFuelTotalsDialogBody),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(localizations.cancelButton,)),
+                          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(localizations.recalculateFuelTotalsConfirm)),
+                        ],
+                      ),
+                    );
+
+                    if (confirm == true) {
+                      await recalculateFuelForAllVehicles(userId!);
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(localizations.recalculateFuelTotalsSuccess)),
+                      );
+                    }
+                  },
+                ),
+              ),
               ListTile(
                 leading: const Icon(Icons.manage_accounts),
                 title: Text(localizations.manageData),
+                trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   navigateToManageDataPage(context);
                 },
               ),
               AboutListTile(
                 icon: Icon(Icons.info_outline),
-                applicationName: 'localizations.applicationName',
+                applicationName: localizations.applicationName,
                 applicationIcon: Image.asset('assets/icon/1024.png',
                 width: 124, height: 124),
-                applicationVersion: '0.6.0',
-                applicationLegalese: 'localizations.applicationLegalese',
+                applicationVersion: '0.6.1',
+                applicationLegalese: localizations.applicationLegalese,
                 aboutBoxChildren: [
                   const SizedBox(height: 10),
                   Text(localizations.aboutDescription1),

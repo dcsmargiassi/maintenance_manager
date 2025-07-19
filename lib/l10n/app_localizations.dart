@@ -63,7 +63,7 @@ import 'app_localizations_es.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,16 +86,16 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es')
+    Locale('es'),
   ];
 
   /// App store name of the application
@@ -229,6 +229,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Profile'**
   String get editProfile;
+
+  /// Edit Vehicle button title
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Vehicle'**
+  String get editVehicle;
+
+  /// Vehicle details sub-heading
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Details'**
+  String get vehicleDetails;
+
+  /// Financial Summary sub-heading
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Summary'**
+  String get financialSummary;
+
+  /// Vehicle Information heading
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Information'**
+  String get vehicleInformationTitle;
+
+  /// Engine Details sub-heading
+  ///
+  /// In en, this message translates to:
+  /// **'Engine Details'**
+  String get engineDetails;
+
+  /// Exterior Details sub-heading
+  ///
+  /// In en, this message translates to:
+  /// **'Exterior Details'**
+  String get exteriorDetails;
+
+  /// Battery Details sub-heading
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Details'**
+  String get batteryDetails;
 
   /// Back to home button text
   ///
@@ -440,11 +482,23 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get deleteButton;
 
+  /// Button text for delete vehicle
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Vehicle'**
+  String get deleteVehicleButton;
+
   /// Button text for cancelling an action
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancelButton;
+
+  /// Button text for unarchiving a vehicle
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get unarchiveButton;
 
   /// Button text for discarding changes and leaving the page without saving
   ///
@@ -788,6 +842,12 @@ abstract class AppLocalizations {
   /// **'Select cylinder count plus type'**
   String get cylinderCountHint;
 
+  /// Label for cylinder count dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Cylinder '**
+  String get cylinderLabel;
+
   /// Label for engine type dropdown
   ///
   /// In en, this message translates to:
@@ -1028,12 +1088,6 @@ abstract class AppLocalizations {
   /// **'Ex C5W'**
   String get licenseLampHint;
 
-  /// Error message for max of 20 characters allowed
-  ///
-  /// In en, this message translates to:
-  /// **'Max 20 characters allowed'**
-  String get max20CharError;
-
   /// Shown when a required field is left empty
   ///
   /// In en, this message translates to:
@@ -1166,6 +1220,72 @@ abstract class AppLocalizations {
   /// **'Enter current mileage of car'**
   String get currentMileageHint;
 
+  /// Label for vehicle mileage
+  ///
+  /// In en, this message translates to:
+  /// **'Mileage'**
+  String get mileageLabel;
+
+  /// Label for year dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Select Year'**
+  String get selectYear;
+
+  /// Label for month dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Select Month'**
+  String get selectMonth;
+
+  /// Label for missing data
+  ///
+  /// In en, this message translates to:
+  /// **'No Data'**
+  String get noDataText;
+
+  /// Fuel cost for the selected month and year
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Cost for {month}/{year}'**
+  String monthlyFuelCost(int month, int year);
+
+  /// Fuel cost for the selected year
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Cost for {year}'**
+  String yearlyFuelCost(int year);
+
+  /// Total fuel cost for vehicle lifetime
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime Fuel Cost'**
+  String get lifetimeFuelCost;
+
+  /// Total maintenance cost for vehicle lifetime
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime Maintenance Cost'**
+  String get lifetimeMaintenanceCost;
+
+  /// Total cost of owning the vehicle including purchase, fuel, and maintenance
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime Vehicle Cost'**
+  String get lifetimeVehicleCost;
+
+  /// Button to view fuel history
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel History'**
+  String get fuelHistoryButton;
+
+  /// Button to view maintenance/work history
+  ///
+  /// In en, this message translates to:
+  /// **'Work History'**
+  String get workHistoryButton;
+
   /// Label for speedometer reading dropdown
   ///
   /// In en, this message translates to:
@@ -1213,6 +1333,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter odometer number when purchased'**
   String get originalOdometerHint;
+
+  /// Title for button in settings to recalculate all fuel totals
+  ///
+  /// In en, this message translates to:
+  /// **'Recalculate All Fuel Totals'**
+  String get recalculateFuelTotalsTitle;
+
+  /// Subtitle explaining that this fixes fuel totals for all vehicles
+  ///
+  /// In en, this message translates to:
+  /// **'Corrects lifetime fuel totals for all vehicles'**
+  String get recalculateFuelTotalsSubtitle;
+
+  /// Title of confirmation dialog before recalculating fuel totals
+  ///
+  /// In en, this message translates to:
+  /// **'Recalculate Fuel Costs?'**
+  String get recalculateFuelTotalsDialogTitle;
+
+  /// Body text warning about overwriting old fuel totals
+  ///
+  /// In en, this message translates to:
+  /// **'This will overwrite lifetime fuel totals with the sum of all fuel records. Continue?'**
+  String get recalculateFuelTotalsDialogBody;
+
+  /// Cancel button text in the recalculate dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get recalculateFuelTotalsCancel;
+
+  /// Confirm button text in the recalculate dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Recalculate'**
+  String get recalculateFuelTotalsConfirm;
+
+  /// SnackBar message shown after fuel totals are recalculated
+  ///
+  /// In en, this message translates to:
+  /// **'All fuel totals recalculated.'**
+  String get recalculateFuelTotalsSuccess;
+
+  /// Add vehicle form title
+  ///
+  /// In en, this message translates to:
+  /// **'Add Vehicle Form'**
+  String get addVehicleForm;
+
+  /// Fill these details for future reference on the go! message
+  ///
+  /// In en, this message translates to:
+  /// **'Fill these details for future reference on the go!'**
+  String get fillDetailsForFutureReference;
+
+  /// Label for button that navigates to add a new fuel record
+  ///
+  /// In en, this message translates to:
+  /// **'Add Fuel'**
+  String get buttonAddFuel;
+
+  /// Label for button that navigates to add a new work/maintenance record
+  ///
+  /// In en, this message translates to:
+  /// **'Add Work'**
+  String get buttonAddWork;
+
+  /// Label for button that navigates to view existing fuel records
+  ///
+  /// In en, this message translates to:
+  /// **'View Fuel'**
+  String get buttonViewFuel;
+
+  /// Label for button that navigates to view existing work/maintenance records
+  ///
+  /// In en, this message translates to:
+  /// **'View Work'**
+  String get buttonViewWork;
+
+  /// Title of the page that displays archived vehicles
+  ///
+  /// In en, this message translates to:
+  /// **'Archived Vehicles'**
+  String get archivedVehiclesTitle;
+
+  /// Hint text for the dropdown menu used to select a vehicle
+  ///
+  /// In en, this message translates to:
+  /// **'Select Vehicle'**
+  String get selectVehicleHint;
+
+  /// Label for the button that archives the selected vehicle
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archiveButtonLabel;
+
+  /// Displayed when there are no archived vehicles to show
+  ///
+  /// In en, this message translates to:
+  /// **'No Archived Vehicles'**
+  String get noArchivedVehiclesMessage;
+
+  /// Message in confirmation dialog for deleting vehicle and associated records
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this vehicle and all Fuel Records?'**
+  String get confirmDeletionMessage;
+
+  /// Snack bar message shown after a vehicle and its fuel records are deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle and Fuel records deleted!'**
+  String get deleteSnackBarMessage;
 
   /// Month of January
   ///
@@ -1314,8 +1548,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

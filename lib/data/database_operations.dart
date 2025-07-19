@@ -79,7 +79,7 @@ class VehicleOperations {
     whereArgs: [userId]);
   }
 
-  Future<List<VehicleInformationModel>> getAllVehicles() async {
+  Future<List<VehicleInformationModel>> getAllVehicles(String userId) async {
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> allVehicles = await db.query("vehicleInformation");
     return allVehicles.map((e) => VehicleInformationModel.fromJson(e)).toList();

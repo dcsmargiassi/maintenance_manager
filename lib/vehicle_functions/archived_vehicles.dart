@@ -13,6 +13,7 @@ import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +51,7 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      title: "Archived Vehicles",
+      title: AppLocalizations.of(context)!.archivedVehiclesTitle,
       onBack: () {
         navigateToHomePage(context);
         },
@@ -64,7 +65,7 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                 children: [
                   Expanded(
                     child: DropdownButton<VehicleInformationModel>(
-                      hint: const Text("Select Vehicle"),
+                      hint: Text(AppLocalizations.of(context)!.selectVehicleHint),
                       value: _selectedVehicle,
                       isExpanded: true,
                       items: _nonArchivedVehicles.map((vehicle) {
@@ -96,7 +97,7 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                           _selectedVehicle = null;
                           setState(() => _isLoading = false);
                         },
-                    child: const Text("Archive"),
+                    child: Text(AppLocalizations.of(context)!.archiveButtonLabel),
                   ),
                 ],
               ),
@@ -125,7 +126,7 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                       },
                     );
                   } else {
-                    return const Center(child: Text("No Archived Vehicles"));
+                    return Center(child: Text(AppLocalizations.of(context)!.noArchivedVehiclesMessage));
                   }
                 },
               ),
@@ -150,16 +151,16 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Confirm Deletion"),
-            content: const Text("Are you sure you want to delete this vehicle and all Fuel Records?"),
+            title: Text(AppLocalizations.of(context)!.confirmDeletionMessage),
+            content: Text(AppLocalizations.of(context)!.confirmDeletionMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Cancel"),
+                child: Text(AppLocalizations.of(context)!.cancelButton),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                child: Text(AppLocalizations.of(context)!.deleteButton, style: TextStyle(color: Colors.red)),
               ),
             ],
           ),
@@ -167,8 +168,8 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
       },
       onDismissed: (direction) {
         onDelete(); 
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar
-          (content: Text("Vehicle and Fuel records deleted!")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar
+          (content: Text(AppLocalizations.of(context)!.deleteSnackBarMessage)));
       },
     child: GestureDetector(
       onTap: () {

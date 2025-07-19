@@ -4,6 +4,7 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
@@ -32,8 +33,8 @@ class AddVehicleFormApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CustomScaffold(
-      title: 'Add Vehicle Form',
+    return CustomScaffold(
+      title: AppLocalizations.of(context)!.addVehicleForm,
       body: AddVehicleForm(),
     );
   }
@@ -112,12 +113,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
           children: <Widget>[ 
             // Vehicle Details
             ExpansionTile(
-              title: const Row(
+              title: Row(
                 children: [
                   Icon(Icons.car_rental, color: Colors.black),
                   SizedBox(width: 10),
                   Text(
-                    "Vehicle Details",
+                    AppLocalizations.of(context)!.vehicleDetails,
                   ),
                 ],
               ),
@@ -154,14 +155,14 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Tooltip(
                         message: "",
                         child: Icon(Icons.info_outline, color: Colors.grey),
                       ),
                       SizedBox(width: 8),
                       Text(
-                        "Fill these details for future reference on the go!",
+                        AppLocalizations.of(context)!.fillDetailsForFutureReference,
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -173,12 +174,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             // ENGINE DETAILS
 
             ExpansionTile(
-              title: const Row(
+              title: Row(
                 children: [
                   Icon(Icons.engineering_sharp, color: Colors.black),
                   SizedBox(width: 10),
                   Text(
-                    "Engine Details",
+                    AppLocalizations.of(context)!.engineDetails,
                   ),
                 ],
               ),
@@ -206,12 +207,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             // BATTERY DETAILS
 
             ExpansionTile(
-              title: const Row(
+              title: Row(
                 children: [
                   Icon(Icons.battery_std, color: Colors.black),
                   SizedBox(width: 10),
                   Text(
-                    "Battery Details",
+                    AppLocalizations.of(context)!.batteryDetails,
                   ),
                 ],
               ),
@@ -240,12 +241,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             // Exterior Details
 
             ExpansionTile(
-              title: const Row(
+              title: Row(
                 children: [
                   Icon(Icons.lightbulb, color: Colors.black),
                   SizedBox(width: 10),
                   Text(
-                    "Exterior Details",
+                    AppLocalizations.of(context)!.exteriorDetails,
                   ),
                 ],
               ),
@@ -369,7 +370,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                   navigateToHomePage(context);
                   }
                 },
-                child: const Text('Submit'),
+                child: Text(AppLocalizations.of(context)!.submitButton),
               ),
             ),
           ],

@@ -7,6 +7,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/helper_functions/validators.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class ExteriorDetailsSection extends StatelessWidget {
@@ -56,9 +57,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -75,9 +75,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -95,9 +94,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -114,9 +112,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -133,9 +130,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -152,9 +148,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -171,9 +166,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -190,9 +184,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -209,9 +202,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),
@@ -228,9 +220,8 @@ class ExteriorDetailsSection extends StatelessWidget {
             if (value == null || value.isEmpty){ 
               return null;
             }
-            if(value.length > 20){
-              return localizations.max20CharError;
-            }
+            final maxLengthError = validateMaxLength(value, 20, context);
+            if (maxLengthError != null) return maxLengthError;
             return null;
           }
         ),

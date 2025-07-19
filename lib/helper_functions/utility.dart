@@ -86,6 +86,42 @@ Future<void> decrementLifeTimeFuelCosts(int vehicleId, String userId, double cos
    }
 }
 
+Future<void> recalculateFuelForAllVehicles(String userId) async {
+  final vehicleOps = VehicleOperations();
+  final fuelOps = FuelRecordOperations();
+
+  final vehicles = await vehicleOps.getAllVehicles(userId);
+
+  for (final vehicle in vehicles) {
+    final fuelRecords = await fuelOps.getAllFuelRecordsByVehicleId(userId, vehicle.vehicleId!);
+
+    final totalCost = fuelRecords.fold(0.0, (sum, record) {
+      return sum + (record.refuelCost ?? 0.0);
+    });
+
+    vehicle.lifeTimeFuelCost = totalCost;
+    await vehicleOps.updateLifeTimeFuelCost(vehicle);
+  }
+}
+
+Map<int, String> getLocalizedMonthNames(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return {
+    1: loc.january,
+    2: loc.february,
+    3: loc.march,
+    4: loc.april,
+    5: loc.may,
+    6: loc.june,
+    7: loc.july,
+    8: loc.august,
+    9: loc.september,
+    10: loc.october,
+    11: loc.november,
+    12: loc.december,
+  };
+}
+
 // Locale mapping for language support
 
 class LanguageProvider with ChangeNotifier {

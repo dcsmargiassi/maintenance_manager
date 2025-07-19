@@ -251,7 +251,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                       }
                     }
                   },
-                  child: Text(AppLocalizations.of(context)!.enterValidDateMessage),
+                  child: Text(AppLocalizations.of(context)!.submitButton),
                 ),
               ),
             ],

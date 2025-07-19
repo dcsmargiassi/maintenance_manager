@@ -10,6 +10,7 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
+import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
@@ -46,8 +47,8 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
             navigateToHomePage(context);
           },
         ),
-        title: const Text(
-          'My Vehicles',
+        title:Text(
+          AppLocalizations.of(context)!.myVehiclesButton,
         ),
         elevation: 0.0,
         centerTitle: true,

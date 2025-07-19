@@ -62,7 +62,8 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
 
     return CustomScaffold(
       title: localizations.fuelRecordsTitle,
-      onBack: () => navigateToSpecificVehiclePage(context, widget.vehicleId),
+      onBack: () => Navigator.pop(context),
+       //navigateToSpecificVehiclePage(context, widget.vehicleId),
       showActions: true,
       showBackButton: true,
       body: SafeArea(
