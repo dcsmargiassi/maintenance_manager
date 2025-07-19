@@ -195,19 +195,6 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       },
       child: Scaffold(
         appBar: AppBar(
-          // Custom backspace button
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white
-              ),
-            onPressed: () async {
-              final shouldPop = await confirmDiscardChanges(context);
-                if (shouldPop && context.mounted) {
-                navigateToSpecificVehiclePage(context, widget.vehicleId);
-                }
-              },
-            ),
           title: Text(AppLocalizations.of(context)!.editVehicle),
           ),
         body: SingleChildScrollView(
