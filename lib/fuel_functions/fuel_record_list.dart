@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/data/database_operations.dart';
@@ -59,11 +60,19 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
     'lowToHigh': localizations.sortLowToHigh,
     'highToLow': localizations.sortHighToLow,
   };
-
+  final userId = FirebaseAuth.instance.currentUser?.uid;
     return CustomScaffold(
       title: localizations.fuelRecordsTitle,
-      onBack: () => Navigator.pop(context),
-       //navigateToSpecificVehiclePage(context, widget.vehicleId),
+      onBack: () async {
+        final vehicleOps = VehicleOperations();
+        final vehicle = await vehicleOps.getVehicleById(widget.vehicleId, userId!);
+        if(!context.mounted) return;
+        if (vehicle.archived == 0) {
+          navigateToSpecificVehiclePage(context, widget.vehicleId);
+        } else {
+          navigateToSpecificArchivedVehiclePage(context, widget.vehicleId);
+        }
+      },
       showActions: true,
       showBackButton: true,
       body: SafeArea(

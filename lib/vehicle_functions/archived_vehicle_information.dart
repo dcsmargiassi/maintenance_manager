@@ -145,6 +145,7 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
       title: AppLocalizations.of(context)!.vehicleInformationTitle,
       showActions: true,
       showBackButton: true,
+      onBack: () {navigateToArchivedVehicles(context);},
       body: SafeArea(
         child: FutureBuilder<VehicleInformationModel>(
           future: _vehicleInfoFuture,
