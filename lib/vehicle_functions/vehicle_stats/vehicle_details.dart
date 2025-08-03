@@ -305,6 +305,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             labelText: AppLocalizations.of(context)!.purchaseDateLabel,
             hintText: AppLocalizations.of(context)!.purchaseDateHint,
           ),
+          lastDate: DateTime.now(),
           onComplete: (date) {
           setState(() {
             widget.purchaseDateController.text = formatDateToString(date!);
@@ -318,7 +319,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
           controller: widget.purchasePriceController,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.purchasePriceLabel,
-            hintText: AppLocalizations.of(context)!.purchaseDateHint,
+            hintText: AppLocalizations.of(context)!.purchasePriceHint,
             prefix: Text(prefs.currencySymbol),
           ),
           validator: (value) => validateNumber(

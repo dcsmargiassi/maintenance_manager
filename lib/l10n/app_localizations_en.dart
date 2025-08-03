@@ -715,6 +715,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteSnackBarMessage => 'Vehicle and Fuel records deleted!';
 
   @override
+  String get continueAsGuest => 'Continue as Guest';
+
+  @override
+  String get guestCannotCreateRecords =>
+      'Guest accounts cannot create records. Please sign in or register.';
+
+  @override
   String get january => 'January';
 
   @override

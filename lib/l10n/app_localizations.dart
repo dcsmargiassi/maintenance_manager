@@ -1448,6 +1448,18 @@ abstract class AppLocalizations {
   /// **'Vehicle and Fuel records deleted!'**
   String get deleteSnackBarMessage;
 
+  /// Button label for continuing into the app without creating an account
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as Guest'**
+  String get continueAsGuest;
+
+  /// Label for when guest account attempts to create record.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest accounts cannot create records. Please sign in or register.'**
+  String get guestCannotCreateRecords;
+
   /// Month of January
   ///
   /// In en, this message translates to:

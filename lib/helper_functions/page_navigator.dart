@@ -17,6 +17,7 @@ import 'package:maintenance_manager/settings/manage_data.dart';
 import 'package:maintenance_manager/settings/privacy_policy_display.dart';
 import 'package:maintenance_manager/settings/settings.dart';
 import 'package:maintenance_manager/settings/terms_of_service_display.dart';
+import 'package:maintenance_manager/vehicle_functions/guest_vehicle_information.dart';
 import 'package:maintenance_manager/vehicle_functions/my_vehicles.dart';
 import 'package:maintenance_manager/vehicle_functions/add_vehicle_form.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_information.dart';
@@ -128,6 +129,14 @@ Future<void> navigateToSpecificVehiclePage(BuildContext context, int vehicleId, 
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => DisplayVehicleInfo(vehicleId: vehicleId)),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToGuestVehicleDisplayPage(BuildContext context, {VoidCallback? onReturn,}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const GuestDisplayVehicleInfoPage(),
+    ),
   ).then((_) => onReturn?.call());
 }
 

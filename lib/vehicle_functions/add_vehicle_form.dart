@@ -277,6 +277,18 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
               child: ElevatedButton(
                 onPressed: () async {
+                  // Logic for guest account
+                   final authState = Provider.of<AuthState>(context, listen: false);
+                   if (authState.isGuest) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.guestCannotCreateRecords),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                    return;
+                  }
+
                   // Validate will return true if the form is valid, or false if form is invalid
                   if (_formKey.currentState!.validate()) {
 

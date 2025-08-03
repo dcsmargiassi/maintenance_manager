@@ -1168,6 +1168,15 @@
   "@deleteSnackBarMessage": {
     "description": "Snack bar message shown after a vehicle and its fuel records are deleted"
   },
+  "continueAsGuest": "Continue as Guest",
+  "@continueAsGuest": {
+    "description": "Button label for continuing into the app without creating an account"
+  },
+
+  "guestCannotCreateRecords": "Guest accounts cannot create records. Please sign in or register.",
+  "@guestCannotCreateRecords":{
+    "description": "Label for when guest account attempts to create record."
+  },
 
 "january": "January",
 "february": "February",

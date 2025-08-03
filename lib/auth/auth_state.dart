@@ -12,9 +12,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthState extends ChangeNotifier {
   User? _user;
   bool isLoading = true;
+  bool _isGuest = false;
 
   User? get user => _user;
   String? get userId => _user?.uid;
+  bool get isGuest => _isGuest;
 
   AuthState() {
     _initialize();
@@ -46,13 +48,25 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(User? user){
+  Future<void> setUser(User? user) async {
     _user = user;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final data = doc.data();
+      _isGuest = data?['isGuest'] == true;
+    } else {
+      _isGuest = false;
+    }
     notifyListeners();
   }
 
-  void clearUser() {
+  Future<void> clearUser() async {
+    await FirebaseAuth.instance.signOut();
     _user = null;
+    _isGuest = false;
     notifyListeners();
   }
 }

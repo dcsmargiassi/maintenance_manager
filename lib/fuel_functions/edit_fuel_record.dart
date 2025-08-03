@@ -162,6 +162,7 @@ class _EditFuelFormState extends State<EditFuelForm> {
                   labelText: AppLocalizations.of(context)!.dateLabel,
                   hintText: AppLocalizations.of(context)!.enterDateRefuelLabel,
                 ),
+                lastDate: DateTime.now(),
                 onComplete: (date) {
                   if (date != null) {
                     // format using user preference

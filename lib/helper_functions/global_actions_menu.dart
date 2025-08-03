@@ -6,6 +6,7 @@
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 
@@ -23,6 +24,7 @@ PopupMenuButton<String> buildAppNavigatorMenu(BuildContext context) {
           await navigateToSettingsPage(context);
           break;
         case 'signout':
+          AuthState().clearUser();
           await navigateToLogin(context);
           break;
       }

@@ -1169,6 +1169,16 @@
     "description": "Snack bar message shown after a vehicle and its fuel records are deleted"
   },
 
+  "continueAsGuest": "Vehicle and Fuel records deleted!",
+  "@continueAsGuest": {
+    "description": "Snack bar message shown after a vehicle and its fuel records are deleted"
+  },
+
+  "guestCannotCreateRecords": "Guest accounts cannot create records. Please sign in or register.",
+  "@guestCannotCreateRecords":{
+    "description": "Label for when guest account attempts to create record."
+  },
+
 "january": "January",
 "february": "February",
 "march": "March",

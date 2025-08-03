@@ -27,10 +27,39 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
 
   @override
   void initState() {
-    final authState = Provider.of<AuthState>(context, listen: false);
-    final userId = authState.userId;
-    _vehiclesFuture = VehicleOperations().getAllVehiclesByUserId(userId!);
     super.initState();
+    final authState = Provider.of<AuthState>(context, listen: false);
+
+    if (authState.isGuest) {
+      _vehiclesFuture = Future.value(_getFakeGuestVehicles());
+    } else {
+      final userId = authState.userId;
+      _vehiclesFuture = VehicleOperations().getAllVehiclesByUserId(userId!);
+    }
+  }
+
+  // Fake vehicle entries for guest preview
+  List<VehicleInformationModel> _getFakeGuestVehicles() {
+    return [
+      VehicleInformationModel(
+        vehicleId: 1,
+        userId: '1',
+        vehicleNickName: 'Guest Truck',
+        vin: "guest*",
+        make: 'Ford',
+        model: 'F-150',
+        year: 2020,
+      ),
+      VehicleInformationModel(
+        vehicleId: 2,
+        userId: '1',
+        vehicleNickName: 'Guest Sedan',
+        vin: "guest*",
+        make: 'Toyota',
+        model: 'Camry',
+        year: 2018,
+      ),
+    ];
   }
 
   @override
@@ -86,7 +115,12 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
   Widget _displayVehicles(VehicleInformationModel data) {
     return GestureDetector(
       onTap: () {
-        navigateToSpecificVehiclePage(context, data.vehicleId!);
+        if(data.vin == "guest*"){
+          navigateToGuestVehicleDisplayPage(context);
+        }
+        else{
+          navigateToSpecificVehiclePage(context, data.vehicleId!);
+        }
       },
       child: Card(
         child: Padding(

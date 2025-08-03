@@ -103,30 +103,28 @@ class SignInPageState extends State<SignInPage> {
                     final data = documentSnapshot.data() ?? {};
 
                     // If pushNotifications or other fields is missing add to user database
-                      final Map<String, dynamic> updates = {};
-
-                      if (!data.containsKey('pushNotifications')) {
-                        updates['pushNotifications'] = true;
-                      }
-                      if (!data.containsKey('darkModeEnabled')) {
-                        updates['darkModeEnabled'] = false;
-                      }
-                      if (!data.containsKey('phoneNumber')) {
-                        updates['phoneNumber'] = "";
-                      }
-                      if (!data.containsKey('languageCode')) {
-                        updates['languageCode'] = "";
-                      }
-                      if (!data.containsKey('acceptedTermsVersion')) {
-                        updates['acceptedTermsVersion'] = 1;
-                      }
-                      if (!data.containsKey('privacyAnalytics')) {
-                        updates['privacyAnalytics'] = false;
-                      }
-
-                      if (updates.isNotEmpty) {
-                        await documentReference.update(updates);
-                      }
+                    final Map<String, dynamic> updates = {};
+                    if (!data.containsKey('pushNotifications')) {
+                      updates['pushNotifications'] = true;
+                    }
+                    if (!data.containsKey('darkModeEnabled')) {
+                      updates['darkModeEnabled'] = false;
+                    }
+                    if (!data.containsKey('phoneNumber')) {
+                      updates['phoneNumber'] = "";
+                    }
+                    if (!data.containsKey('languageCode')) {
+                      updates['languageCode'] = "";
+                    }
+                    if (!data.containsKey('acceptedTermsVersion')) {
+                      updates['acceptedTermsVersion'] = 1;
+                    }
+                    if (!data.containsKey('privacyAnalytics')) {
+                      updates['privacyAnalytics'] = false;
+                    }
+                    if (updates.isNotEmpty) {
+                      await documentReference.update(updates);
+                    }
 
                     // Defining app language locale
                     final supportedCodes = [
@@ -154,7 +152,6 @@ class SignInPageState extends State<SignInPage> {
                     });
                   } 
                   }
-
                   on FirebaseAuthException catch (e) {
                     debugPrint("Sign in error: $e");
                     if (!mounted) return;
@@ -179,6 +176,55 @@ class SignInPageState extends State<SignInPage> {
                   );
                 },
                 child: Text(AppLocalizations.of(context)!.createAccount),
+              ),
+              // Continue as Guest button
+              TextButton(
+                onPressed: () async {
+                  final authState = Provider.of<AuthState>(context, listen: false);
+                  final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+              
+                  try {
+                    final guestUser = await FirebaseAuth.instance.signInAnonymously();
+              
+                    if (guestUser.user != null) {
+                      final userId = guestUser.user!.uid;
+                      final documentReference = FirebaseFirestore.instance.collection('users').doc(userId);
+              
+                      // Create initial anonymous user doc
+                      await documentReference.set({
+                        'createdAt': FieldValue.serverTimestamp(),
+                        'isGuest': true,
+                        'languageCode': '',
+                        'pushNotifications': false,
+                        'darkModeEnabled': false,
+                        'acceptedTermsVersion': 1,
+                      });
+              
+                      // Set app language
+                      final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+                      final candidate = ['en', 'es', 'fr', 'de', 'it'].contains(deviceLocale.languageCode)
+                          ? deviceLocale.languageCode
+                          : 'en';
+                      await documentReference.update({'languageCode': candidate});
+                      languageProvider.setLocale(Locale(candidate));
+              
+                      authState.setUser(guestUser.user);
+              
+                      if (!mounted) return;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        navigateToHomePage(context);
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint("Guest login error: $e");
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      // ignore: use_build_context_synchronously
+                      SnackBar(content: Text(AppLocalizations.of(context)!.genericError)),
+                    );
+                  }
+                },
+                child: Text(AppLocalizations.of(context)!.continueAsGuest),
               ),
               TextButton(
                 onPressed: () {

@@ -193,6 +193,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                   labelText: AppLocalizations.of(context)!.dateLabel,
                   hintText: AppLocalizations.of(context)!.enterDateRefuelLabel,
                 ),
+                lastDate: DateTime.now(),
                 onComplete: (date) {
                   if (date != null) {
                     isoDateToStore = date.toIso8601String();
@@ -232,9 +233,10 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     final FuelRecordOperations fuelOperations = FuelRecordOperations();
                     try {
                       await fuelOperations.createFuelRecord(fuelRecords);
-                      if (!context.mounted) return;
+                        if (!context.mounted) return;
+                        await updateCurrentOdometerNumber(widget.vehicleId, userId!, double.parse(odometerAmountController.text));
                         // Updating lifetime fuel costs.
-                        await incrementLifeTimeFuelCosts(widget.vehicleId, userId!, double.parse(refuelCostController.text));
+                        await incrementLifeTimeFuelCosts(widget.vehicleId, userId, double.parse(refuelCostController.text));
                         if (!context.mounted) return;
                         // Navigate back to specific vehicle page
                         navigateToSpecificVehiclePage(context, widget.vehicleId);

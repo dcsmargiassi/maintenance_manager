@@ -104,6 +104,18 @@ Future<void> recalculateFuelForAllVehicles(String userId) async {
   }
 }
 
+// Updating current odometer number
+Future<void> updateCurrentOdometerNumber(int vehicleId, String userId, double newOdometerValue) async {
+  final vehicleOps = VehicleOperations();
+  final vehicle = await vehicleOps.getVehicleById(vehicleId, userId);
+
+  if (vehicle.odometerCurrent! >= newOdometerValue) return;
+  if (vehicle.odometerCurrent! < newOdometerValue) {
+    vehicle.odometerCurrent = newOdometerValue;
+  }
+  await vehicleOps.updateLifeTimeFuelCost(vehicle);
+}
+
 Map<int, String> getLocalizedMonthNames(BuildContext context) {
   final loc = AppLocalizations.of(context)!;
   return {
