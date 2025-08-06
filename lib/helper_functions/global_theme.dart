@@ -28,7 +28,7 @@ class AppTheme {
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2C2C2C)),
-      titleMedium: TextStyle(fontSize: 18, color: Colors.black),
+      titleMedium: TextStyle(fontSize: 18, color: Colors.black, overflow: TextOverflow.ellipsis),
       bodyLarge: TextStyle(fontSize: 16, color: Colors.black),
       labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
     ),

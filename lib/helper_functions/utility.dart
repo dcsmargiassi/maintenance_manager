@@ -113,7 +113,7 @@ Future<void> updateCurrentOdometerNumber(int vehicleId, String userId, double ne
   if (vehicle.odometerCurrent! < newOdometerValue) {
     vehicle.odometerCurrent = newOdometerValue;
   }
-  await vehicleOps.updateLifeTimeFuelCost(vehicle);
+  await vehicleOps.updateVehicle(vehicle);
 }
 
 Map<int, String> getLocalizedMonthNames(BuildContext context) {

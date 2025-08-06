@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
     String addRemoveVehicle = localizations.addVehicleButton;
     const double buttonFontSize = 20.0;
     const double homeScreenButtonHeight = 50.0;
-    const double homeScreenButtonWidth = 225.0;
+    const double homeScreenButtonWidth = 240.0;
     const double buttonSpacingBoxHeight = 50.0;
       return Scaffold(
         appBar: AppBar(
@@ -53,20 +53,18 @@ class HomePage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 elevation: 4,
-              ),
-              child: Text ((myVehicles),
-                style: TextStyle(
+                textStyle: TextStyle(
                   fontSize: buttonFontSize,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
                 ),
               ),
+              child: Text(myVehicles),
             ),
           ),
 
           const SizedBox(height: buttonSpacingBoxHeight),
-
-          SizedBox(// Setting the button sizes
+   
+          SizedBox(
             width: homeScreenButtonWidth,
             height: homeScreenButtonHeight,
             child: ElevatedButton(
@@ -75,45 +73,43 @@ class HomePage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 elevation: 4,
-              ),
-                child: Text ((addRemoveVehicle),
-                  style: TextStyle(
-                    fontSize: buttonFontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white
-                  ),
+                foregroundColor: Colors.white,
+                textStyle: TextStyle(
+                  fontSize: buttonFontSize,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+              child: Text(addRemoveVehicle),
             ),
           ),
 
           const SizedBox(height: buttonSpacingBoxHeight),
-          // Elevated Button for archived vehicles
-          // Input: Click
-          // Output: Open list view of all archived vehicles.
-          SizedBox(// Setting the button sizes
+
+          SizedBox(
             width: homeScreenButtonWidth,
             height: homeScreenButtonHeight,
             child: ElevatedButton(
               onPressed: () {
-                  navigateToArchivedVehicles(context);
+                navigateToArchivedVehicles(context);
               },
               style: ElevatedButton.styleFrom(
                 elevation: 4,
-              ),
-                child: Text ((archivedVehicles),
-                  style: TextStyle(
-                    fontSize: buttonFontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                foregroundColor: Colors.white,
+                textStyle: TextStyle(
+                  fontSize: buttonFontSize,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+              child: Text(archivedVehicles),
             ),
           ),
+
           const SizedBox(height: buttonSpacingBoxHeight),
+
           const Material(
             color: Colors.transparent,
             child: Text(
-              'Version: 0.6.1',
+              'Version: 0.6.2',
               style: TextStyle(fontSize: 12,
               fontWeight: FontWeight.normal,
               color: Colors.grey

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:maintenance_manager/data/database.dart';
@@ -15,30 +16,28 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  //Initializing the systems locale based on device settings to utilize date time API
   WidgetsFlutterBinding.ensureInitialized();
   await findSystemLocale();
 
-  // Firebase initializatoin
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
-  // Initialize the database connection
+
   try {
-  await DatabaseRepository.instance.database;
-  }
-  catch(e) {
+    await DatabaseRepository.instance.database;
+  } catch (e) {
     debugPrint('Error initializing Database: $e');
   }
-  //printVehicleTableColumns();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthState()),
-        ChangeNotifierProvider(create: (_) => UserPreferences(
+        ChangeNotifierProvider(
+          create: (_) => UserPreferences(
             currency: '\$',
             distanceUnit: 'Miles',
             dateFormat: 'MM/dd/yyyy',
@@ -55,71 +54,85 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Consumer<AuthState>(
-          builder: (context, authState, _) {
-            if (authState.isLoading) {
-              // Still checking login status
-              return const MaterialApp(
-                debugShowCheckedModeBanner: false,
-                home: Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                ),
+    return Consumer2<AuthState, LanguageProvider>(
+      builder: (context, authState, languageProvider, _) {
+        if (authState.isLoading) {
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+          );
+        }
+
+        // Load preferences after login
+        if (authState.user != null) {
+          Future.microtask(() async {
+            final doc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(authState.userId)
+                .get();
+
+            if (!context.mounted) return;
+
+            final data = doc.data();
+            if (data != null) {
+              final prefs = Provider.of<UserPreferences>(context, listen: false);
+              prefs.update(
+                currency: data['currency'],
+                distanceUnit: data['distanceUnit'],
+                dateFormat: data['dateFormat'],
+                theme: data['theme'],
               );
+              final languageCode = data['languageCode'];
+              if (languageCode != null && languageCode.isNotEmpty) {
+                languageProvider.setLocale(Locale(languageCode));
+              }
             }
+          });
+        } else {
+          // Fallback to device locale
+          final deviceLocale = PlatformDispatcher.instance.locale;
+          languageProvider.setLocale(deviceLocale);
+        }
 
-            // Setting app preferences. currency, language, etc.
-            if (authState.user != null) {
-              Future.microtask(() async {
-                final doc = await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(authState.userId)
-                    .get();
-
-                if (!context.mounted) return;
-
-                final data = doc.data();
-                if (data != null) {
-                  final prefs = Provider.of<UserPreferences>(context, listen: false);
-                  prefs.update(
-                    currency: data['currency'],
-                    distanceUnit: data['distanceUnit'],
-                    dateFormat: data['dateFormat'],
-                    theme: data['theme'],
-                  );
-                  final languageCode = data['languageCode'];
-                  if (languageCode != null && languageCode.isNotEmpty) {
-                    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-                    languageProvider.setLocale(Locale(languageCode));
-                    debugPrint('Locale set to: $languageCode');
-                  }
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          locale: languageProvider.locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            if (languageProvider.locale != null) {
+              return languageProvider.locale;
+            }
+            if (deviceLocale != null) {
+              for (var locale in supportedLocales) {
+                if (locale.languageCode == deviceLocale.languageCode) {
+                  return locale;
                 }
-              });
+              }
             }
-            return Consumer<LanguageProvider>(
-              builder: (context, languageProvider, _) {
-                return MaterialApp(
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  locale: languageProvider.locale,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  debugShowCheckedModeBanner: false,
-                  theme: AppTheme.lightTheme,
-                  home: authState.user == null ? const SignInPage() : const HomePage(),
-                );
-              },
-            );
+            return const Locale('en');
           },
+          home: _buildHome(authState),
         );
       },
     );
+  }
+
+  Widget _buildHome(AuthState authState) {
+    if (!authState.initialized) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (authState.user == null) {
+      return const SignInPage();
+    }
+    return const HomePage();
   }
 }

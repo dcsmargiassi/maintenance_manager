@@ -9,56 +9,56 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Vehicle Record Tracker';
+  String get appTitle => 'Registro de Vehículos';
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Crear cuenta';
 
   @override
-  String get email => 'Email';
+  String get email => 'Correo electrónico';
 
   @override
-  String get emailVerified => 'Email Verified';
+  String get emailVerified => 'Correo verificado';
 
   @override
-  String get yes => 'Yes';
+  String get yes => 'Sí';
 
   @override
   String get no => 'No';
 
   @override
-  String get username => 'Username';
+  String get username => 'Nombre de usuario';
 
   @override
-  String get usernameHint => 'Enter username';
+  String get usernameHint => 'Ingrese nombre de usuario';
 
   @override
-  String get password => 'Password';
+  String get password => 'Contraseña';
 
   @override
-  String get firstName => 'First Name';
+  String get firstName => 'Nombre';
 
   @override
-  String get firstNameHint => 'Enter first name';
+  String get firstNameHint => 'Ingrese nombre';
 
   @override
-  String get lastName => 'Last Name';
+  String get lastName => 'Apellido';
 
   @override
-  String get lastNameHint => 'Enter last Name';
+  String get lastNameHint => 'Ingrese apellido';
 
   @override
-  String get enablePrivacyAnalytics => 'Enable Privacy Analytics';
+  String get enablePrivacyAnalytics => 'Activar análisis de privacidad';
 
   @override
   String get privacyAnalyticsSubtitle =>
-      'Help improve the app by sharing anonymous usage data.';
+      'Ayuda a mejorar la aplicación compartiendo datos de uso anónimos.';
 
   @override
-  String get genericSuccess => 'Information updated successfully!';
+  String get genericSuccess => '¡Información actualizada con éxito!';
 
   @override
-  String get genericError => 'An error occurred. Please try again.';
+  String get genericError => 'Ocurrió un error. Por favor, inténtalo de nuevo.';
 
   @override
   String genericErrorWithDetail(Object errorDetail) {
@@ -67,693 +67,702 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String welcomeUser(Object username) {
-    return 'Welcome, $username! A verification email was sent.';
+    return '¡Bienvenido, $username! Se envió un correo de verificación.';
   }
 
   @override
-  String get saveChanges => 'Save Changes';
+  String get saveChanges => 'Guardar cambios';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Perfil';
 
   @override
-  String get editProfile => 'Edit Profile';
+  String get editProfile => 'Editar perfil';
 
   @override
-  String get editVehicle => 'Edit Vehicle';
+  String get editVehicle => 'Editar vehículo';
 
   @override
-  String get vehicleDetails => 'Vehicle Details';
+  String get vehicleDetails => 'Detalles del vehículo';
 
   @override
-  String get financialSummary => 'Financial Summary';
+  String get financialSummary => 'Resumen financiero';
 
   @override
-  String get vehicleInformationTitle => 'Vehicle Information';
+  String get vehicleInformationTitle => 'Información del vehículo';
 
   @override
-  String get engineDetails => 'Engine Details';
+  String get engineDetails => 'Detalles del motor';
 
   @override
-  String get exteriorDetails => 'Exterior Details';
+  String get exteriorDetails => 'Detalles exteriores';
 
   @override
-  String get batteryDetails => 'Battery Details';
+  String get batteryDetails => 'Detalles de la batería';
 
   @override
-  String get backToHome => 'Back to Home';
+  String get backToHome => 'Volver al inicio';
 
   @override
-  String get resetPassword => 'Reset Password';
+  String get resetPassword => 'Restablecer contraseña';
 
   @override
   String get resetPasswordEmailSent =>
-      'Password reset email sent! Check your inbox.';
+      '¡Correo de restablecimiento enviado! Revisa tu bandeja de entrada.';
 
   @override
-  String get enterEmailMessage => 'Enter your email to receive a reset link.';
+  String get enterEmailMessage =>
+      'Ingresa tu correo electrónico para recibir un enlace de restablecimiento.';
 
   @override
-  String get sendResetEmail => 'Send Reset Email';
+  String get sendResetEmail => 'Enviar correo de restablecimiento';
 
   @override
-  String get sendVerificationEmail => 'Send Verification Email';
+  String get sendVerificationEmail => 'Enviar correo de verificación';
 
   @override
   String get verificationEmailSent =>
-      'Verification email sent! Please check your inbox.';
+      '¡Correo de verificación enviado! Revisa tu bandeja de entrada.';
 
   @override
-  String get fillInAllFields => 'Fill in all fields';
+  String get fillInAllFields => 'Rellena todos los campos';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'Iniciar sesión';
 
   @override
-  String get fillInTwoFields => 'Please fill 2 of the fields above.';
+  String get fillInTwoFields =>
+      'Por favor, completa 2 de los campos anteriores.';
 
   @override
-  String get emptyMessageText => 'Please enter some text';
+  String get emptyMessageText => 'Por favor, ingresa texto';
 
   @override
-  String get enterValidNumber => 'Please enter valid number';
+  String get enterValidNumber => 'Por favor, ingresa un número válido';
 
   @override
-  String get noNegatives => 'No negatives';
+  String get noNegatives => 'Sin números negativos';
 
   @override
-  String get enterRealisticValue => 'Enter a realistic value';
+  String get enterRealisticValue => 'Ingresa un valor realista';
 
   @override
   String maxDecimalPlacesMessage(Object maxDecimalPlaces) {
-    return 'Max $maxDecimalPlaces decimal places allowed';
+    return 'Se permiten un máximo de $maxDecimalPlaces decimales';
   }
 
   @override
-  String get fuelAmountLabel => 'Fuel Amount';
+  String get fuelAmountLabel => 'Cantidad de combustible';
 
   @override
-  String get fuelAmountLabelHint => 'Enter amount of fuel';
+  String get fuelAmountLabelHint => 'Ingresa la cantidad de combustible';
 
   @override
-  String get fuelPriceLabel => 'Fuel Price';
+  String get fuelPriceLabel => 'Precio del combustible';
 
   @override
-  String get fuelPriceLabelHint => 'Enter amount of fuel';
+  String get fuelPriceLabelHint => 'Ingresa el precio del combustible';
 
   @override
-  String get totalFuelCostLabel => 'Total Cost';
+  String get totalFuelCostLabel => 'Costo total';
 
   @override
-  String get totalFuelCostLabelHint => 'Enter total cost';
+  String get totalFuelCostLabelHint => 'Ingresa el costo total';
 
   @override
-  String get odometerLabel => 'Odometer';
+  String get odometerLabel => 'Odómetro';
 
   @override
-  String get odometerLabelHint => 'Enter current odometer number (Optional)';
+  String get odometerLabelHint => 'Ingresa el odómetro actual (opcional)';
 
   @override
-  String get calculateMissingFieldLabel => 'Calculate Missing Field';
+  String get calculateMissingFieldLabel => 'Calcular campo faltante';
 
   @override
-  String get dateLabel => 'Date';
+  String get dateLabel => 'Fecha';
 
   @override
-  String get enterDateRefuelLabel => 'Enter date of refuel';
+  String get enterDateRefuelLabel => 'Ingresa la fecha de recarga';
 
   @override
-  String get enterValidDateMessage => 'Please select a valid date';
+  String get enterValidDateMessage => 'Por favor, selecciona una fecha válida';
 
   @override
   String errorSavingFuelRecordMessage(Object error) {
-    return 'Error saving fuel record: $error';
+    return 'Error al guardar el registro de combustible: $error';
   }
 
   @override
-  String get addFuelRecordButton => 'Add Fuel Record';
+  String get addFuelRecordButton => 'Agregar registro de combustible';
 
   @override
-  String get editFuelRecordButton => 'Edit Fuel Record';
+  String get editFuelRecordButton => 'Editar registro de combustible';
 
   @override
-  String get submitButton => 'Submit';
+  String get submitButton => 'Enviar';
 
   @override
-  String get updateButton => 'Update';
+  String get updateButton => 'Actualizar';
 
   @override
-  String get sortButton => 'Sort';
+  String get sortButton => 'Ordenar';
 
   @override
-  String get confirmDeleteButton => 'Confirm Deletion';
+  String get confirmDeleteButton => 'Confirmar eliminación';
 
   @override
-  String get deleteButton => 'Delete';
+  String get deleteButton => 'Eliminar';
 
   @override
-  String get deleteVehicleButton => 'Delete Vehicle';
+  String get deleteVehicleButton => 'Eliminar vehículo';
 
   @override
-  String get cancelButton => 'Cancel';
+  String get cancelButton => 'Cancelar';
 
   @override
-  String get unarchiveButton => 'Unarchive';
+  String get unarchiveButton => 'Desarchivar';
 
   @override
-  String get discardChangesButton => 'Discard Changes';
+  String get discardChangesButton => 'Descartar cambios';
 
   @override
   String get discardChangesDescription =>
-      'You have unsaved changes. Are you sure you want to leave?';
+      'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
 
   @override
-  String get leaveButton => 'Leave';
+  String get leaveButton => 'Salir';
 
   @override
-  String get sortNewest => 'Newest';
+  String get sortNewest => 'Más reciente';
 
   @override
-  String get sortOldest => 'Oldest';
+  String get sortOldest => 'Más antiguo';
 
   @override
-  String get sortLowToHigh => 'Low to High';
+  String get sortLowToHigh => 'De menor a mayor';
 
   @override
-  String get sortHighToLow => 'High to Low';
+  String get sortHighToLow => 'De mayor a menor';
 
   @override
-  String get selectSortTypeLabel => 'Select Sort Type';
+  String get selectSortTypeLabel => 'Seleccionar tipo de orden';
 
   @override
-  String get fuelRecordsTitle => 'Fuel Records';
+  String get fuelRecordsTitle => 'Registros de combustible';
 
   @override
-  String get noRecordsFoundMessage => 'No records found';
+  String get noRecordsFoundMessage => 'No se encontraron registros';
 
   @override
   String get confirmFuelRecordDeleteMessage =>
-      'Are you sure you want to delete this fuel record?';
+      '¿Estás seguro de que deseas eliminar este registro de combustible?';
 
   @override
-  String get profileButton => 'Profile';
+  String get profileButton => 'Perfil';
 
   @override
-  String get homepageButton => 'Homepage';
+  String get homepageButton => 'Página principal';
 
   @override
-  String get settingsButton => 'Settings';
+  String get settingsButton => 'Configuración';
 
   @override
-  String get signoutButton => 'Signout';
+  String get signoutButton => 'Cerrar sesión';
 
   @override
-  String get manageDataTitle => 'Manage Data';
+  String get manageDataTitle => 'Gestionar datos';
 
   @override
-  String get deleteAppDataButton => 'Delete App Data';
+  String get deleteAppDataButton => 'Eliminar datos de la app';
 
   @override
-  String get deleteAccountButton => 'Delete Account';
+  String get deleteAccountButton => 'Eliminar cuenta';
 
   @override
-  String get confirmAppDataDeletionTitle => 'Confirm App Data Deletion';
+  String get confirmAppDataDeletionTitle =>
+      'Confirmar eliminación de datos de la app';
 
   @override
   String get confirmAppDataDeletionContent =>
-      'This will delete all your app data permanently. Continue?';
+      'Esto eliminará permanentemente todos tus datos de la app. ¿Continuar?';
 
   @override
-  String get confirmAccountDeletionTitle => 'Confirm Account Deletion';
+  String get confirmAccountDeletionTitle => 'Confirmar eliminación de cuenta';
 
   @override
   String get confirmAccountDeletionContent =>
-      'This will delete your account permanently. Continue?';
+      'Esto eliminará permanentemente tu cuenta. ¿Continuar?';
 
   @override
-  String get reenterPasswordTitle => 'Re-enter Password';
+  String get reenterPasswordTitle => 'Reingresar contraseña';
 
   @override
-  String get passwordFieldLabel => 'Password';
+  String get passwordFieldLabel => 'Contraseña';
 
   @override
-  String get confirmButton => 'Confirm';
+  String get confirmButton => 'Confirmar';
 
   @override
-  String get accountDeletedMessage => 'Account deleted!';
+  String get accountDeletedMessage => '¡Cuenta eliminada!';
 
   @override
   String failedToDeleteAccountMessage(Object error) {
-    return 'Failed to delete account: $error';
+    return 'No se pudo eliminar la cuenta: $error';
   }
 
   @override
-  String get userNotLoggedInMessage => 'User not logged in';
+  String get userNotLoggedInMessage => 'Usuario no ha iniciado sesión';
 
   @override
-  String get appDataDeletedMessage => 'App data deleted!';
+  String get appDataDeletedMessage => '¡Datos de la app eliminados!';
 
   @override
   String failedToDeleteAppDataMessage(Object error) {
-    return 'Failed to delete app data: $error';
+    return 'No se pudo eliminar los datos de la app: $error';
   }
 
   @override
-  String get settingsTitle => 'Settings';
+  String get settingsTitle => 'Configuración';
 
   @override
-  String get enablePushNotifications => 'Enable Push Notifications';
+  String get enablePushNotifications => 'Activar notificaciones push';
 
   @override
-  String get privacyAnalytics => 'Privacy Analytics';
+  String get privacyAnalytics => 'Análisis de privacidad';
 
   @override
-  String get displayOptions => 'Display Options';
+  String get displayOptions => 'Opciones de visualización';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'Política de privacidad';
 
   @override
-  String get termsOfService => 'Terms of Service';
+  String get termsOfService => 'Términos de servicio';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licencias';
 
   @override
-  String get manageData => 'Manage Data';
+  String get manageData => 'Gestionar datos';
 
   @override
-  String get aboutDescription1 => 'This app helps you track your fuel records.';
+  String get aboutDescription1 =>
+      'Esta app te ayuda a registrar tus consumos de combustible.';
 
   @override
-  String get aboutDescription2 => 'For support: vehiclerecordtracker@gmail.com';
+  String get aboutDescription2 =>
+      'Para soporte: vehiclerecordtracker@gmail.com';
 
   @override
-  String get applicationLegalese => '© 2025 Vehicle Record Tracker';
+  String get applicationLegalese => '© 2025 Registro de Vehículos';
 
   @override
-  String get applicationName => 'Vehicle Record Tracker';
+  String get applicationName => 'Registro de Vehículos';
 
   @override
-  String get myVehiclesButton => 'My Vehicles';
+  String get myVehiclesButton => 'Mis vehículos';
 
   @override
-  String get archivedVehiclesButton => 'Archived Vehicles';
+  String get archivedVehiclesButton => 'Vehículos archivados';
 
   @override
-  String get addVehicleButton => 'Add Vehicle';
+  String get addVehicleButton => 'Agregar vehículo';
 
   @override
-  String get seriesTypeLabel => 'Series Type';
+  String get seriesTypeLabel => 'Tipo de serie';
 
   @override
-  String get seriesTypeHint => 'Ex BXT';
+  String get seriesTypeHint => 'Ej. BXT';
 
   @override
-  String get bciGroupSizeLabel => 'BCI Group Size';
+  String get bciGroupSizeLabel => 'Tamaño del grupo BCI';
 
   @override
-  String get bciGroupSizeHint => 'Select group size';
+  String get bciGroupSizeHint => 'Selecciona tamaño del grupo';
 
   @override
-  String get coldCrankAmpsLabel => 'Cold Crank Amps - CCA';
+  String get coldCrankAmpsLabel => 'Amperios de arranque en frío (CCA)';
 
   @override
-  String get coldCrankAmpsHint => 'Ex 500';
+  String get coldCrankAmpsHint => 'Ej. 500';
 
   @override
-  String get enterIntegerError => 'Please enter an integer';
+  String get enterIntegerError => 'Por favor, ingresa un número entero';
 
   @override
-  String get noNegativesError => 'No negatives';
+  String get noNegativesError => 'No se permiten números negativos';
 
   @override
-  String get engineSizeLabel => 'Engine Size';
+  String get engineSizeLabel => 'Tamaño del motor';
 
   @override
-  String get engineSizeHint => 'Select engine size';
+  String get engineSizeHint => 'Selecciona tamaño del motor';
 
   @override
-  String get cylinderCountLabel => 'Cylinder Count';
+  String get cylinderCountLabel => 'Número de cilindros';
 
   @override
-  String get cylinderCountHint => 'Select cylinder count plus type';
+  String get cylinderCountHint => 'Selecciona número y tipo de cilindros';
 
   @override
-  String get cylinderLabel => 'Cylinder ';
+  String get cylinderLabel => 'Cilindro ';
 
   @override
-  String get engineTypeLabel => 'Engine Type';
+  String get engineTypeLabel => 'Tipo de motor';
 
   @override
-  String get engineTypeHint => 'Select engine type';
+  String get engineTypeHint => 'Selecciona tipo de motor';
 
   @override
-  String get oilWeightLabel => 'Oil Weight';
+  String get oilWeightLabel => 'Peso del aceite';
 
   @override
-  String get oilWeightHint => 'Ex 5W-30';
+  String get oilWeightHint => 'Ej. 5W-30';
 
   @override
-  String get oilCompositionLabel => 'Oil Composition';
+  String get oilCompositionLabel => 'Composición del aceite';
 
   @override
-  String get oilCompositionHint => 'Select oil composition';
+  String get oilCompositionHint => 'Selecciona composición del aceite';
 
   @override
-  String get oilClassLabel => 'Oil Class';
+  String get oilClassLabel => 'Clase de aceite';
 
   @override
-  String get oilClassHint => 'Select oil class';
+  String get oilClassHint => 'Selecciona clase de aceite';
 
   @override
-  String get oilFilterLabel => 'Oil Filter';
+  String get oilFilterLabel => 'Filtro de aceite';
 
   @override
-  String get oilFilterHint => 'Ex S7317XL';
+  String get oilFilterHint => 'Ej. S7317XL';
 
   @override
-  String get engineFilterLabel => 'Engine Filter';
+  String get engineFilterLabel => 'Filtro del motor';
 
   @override
-  String get engineFilterHint => 'Ex FA-1785';
+  String get engineFilterHint => 'Ej. FA-1785';
 
   @override
-  String get engineTypeGas => 'Gas';
+  String get engineTypeGas => 'Gasolina';
 
   @override
-  String get engineTypeDiesel => 'Diesel';
+  String get engineTypeDiesel => 'Diésel';
 
   @override
-  String get engineTypeHybrid => 'Hybrid';
+  String get engineTypeHybrid => 'Híbrido';
 
   @override
-  String get engineTypeElectric => 'Electric';
+  String get engineTypeElectric => 'Eléctrico';
 
   @override
-  String get oilCompositionConventional => 'Conventional';
+  String get oilCompositionConventional => 'Convencional';
 
   @override
-  String get oilCompositionFullSynthetic => 'Full Synthetic';
+  String get oilCompositionFullSynthetic => 'Sintético completo';
 
   @override
   String get oilCompositionMineral => 'Mineral';
 
   @override
-  String get oilCompositionSyntheticBlend => 'Synthetic Blend';
+  String get oilCompositionSyntheticBlend => 'Mezcla sintética';
 
   @override
-  String get driverWiperLabel => 'Driver Side Windshield Wiper';
+  String get driverWiperLabel => 'Limpiaparabrisas del conductor';
 
   @override
-  String get driverWiperHint => 'Ex WW-1801-PF';
+  String get driverWiperHint => 'Ej. WW-1801-PF';
 
   @override
-  String get passengerWiperLabel => 'Passenger Side Windshield Wiper';
+  String get passengerWiperLabel => 'Limpiaparabrisas del pasajero';
 
   @override
-  String get passengerWiperHint => 'Ex WW-1901-PF';
+  String get passengerWiperHint => 'Ej. WW-1901-PF';
 
   @override
-  String get rearWiperLabel => 'Rear Windshield Wiper';
+  String get rearWiperLabel => 'Limpiaparabrisas trasero';
 
   @override
-  String get rearWiperHint => 'Ex WW-1701-PF';
+  String get rearWiperHint => 'Ej. WW-1701-PF';
 
   @override
-  String get highBeamLabel => 'Headlamp High Beam';
+  String get highBeamLabel => 'Luz alta';
 
   @override
-  String get highBeamHint => 'Ex H7LL';
+  String get highBeamHint => 'Ej. H7LL';
 
   @override
-  String get lowBeamLabel => 'Headlamp Low Beam';
+  String get lowBeamLabel => 'Luz baja';
 
   @override
-  String get lowBeamHint => 'Ex H11LL';
+  String get lowBeamHint => 'Ej. H11LL';
 
   @override
-  String get turnLampLabel => 'Turn Lamp';
+  String get turnLampLabel => 'Luz direccional';
 
   @override
-  String get turnLampHint => 'Ex T20';
+  String get turnLampHint => 'Ej. T20';
 
   @override
-  String get backupLampLabel => 'Backup Lamp';
+  String get backupLampLabel => 'Luz de reversa';
 
   @override
-  String get backupLampHint => 'Ex 921';
+  String get backupLampHint => 'Ej. 921';
 
   @override
-  String get fogLampLabel => 'Fog Lamp';
+  String get fogLampLabel => 'Luz antiniebla';
 
   @override
-  String get fogLampHint => 'Ex H11';
+  String get fogLampHint => 'Ej. H11';
 
   @override
-  String get brakeLampLabel => 'Brake Lamp';
+  String get brakeLampLabel => 'Luz de freno';
 
   @override
-  String get brakeLampHint => 'Ex LED';
+  String get brakeLampHint => 'Ej. LED';
 
   @override
-  String get licenseLampLabel => 'License Plate Lamp';
+  String get licenseLampLabel => 'Luz de placa';
 
   @override
-  String get licenseLampHint => 'Ex C5W';
+  String get licenseLampHint => 'Ej. C5W';
 
   @override
-  String get requiredFieldError => 'Please enter some text';
+  String get requiredFieldError => 'Por favor, ingresa algún texto';
 
   @override
-  String get invalidNumberError => 'Please enter a valid number';
+  String get invalidNumberError => 'Por favor, ingresa un número válido';
 
   @override
-  String get negativeNotAllowedError => 'Value cannot be negative';
+  String get negativeNotAllowedError => 'El valor no puede ser negativo';
 
   @override
-  String get tooLargeError => 'Please enter a realistic value';
+  String get tooLargeError => 'Por favor, ingresa un valor realista';
 
   @override
   String maxDecimalPlacesError(int maxDecimalPlaces) {
-    return 'Max $maxDecimalPlaces decimal places allowed';
+    return 'Máximo $maxDecimalPlaces decimales permitidos';
   }
 
   @override
   String maxLengthError(int maxLength) {
-    return 'Max $maxLength characters allowed';
+    return 'Máximo $maxLength caracteres permitidos';
   }
 
   @override
-  String get nicknameLabel => 'Nickname';
+  String get nicknameLabel => 'Apodo';
 
   @override
-  String get nicknameHint => 'Enter nickname of car';
+  String get nicknameHint => 'Ingresa el apodo del vehículo';
 
   @override
   String get vinLabel => 'VIN';
 
   @override
-  String get vinHint => 'Enter VIN of car';
+  String get vinHint => 'Ingresa el VIN del vehículo';
 
   @override
-  String get licensePlateLabel => 'License Plate';
+  String get licensePlateLabel => 'Placa';
 
   @override
-  String get licensePlateHint => 'Enter license plate of car';
+  String get licensePlateHint => 'Ingresa la placa del vehículo';
 
   @override
-  String get makeLabel => 'Make';
+  String get makeLabel => 'Marca';
 
   @override
-  String get makeHint => 'Search make';
+  String get makeHint => 'Busca la marca';
 
   @override
-  String get modelLabel => 'Model';
+  String get modelLabel => 'Modelo';
 
   @override
-  String get modelHint => 'Enter model of car';
+  String get modelHint => 'Ingresa el modelo del vehículo';
 
   @override
-  String get submodelLabel => 'Submodel';
+  String get submodelLabel => 'Submodelo';
 
   @override
-  String get submodelHint => 'Enter submodel of car';
+  String get submodelHint => 'Ingresa el submodelo del vehículo';
 
   @override
-  String get yearLabel => 'Year';
+  String get yearLabel => 'Año';
 
   @override
-  String get yearHint => 'Select Model Year';
+  String get yearHint => 'Selecciona el año del modelo';
 
   @override
-  String get currentMileageLabel => 'Current Mileage';
+  String get currentMileageLabel => 'Kilometraje actual';
 
   @override
-  String get currentMileageHint => 'Enter current mileage of car';
+  String get currentMileageHint => 'Ingresa el kilometraje actual del vehículo';
 
   @override
-  String get mileageLabel => 'Mileage';
+  String get mileageLabel => 'Kilometraje';
 
   @override
-  String get selectYear => 'Select Year';
+  String get selectYear => 'Seleccionar año';
 
   @override
-  String get selectMonth => 'Select Month';
+  String get selectMonth => 'Seleccionar mes';
 
   @override
-  String get noDataText => 'No Data';
+  String get noDataText => 'Sin datos';
 
   @override
   String monthlyFuelCost(int month, int year) {
-    return 'Fuel Cost for $month/$year';
+    return 'Costo de combustible para $month/$year';
   }
 
   @override
   String yearlyFuelCost(int year) {
-    return 'Fuel Cost for $year';
+    return 'Costo de combustible para $year';
   }
 
   @override
-  String get lifetimeFuelCost => 'Lifetime Fuel Cost';
+  String get lifetimeFuelCost => 'Costo total de combustible';
 
   @override
-  String get lifetimeMaintenanceCost => 'Lifetime Maintenance Cost';
+  String get lifetimeMaintenanceCost => 'Costo total de mantenimiento';
 
   @override
-  String get lifetimeVehicleCost => 'Lifetime Vehicle Cost';
+  String get lifetimeVehicleCost => 'Costo total del vehículo';
 
   @override
-  String get fuelHistoryButton => 'Fuel History';
+  String get fuelHistoryButton => 'Historial de combustible';
 
   @override
-  String get workHistoryButton => 'Work History';
+  String get workHistoryButton => 'Historial de mantenimiento';
 
   @override
-  String get speedometerReadingLabel => 'Speedometer Reading';
+  String get speedometerReadingLabel => 'Lectura del velocímetro';
 
   @override
-  String get purchaseHistoryTitle => 'Purchase History';
+  String get purchaseHistoryTitle => 'Historial de compra';
 
   @override
-  String get purchaseDateLabel => 'Purchase Date';
+  String get purchaseDateLabel => 'Fecha de compra';
 
   @override
-  String get purchaseDateHint => 'Enter purchase date of car';
+  String get purchaseDateHint => 'Ingresa la fecha de compra del vehículo';
 
   @override
-  String get purchasePriceLabel => 'Purchase Price';
+  String get purchasePriceLabel => 'Precio de compra';
 
   @override
-  String get purchasePriceHint => 'Enter Original Price';
+  String get purchasePriceHint => 'Ingresa el precio original';
 
   @override
-  String get originalOdometerLabel => 'Original Odometer Number';
+  String get originalOdometerLabel => 'Kilometraje original';
 
   @override
-  String get originalOdometerHint => 'Enter odometer number when purchased';
+  String get originalOdometerHint =>
+      'Ingresa el kilometraje al momento de la compra';
 
   @override
-  String get recalculateFuelTotalsTitle => 'Recalculate All Fuel Totals';
+  String get recalculateFuelTotalsTitle => 'Recalcular totales de combustible';
 
   @override
   String get recalculateFuelTotalsSubtitle =>
-      'Corrects lifetime fuel totals for all vehicles';
+      'Corrige los totales de combustible de todos los vehículos';
 
   @override
-  String get recalculateFuelTotalsDialogTitle => 'Recalculate Fuel Costs?';
+  String get recalculateFuelTotalsDialogTitle =>
+      '¿Recalcular costos de combustible?';
 
   @override
   String get recalculateFuelTotalsDialogBody =>
-      'This will overwrite lifetime fuel totals with the sum of all fuel records. Continue?';
+      'Esto sobrescribirá los totales de combustible con la suma de todos los registros. ¿Continuar?';
 
   @override
-  String get recalculateFuelTotalsCancel => 'Cancel';
+  String get recalculateFuelTotalsCancel => 'Cancelar';
 
   @override
-  String get recalculateFuelTotalsConfirm => 'Recalculate';
+  String get recalculateFuelTotalsConfirm => 'Recalcular';
 
   @override
-  String get recalculateFuelTotalsSuccess => 'All fuel totals recalculated.';
+  String get recalculateFuelTotalsSuccess =>
+      'Totales de combustible recalculados.';
 
   @override
-  String get addVehicleForm => 'Add Vehicle Form';
+  String get addVehicleForm => 'Formulario para agregar vehículo';
 
   @override
   String get fillDetailsForFutureReference =>
-      'Fill these details for future reference on the go!';
+      '¡Completa estos detalles para referencia futura mientras estás en movimiento!';
 
   @override
-  String get buttonAddFuel => 'Add Fuel';
+  String get buttonAddFuel => 'Agregar combustible';
 
   @override
-  String get buttonAddWork => 'Add Work';
+  String get buttonAddWork => 'Agregar mantenimiento';
 
   @override
-  String get buttonViewFuel => 'View Fuel';
+  String get buttonViewFuel => 'Ver combustible';
 
   @override
-  String get buttonViewWork => 'View Work';
+  String get buttonViewWork => 'Ver mantenimiento';
 
   @override
-  String get archivedVehiclesTitle => 'Archived Vehicles';
+  String get archivedVehiclesTitle => 'Vehículos archivados';
 
   @override
-  String get selectVehicleHint => 'Select Vehicle';
+  String get selectVehicleHint => 'Seleccionar vehículo';
 
   @override
-  String get archiveButtonLabel => 'Archive';
+  String get archiveButtonLabel => 'Archivar';
 
   @override
-  String get noArchivedVehiclesMessage => 'No Archived Vehicles';
+  String get noArchivedVehiclesMessage => 'No hay vehículos archivados';
 
   @override
   String get confirmDeletionMessage =>
-      'Are you sure you want to delete this vehicle and all Fuel Records?';
+      '¿Seguro que quieres eliminar este vehículo y todos los registros de combustible?';
 
   @override
-  String get deleteSnackBarMessage => 'Vehicle and Fuel records deleted!';
+  String get deleteSnackBarMessage =>
+      '¡Vehículo y registros de combustible eliminados!';
 
   @override
-  String get continueAsGuest => 'Vehicle and Fuel records deleted!';
+  String get continueAsGuest => 'Continuar como invitado';
 
   @override
   String get guestCannotCreateRecords =>
-      'Guest accounts cannot create records. Please sign in or register.';
+      'Las cuentas de invitado no pueden crear registros. Por favor inicia sesión o regístrate.';
 
   @override
-  String get january => 'January';
+  String get january => 'Enero';
 
   @override
-  String get february => 'February';
+  String get february => 'Febrero';
 
   @override
-  String get march => 'March';
+  String get march => 'Marzo';
 
   @override
-  String get april => 'April';
+  String get april => 'Abril';
 
   @override
-  String get may => 'May';
+  String get may => 'Mayo';
 
   @override
-  String get june => 'June';
+  String get june => 'Junio';
 
   @override
-  String get july => 'July';
+  String get july => 'Julio';
 
   @override
-  String get august => 'August';
+  String get august => 'Agosto';
 
   @override
-  String get september => 'September';
+  String get september => 'Septiembre';
 
   @override
-  String get october => 'October';
+  String get october => 'Octubre';
 
   @override
-  String get november => 'November';
+  String get november => 'Noviembre';
 
   @override
-  String get december => 'December';
+  String get december => 'Diciembre';
 }

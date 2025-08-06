@@ -1,0 +1,1212 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Suivi des véhicules",
+  "@appTitle": {
+    "description": "App store name of the application"
+  },
+
+  "createAccount": "Créer un compte",
+  "@createAccount": {
+    "description": "Title for the create account page and submission button"
+  },
+
+  "email": "E-mail",
+  "@email": {
+    "description": "Label for email field"
+  },
+
+  "emailVerified": "E-mail vérifié",
+  "@emailVerified": {
+    "description": "Label for whether email is verified or not"
+  },
+
+  "yes": "Oui",
+  "@yes": {
+    "description": "Simple yes text"
+  },
+
+  "no": "Non",
+  "@no": {
+    "description": "Simple No text"
+  },
+
+  "username": "Nom d'utilisateur",
+  "@username": {
+    "description": "Label for username field"
+  },
+
+  "usernameHint": "Entrez le nom d'utilisateur",
+  "@usernameHint": {
+    "description": "Label hint for username field"
+  },
+
+  "password": "Mot de passe",
+  "@password": {
+    "description": "Label for password field"
+  },
+
+  "firstName": "Prénom",
+  "@firstName": {
+    "description": "Label for first name field"
+  },
+
+  "firstNameHint": "Entrez le prénom",
+  "@firstNameHint": {
+    "description": "Label hintfor first name field"
+  },
+
+  "lastName": "Nom de famille",
+  "@lastName": {
+    "description": "Label for last name field"
+  },
+
+  "lastNameHint": "Entrez le nom de famille",
+  "@lastNameHint": {
+    "description": "Label hint for last name field"
+  },
+
+  "enablePrivacyAnalytics": "Activer l'analyse de confidentialité",
+  "@enablePrivacyAnalytics": {
+    "description": "Switch title for enabling privacy analytics"
+  },
+
+  "privacyAnalyticsSubtitle": "Aidez à améliorer l'application en partageant des données d'utilisation anonymes.",
+  "@privacyAnalyticsSubtitle": {
+    "description": "Subtitle explaining what privacy analytics means"
+  },
+
+  "genericSuccess": "Informations mises à jour avec succès !",
+  "@genericSuccess": {
+    "description": "Generic Success message"
+  },
+
+  "genericError": "Une erreur s'est produite. Veuillez réessayer.",
+  "@genericError": {
+    "description": "Generic error message for catching exceptions"
+  },
+
+  "genericErrorWithDetail": "Erreur : {errorDetail}",
+  "@genericErrorWithDetail": {
+    "description": "Error message for catching exceptions with generated details",
+    "placeholders": {
+      "errorDetail": {}
+    }
+  },
+
+  "welcomeUser": "Bienvenue, {username} ! Un e-mail de vérification a été envoyé.",
+  "@welcomeUser": {
+    "description": "Welcome message with the user's name",
+    "placeholders": {
+      "username": {}
+    }
+  },
+
+  "saveChanges": "Enregistrer les modifications",
+  "@saveChanges": {
+    "description": "Button text to save document changes"
+  },
+
+  "profile": "Profil",
+  "@profile": {
+    "description": "Profile title"
+  },
+
+  "editProfile": "Modifier le profil",
+  "@editProfile": {
+    "description": "Edit Profile page title"
+  },
+
+  "editVehicle": "Modifier le véhicule",
+  "@editVehicle": {
+    "description": "Edit Vehicle button title"
+  },
+
+  "vehicleDetails": "Détails du véhicule",
+  "@vehicleDetails": {
+    "description": "Vehicle details sub-heading"
+  },
+
+  "financialSummary": "Résumé financier",
+  "@financialSummary": {
+    "description": "Financial Summary sub-heading"
+  },
+
+  "vehicleInformationTitle": "Informations sur le véhicule",
+  "@vehicleInformationTitle": {
+    "description": "Vehicle Information heading"
+  },
+
+  "engineDetails": "Détails du moteur",
+  "@engineDetails": {
+    "description": "Engine Details sub-heading"
+  },
+
+  "exteriorDetails": "Détails extérieurs",
+  "@exteriorDetails": {
+    "description": "Exterior Details sub-heading"
+  },
+
+  "batteryDetails": "Détails de la batterie",
+  "@batteryDetails": {
+    "description": "Battery Details sub-heading"
+  },
+
+  "backToHome": "Retour à l'accueil",
+  "@backToHome": {
+    "description": "Back to home button text"
+  },
+
+  "resetPassword": "Réinitialiser le mot de passe",
+  "@resetPassword": {
+    "description": "Reset Password text"
+  },
+
+  "resetPasswordEmailSent": "E-mail de réinitialisation du mot de passe envoyé ! Vérifiez votre boîte de réception.",
+  "@resetPasswordEmailSent": {
+    "description": "Message to state password reset email has been sent. Check inbox"
+  },
+
+  "enterEmailMessage": "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
+  "@enterEmailMessage": {
+    "description": "Message to prompt user to enter email for receiving reset link in inbox"
+  },
+
+  "sendResetEmail": "Envoyer l’e-mail de réinitialisation",
+  "@sendResetEmail": {
+    "description": "Send reset email in context of password reset"
+  },
+
+  "sendVerificationEmail": "Envoyer l’e-mail de vérification",
+  "@sendVerificationEmail": {
+    "description": "Button to send verification email"
+  },
+
+  "verificationEmailSent": "E-mail de vérification envoyé ! Vérifiez votre boîte de réception.",
+  "@verificationEmailSent": {
+    "description": "Message to state verification email was sent and to check inbox."
+  },
+
+  "fillInAllFields": "Remplissez tous les champs",
+  "@fillInAllFields": {
+    "description": "message to alert user to fill in all fields"
+  },
+
+  "signIn": "Se connecter",
+  "@signIn": {
+    "description": "Button text allowing user to sign in to the app"
+  },
+
+  "fillInTwoFields": "Veuillez remplir 2 des champs ci-dessus.",
+  "@fillInTwoFields": {
+    "description": "Message alerting user two fields above must be filled in."
+  },
+
+  "emptyMessageText": "Veuillez entrer du texte",
+  "@emptyMessageText": {
+    "description": "Message alerting user text must be entered."
+  },
+
+  "enterValidNumber": "Veuillez entrer un nombre valide",
+  "@enterValidNumber": {
+    "description": "Message alerting user text must be a valid number."
+  },
+
+  "noNegatives": "Pas de nombres négatifs",
+  "@noNegatives": {
+    "description": "Message alerting user no negative numbers allowed"
+  },
+
+  "enterRealisticValue": "Entrez une valeur réaliste",
+  "@enterRealisticValue": {
+    "description": "Message alerting user number must be a realistic value"
+  },
+
+  "maxDecimalPlacesMessage": "Maximum {maxDecimalPlaces} décimales autorisées",
+  "@maxDecimalPlacesMessage": {
+    "description": "Error message shown when the number of decimal places exceeds allowed maximum.",
+    "placeholders": {
+      "maxDecimalPlaces": {}
+    }
+  },
+
+  "fuelAmountLabel": "Quantité de carburant",
+  "@fuelAmountLabel": {
+    "description": "Fuel amount label"
+  },
+
+  "fuelAmountLabelHint": "Entrez la quantité de carburant",
+  "@fuelAmountLabelHint": {
+    "description": "Fuel amount label hint"
+  },
+
+  "fuelPriceLabel": "Prix du carburant",
+  "@fuelPriceLabel": {
+    "description": "Fuel price label"
+  },
+
+  "fuelPriceLabelHint": "Entrez le prix du carburant",
+  "@fuelPriceLabelHint": {
+    "description": "Fuel price label hint"
+  },
+
+  "totalFuelCostLabel": "Coût total",
+  "@totalFuelCostLabel": {
+    "description": "Total fuel cost label"
+  },
+
+  "totalFuelCostLabelHint": "Entrez le coût total",
+  "@totalFuelCostLabelHint": {
+    "description": "Total fuel cost label hint"
+  },
+
+  "odometerLabel": "Compteur kilométrique",
+  "@odometerLabel": {
+    "description": "Odometer label"
+  },
+
+  "odometerLabelHint": "Entrez le numéro actuel du compteur (facultatif)",
+  "@odometerLabelHint": {
+    "description": "Enter current odometer number label hint"
+  },
+
+  "calculateMissingFieldLabel": "Calculer le champ manquant",
+  "@calculateMissingFieldLabel": {
+    "description": "Calculate missing field button for 2 of the 3 fuel fields displayed above"
+  },
+
+  "dateLabel": "Date",
+  "@dateLabel": {
+    "description": "Date label text for collecting current days date"
+  },
+
+  "enterDateRefuelLabel": "Entrez la date du ravitaillement",
+  "@enterDateRefuelLabel": {
+    "description": "Date label hint text for collecting current days date of refuel"
+  },
+
+  "enterValidDateMessage": "Veuillez sélectionner une date valide",
+  "@enterValidDateMessage": {
+    "description": "Date label hint text for requesting user to select a valid date."
+  },
+
+  "errorSavingFuelRecordMessage": "Erreur lors de l'enregistrement du ravitaillement : {error}",
+  "@errorSavingFuelRecordMessage": {
+    "description": "Date label hint text for requesting user to select a valid date.",
+    "placeholders": {
+      "error": {
+        "example": "Erreur réseau"
+      }
+    }
+  },
+
+  "addFuelRecordButton": "Ajouter un ravitaillement",
+  "@addFuelRecordButton": {
+    "description": "Title label for adding fuel record"
+  },
+
+  "editFuelRecordButton": "Modifier le ravitaillement",
+  "@editFuelRecordButton": {
+    "description": "Title label for editing fuel record"
+  },
+
+  "submitButton": "Soumettre",
+  "@submitButton": {
+    "description": "Button text for submitting various forms."
+  },
+
+  "updateButton": "Mettre à jour",
+  "@updateButton": {
+    "description": "Button text for updating various forms."
+  },
+
+  "sortButton": "Trier",
+"@sortButton": {
+  "description": "Button text for sorting."
+},
+
+"confirmDeleteButton": "Confirmer la suppression",
+"@confirmDeleteButton": {
+  "description": "Button text for confirming delete"
+},
+
+"deleteButton": "Supprimer",
+"@deleteButton": {
+  "description": "Button text for delete"
+},
+
+"deleteVehicleButton": "Supprimer le véhicule",
+"@deleteVehicleButton": {
+  "description": "Button text for delete vehicle"
+},
+
+"cancelButton": "Annuler",
+"@cancelButton": {
+  "description": "Button text for cancelling an action"
+},
+
+"unarchiveButton": "Désarchiver",
+"@unarchiveButton": {
+  "description": "Button text for unarchiving a vehicle"
+},
+
+"discardChangesButton": "Ignorer les modifications",
+"@discardChangesButton": {
+  "description": "Button text for discarding changes and leaving the page without saving"
+},
+
+"discardChangesDescription": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ?",
+"@discardChangesDescription": {
+  "description": "Button text for discarding changes and leaving the page without saving description"
+},
+
+"leaveButton": "Quitter",
+"@leaveButton": {
+  "description": "Button text for leaving various forms."
+},
+
+"sortNewest": "Le plus récent",
+"@sortNewest": {
+  "description": "Button text for sorting based on newest entry."
+},
+
+"sortOldest": "Le plus ancien",
+"@sortOldest": {
+  "description": "Button text for sorting based on oldest entry."
+},
+
+"sortLowToHigh": "Croissant",
+"@sortLowToHigh": {
+  "description": "Button text for sorting based on lowest value entry."
+},
+
+"sortHighToLow": "Décroissant",
+"@sortHighToLow": {
+  "description": "Button text for sorting based on highest value entry."
+},
+
+"selectSortTypeLabel": "Sélectionner le type de tri",
+"@selectSortTypeLabel": {
+  "description": "Button text for choosing sorting type based on prior selection or default choice"
+},
+
+"fuelRecordsTitle": "Enregistrements de carburant",
+"@fuelRecordsTitle": {
+  "description": "Title text for fuel records page"
+},
+
+"noRecordsFoundMessage": "Aucun enregistrement trouvé",
+"@noRecordsFoundMessage": {
+  "description": "Message text displaying no records of various types have been found"
+},
+
+"confirmFuelRecordDeleteMessage": "Êtes-vous sûr de vouloir supprimer cet enregistrement de carburant ?",
+"@confirmFuelRecordDeleteMessage": {
+  "description": "Message text displaying no records of various types have been found"
+},
+
+"profileButton": "Profil",
+"@profileButton": {
+  "description": "profile button in navigation menu"
+},
+
+"homepageButton": "Accueil",
+"@homepageButton": {
+  "description": "Homepage button in navigation menu"
+},
+
+"settingsButton": "Paramètres",
+"@settingsButton": {
+  "description": "Settings button in navigation menu"
+},
+
+"signoutButton": "Déconnexion",
+"@signoutButton": {
+  "description": "Signout button in navigation menu"
+},
+
+"manageDataTitle": "Gérer les données",
+"@manageDataTitle": {
+  "description": "App bar title for Manage Data screen"
+},
+
+"deleteAppDataButton": "Supprimer les données",
+"@deleteAppDataButton": {
+  "description": "Button text to delete all app data"
+},
+
+"deleteAccountButton": "Supprimer le compte",
+"@deleteAccountButton": {
+  "description": "Button text to delete the user account"
+},
+
+"confirmAppDataDeletionTitle": "Confirmer la suppression des données",
+"@confirmAppDataDeletionTitle": {
+  "description": "Dialog title for confirming deletion of app data"
+},
+
+"confirmAppDataDeletionContent": "Cela supprimera définitivement toutes vos données. Continuer ?",
+"@confirmAppDataDeletionContent": {
+  "description": "Dialog message warning user about app data deletion"
+},
+
+"confirmAccountDeletionTitle": "Confirmer la suppression du compte",
+"@confirmAccountDeletionTitle": {
+  "description": "Dialog title for confirming deletion of user account"
+},
+
+"confirmAccountDeletionContent": "Cela supprimera définitivement votre compte. Continuer ?",
+"@confirmAccountDeletionContent": {
+  "description": "Dialog message warning user about account deletion"
+},
+
+"reenterPasswordTitle": "Ressaisir le mot de passe",
+"@reenterPasswordTitle": {
+  "description": "Dialog title asking user to re-enter their password"
+},
+
+"passwordFieldLabel": "Mot de passe",
+"@passwordFieldLabel": {
+  "description": "Label for password field in password prompt"
+},
+
+"confirmButton": "Confirmer",
+"@confirmButton": {
+  "description": "Label for confirm button in dialogs"
+},
+
+"accountDeletedMessage": "Compte supprimé !",
+"@accountDeletedMessage": {
+  "description": "Snackbar message confirming account deletion"
+},
+
+"failedToDeleteAccountMessage": "Échec de la suppression du compte : {error}",
+"@failedToDeleteAccountMessage": {
+  "description": "Snackbar message for failure to delete account with error message",
+  "placeholders": {
+    "error": {}
+  }
+},
+
+"userNotLoggedInMessage": "Utilisateur non connecté",
+"@userNotLoggedInMessage": {
+  "description": "Snackbar message for unauthenticated user"
+},
+
+"appDataDeletedMessage": "Données supprimées !",
+"@appDataDeletedMessage": {
+  "description": "Snackbar message confirming app data deletion"
+},
+
+"failedToDeleteAppDataMessage": "Échec de la suppression des données : {error}",
+"@failedToDeleteAppDataMessage": {
+  "description": "Snackbar message for failure to delete app data with error message",
+  "placeholders": {
+    "error": {
+      "example": "Erreur réseau"
+    }
+  }
+},
+
+  "settingsTitle": "Paramètres",
+"@settingsTitle": {
+  "description": "Title for the Settings page"
+},
+
+"enablePushNotifications": "Activer les notifications push",
+"@enablePushNotifications": {
+  "description": "Switch title to enable push notifications"
+},
+
+"privacyAnalytics": "Analyse de la confidentialité",
+"@privacyAnalytics": {
+  "description": "Switch title for privacy analytics setting"
+},
+
+"displayOptions": "Options d'affichage",
+"@displayOptions": {
+  "description": "Navigate to display options page"
+},
+
+"privacyPolicy": "Politique de confidentialité",
+"@privacyPolicy": {
+  "description": "Navigate to privacy policy page"
+},
+
+"termsOfService": "Conditions d'utilisation",
+"@termsOfService": {
+  "description": "Navigate to terms of service page"
+},
+
+"licenses": "Licences",
+"@licenses": {
+  "description": "Navigate to licenses page"
+},
+
+"manageData": "Gérer les données",
+"@manageData": {
+  "description": "Navigate to manage data page"
+},
+
+"aboutDescription1": "Cette application vous aide à suivre vos enregistrements de carburant.",
+"@aboutDescription1": {
+  "description": "First line in the About box"
+},
+
+"aboutDescription2": "Pour le support : vehiclerecordtracker@gmail.com",
+"@aboutDescription2": {
+  "description": "Second line in the About box with support email"
+},
+
+"applicationLegalese": "© 2025 Vehicle Record Tracker",
+"@applicationLegalese": {
+  "description": "Legal text for the About box"
+},
+
+"applicationName": "Vehicle Record Tracker",
+"@applicationName": {
+  "description": "Name of the app shown in the About box"
+},
+
+"myVehiclesButton": "Mes véhicules",
+"@myVehiclesButton": {
+  "description": "Button label to show user's vehicles"
+},
+
+"archivedVehiclesButton": "Véhicules archivés",
+"@archivedVehiclesButton": {
+  "description": "Button label to show archived vehicles"
+},
+
+"addVehicleButton": "Ajouter un véhicule",
+"@addVehicleButton": {
+  "description": "Button label to add a new vehicle"
+},
+
+"seriesTypeLabel": "Type de série",
+"@seriesTypeLabel": {
+  "description": "Label for battery series type field"
+},
+
+"seriesTypeHint": "Ex : BXT",
+"@seriesTypeHint": {
+  "description": "Hint for battery series type field"
+},
+
+"bciGroupSizeLabel": "Taille du groupe BCI",
+"@bciGroupSizeLabel": {
+  "description": "Label for BCI group size dropdown"
+},
+
+"bciGroupSizeHint": "Sélectionnez la taille du groupe",
+"@bciGroupSizeHint": {
+  "description": "Hint for BCI group size dropdown"
+},
+
+"coldCrankAmpsLabel": "Ampérage au démarrage à froid - CCA",
+"@coldCrankAmpsLabel": {
+  "description": "Label for cold crank amps field"
+},
+
+"coldCrankAmpsHint": "Ex : 500",
+"@coldCrankAmpsHint": {
+  "description": "Hint for cold crank amps field"
+},
+
+"enterIntegerError": "Veuillez entrer un entier",
+"@enterIntegerError": {
+  "description": "Validation error for non-integer input"
+},
+
+"noNegativesError": "Pas de valeurs négatives",
+"@noNegativesError": {
+  "description": "Validation error for negative numbers"
+},
+
+"engineSizeLabel": "Taille du moteur",
+"@engineSizeLabel": {
+  "description": "Label for engine size dropdown"
+},
+
+"engineSizeHint": "Sélectionnez la taille du moteur",
+"@engineSizeHint": {
+  "description": "Hint for engine size dropdown"
+},
+
+"cylinderCountLabel": "Nombre de cylindres",
+"@cylinderCountLabel": {
+  "description": "Label for cylinder count dropdown"
+},
+
+"cylinderCountHint": "Sélectionnez le nombre de cylindres",
+"@cylinderCountHint": {
+  "description": "Hint for cylinder count dropdown"
+},
+
+"cylinderLabel": "Cylindre ",
+"@cylinderLabel": {
+  "description": "Label for cylinder count dropdown"
+},
+
+"engineTypeLabel": "Type de moteur",
+"@engineTypeLabel": {
+  "description": "Label for engine type dropdown"
+},
+
+"engineTypeHint": "Sélectionnez le type de moteur",
+"@engineTypeHint": {
+  "description": "Hint for engine type dropdown"
+},
+
+"oilWeightLabel": "Viscosité de l'huile",
+"@oilWeightLabel": {
+  "description": "Label for oil weight field"
+},
+
+"oilWeightHint": "Ex : 5W-30",
+"@oilWeightHint": {
+  "description": "Hint for oil weight field"
+},
+
+"oilCompositionLabel": "Composition de l'huile",
+"@oilCompositionLabel": {
+  "description": "Label for oil composition dropdown"
+},
+
+"oilCompositionHint": "Sélectionnez la composition",
+"@oilCompositionHint": {
+  "description": "Hint for oil composition dropdown"
+},
+
+"oilClassLabel": "Classe de l'huile",
+"@oilClassLabel": {
+  "description": "Label for oil class dropdown"
+},
+
+  "oilClassHint": "Sélectionnez la classe d'huile",
+"@oilClassHint": {
+  "description": "Hint for oil class dropdown"
+},
+
+"oilFilterLabel": "Filtre à huile",
+"@oilFilterLabel": {
+  "description": "Label for oil filter field"
+},
+
+"oilFilterHint": "Ex S7317XL",
+"@oilFilterHint": {
+  "description": "Hint for oil filter field"
+},
+
+"engineFilterLabel": "Filtre moteur",
+"@engineFilterLabel": {
+  "description": "Label for engine filter field"
+},
+
+"engineFilterHint": "Ex FA-1785",
+"@engineFilterHint": {
+  "description": "Hint for engine filter field"
+},
+
+"engineTypeGas": "Essence",
+"@engineTypeGas": {
+  "description": "Engine type option: Gas"
+},
+
+"engineTypeDiesel": "Diesel",
+"@engineTypeDiesel": {
+  "description": "Engine type option: Diesel"
+},
+
+"engineTypeHybrid": "Hybride",
+"@engineTypeHybrid": {
+  "description": "Engine type option: Hybrid"
+},
+
+"engineTypeElectric": "Électrique",
+"@engineTypeElectric": {
+  "description": "Engine type option: Electric"
+},
+
+"oilCompositionConventional": "Conventionnelle",
+"@oilCompositionConventional": {
+  "description": "Oil composition option: Conventional"
+},
+
+"oilCompositionFullSynthetic": "Entièrement synthétique",
+"@oilCompositionFullSynthetic": {
+  "description": "Oil composition option: Full Synthetic"
+},
+
+"oilCompositionMineral": "Minérale",
+"@oilCompositionMineral": {
+  "description": "Oil composition option: Mineral"
+},
+
+"oilCompositionSyntheticBlend": "Mélange synthétique",
+"@oilCompositionSyntheticBlend": {
+  "description": "Oil composition option: Synthetic Blend"
+},
+
+"driverWiperLabel": "Essuie-glace côté conducteur",
+"@driverWiperLabel": {
+  "description": "Label for driver windshield wiper field"
+},
+
+"driverWiperHint": "Ex WW-1801-PF",
+"@driverWiperHint": {
+  "description": "Hint for driver windshield wiper field"
+},
+
+"passengerWiperLabel": "Essuie-glace côté passager",
+"@passengerWiperLabel": {
+  "description": "Label for passenger windshield wiper field"
+},
+
+"passengerWiperHint": "Ex WW-1901-PF",
+"@passengerWiperHint": {
+  "description": "Hint for passenger windshield wiper field"
+},
+
+"rearWiperLabel": "Essuie-glace arrière",
+"@rearWiperLabel": {
+  "description": "Label for rear windshield wiper field"
+},
+
+"rearWiperHint": "Ex WW-1701-PF",
+"@rearWiperHint": {
+  "description": "Hint for rear windshield wiper field"
+},
+
+"highBeamLabel": "Feux de route",
+"@highBeamLabel": {
+  "description": "Label for high beam field"
+},
+
+"highBeamHint": "Ex H7LL",
+"@highBeamHint": {
+  "description": "Hint for high beam field"
+},
+
+"lowBeamLabel": "Feux de croisement",
+"@lowBeamLabel": {
+  "description": "Label for low beam field"
+},
+
+"lowBeamHint": "Ex H11LL",
+"@lowBeamHint": {
+  "description": "Hint for low beam field"
+},
+
+"turnLampLabel": "Clignotant",
+"@turnLampLabel": {
+  "description": "Label for turn lamp field"
+},
+
+"turnLampHint": "Ex T20",
+"@turnLampHint": {
+  "description": "Hint for turn lamp field"
+},
+
+"backupLampLabel": "Feu de recul",
+"@backupLampLabel": {
+  "description": "Label for backup lamp field"
+},
+
+"backupLampHint": "Ex 921",
+"@backupLampHint": {
+  "description": "Hint for backup lamp field"
+},
+
+"fogLampLabel": "Feu antibrouillard",
+"@fogLampLabel": {
+  "description": "Label for fog lamp field"
+},
+
+"fogLampHint": "Ex H11",
+"@fogLampHint": {
+  "description": "Hint for fog lamp field"
+},
+
+"brakeLampLabel": "Feu de frein",
+"@brakeLampLabel": {
+  "description": "Label for brake lamp field"
+},
+
+"brakeLampHint": "Ex LED",
+"@brakeLampHint": {
+  "description": "Hint for brake lamp field"
+},
+
+"licenseLampLabel": "Éclairage plaque d'immatriculation",
+"@licenseLampLabel": {
+  "description": "Label for license plate lamp field"
+},
+
+"licenseLampHint": "Ex C5W",
+"@licenseLampHint": {
+  "description": "Hint for license plate lamp field"
+},
+
+"requiredFieldError": "Veuillez entrer du texte",
+"@requiredFieldError": {
+  "description": "Shown when a required field is left empty"
+},
+
+"invalidNumberError": "Veuillez entrer un nombre valide",
+"@invalidNumberError": {
+  "description": "Shown when input is not a valid number"
+},
+
+"negativeNotAllowedError": "La valeur ne peut pas être négative",
+"@negativeNotAllowedError": {
+  "description": "Shown when a negative number is entered but only positive is allowed"
+},
+
+  "tooLargeError": "Veuillez entrer une valeur réaliste",
+"@tooLargeError": {
+  "description": "Affiché lorsque le nombre saisi est excessivement grand"
+},
+
+"maxDecimalPlacesError": "Maximum {maxDecimalPlaces} décimales autorisées",
+"@maxDecimalPlacesError": {
+  "description": "Affiché lorsqu'un nombre dépasse le nombre de décimales autorisées",
+  "placeholders": {
+    "maxDecimalPlaces": {
+      "type": "int",
+      "description": "Nombre maximal de décimales autorisées"
+    }
+  }
+},
+
+"maxLengthError": "Maximum {maxLength} caractères autorisés",
+"@maxLengthError": {
+  "description": "Message d'erreur générique pour la limite maximale de caractères dans les champs de formulaire.",
+  "placeholders": {
+    "maxLength": {
+      "type": "int",
+      "description": "Nombre maximal de caractères autorisés"
+    }
+  }
+},
+
+"nicknameLabel": "Surnom",
+"@nicknameLabel": {
+  "description": "Étiquette pour le champ de saisie du surnom de la voiture"
+},
+
+"nicknameHint": "Entrez le surnom de la voiture",
+"@nicknameHint": {
+  "description": "Indice pour le champ de saisie du surnom de la voiture"
+},
+
+"vinLabel": "VIN",
+"@vinLabel": {
+  "description": "Étiquette pour le champ de saisie du VIN"
+},
+
+"vinHint": "Entrez le VIN de la voiture",
+"@vinHint": {
+  "description": "Indice pour le champ de saisie du VIN"
+},
+
+"licensePlateLabel": "Plaque d'immatriculation",
+"@licensePlateLabel": {
+  "description": "Étiquette pour le champ de saisie de la plaque d'immatriculation"
+},
+
+"licensePlateHint": "Entrez la plaque d'immatriculation de la voiture",
+"@licensePlateHint": {
+  "description": "Indice pour le champ de saisie de la plaque d'immatriculation"
+},
+
+"makeLabel": "Marque",
+"@makeLabel": {
+  "description": "Étiquette pour la liste déroulante de la marque de la voiture"
+},
+
+"makeHint": "Rechercher une marque",
+"@makeHint": {
+  "description": "Indice pour la liste déroulante de la marque de la voiture"
+},
+
+"modelLabel": "Modèle",
+"@modelLabel": {
+  "description": "Étiquette pour le champ de saisie du modèle de la voiture"
+},
+
+"modelHint": "Entrez le modèle de la voiture",
+"@modelHint": {
+  "description": "Indice pour le champ de saisie du modèle de la voiture"
+},
+
+"submodelLabel": "Sous-modèle",
+"@submodelLabel": {
+  "description": "Étiquette pour le champ de saisie du sous-modèle de la voiture"
+},
+
+"submodelHint": "Entrez le sous-modèle de la voiture",
+"@submodelHint": {
+  "description": "Indice pour le champ de saisie du sous-modèle de la voiture"
+},
+
+"yearLabel": "Année",
+"@yearLabel": {
+  "description": "Étiquette pour la liste déroulante de l'année du modèle"
+},
+
+"yearHint": "Sélectionnez l'année du modèle",
+"@yearHint": {
+  "description": "Indice pour la liste déroulante de l'année du modèle"
+},
+
+"currentMileageLabel": "Kilométrage actuel",
+"@currentMileageLabel": {
+  "description": "Étiquette pour le champ de saisie du kilométrage actuel"
+},
+
+"currentMileageHint": "Entrez le kilométrage actuel de la voiture",
+"@currentMileageHint": {
+  "description": "Indice pour le champ de saisie du kilométrage actuel"
+},
+
+"mileageLabel": "Kilométrage",
+"@mileageLabel": {
+  "description": "Étiquette pour le kilométrage du véhicule"
+},
+
+"selectYear": "Sélectionnez l'année",
+"@selectYear": {
+  "description": "Étiquette pour la liste déroulante de l'année"
+},
+
+"selectMonth": "Sélectionnez le mois",
+"@selectMonth": {
+  "description": "Étiquette pour la liste déroulante du mois"
+},
+
+"noDataText": "Pas de données",
+"@noDataText": {
+  "description": "Étiquette pour données manquantes"
+},
+
+"monthlyFuelCost": "Coût du carburant pour {month}/{year}",
+"@monthlyFuelCost": {
+  "description": "Coût du carburant pour le mois et l'année sélectionnés",
+  "placeholders": {
+    "month": { "type": "int" },
+    "year": { "type": "int" }
+  }
+},
+
+"yearlyFuelCost": "Coût du carburant pour {year}",
+"@yearlyFuelCost": {
+  "description": "Coût du carburant pour l'année sélectionnée",
+  "placeholders": {
+    "year": { "type": "int" }
+  }
+},
+
+"lifetimeFuelCost": "Coût total du carburant",
+"@lifetimeFuelCost": {
+  "description": "Coût total du carburant sur la durée de vie du véhicule"
+},
+
+"lifetimeMaintenanceCost": "Coût total de maintenance",
+"@lifetimeMaintenanceCost": {
+  "description": "Coût total de maintenance sur la durée de vie du véhicule"
+},
+
+"lifetimeVehicleCost": "Coût total du véhicule",
+"@lifetimeVehicleCost": {
+  "description": "Coût total de possession du véhicule, incluant achat, carburant et maintenance"
+},
+
+"fuelHistoryButton": "Historique du carburant",
+"@fuelHistoryButton": {
+  "description": "Bouton pour voir l'historique du carburant"
+},
+
+"workHistoryButton": "Historique des travaux",
+"@workHistoryButton": {
+  "description": "Bouton pour voir l'historique des travaux/maintenance"
+},
+
+"speedometerReadingLabel": "Lecture du compteur",
+"@speedometerReadingLabel": {
+  "description": "Étiquette pour la liste déroulante de lecture du compteur"
+},
+
+"purchaseHistoryTitle": "Historique des achats",
+"@purchaseHistoryTitle": {
+  "description": "Titre pour la section historique des achats"
+},
+
+  "purchaseDateLabel": "Date d'achat",
+"@purchaseDateLabel": { 
+  "description": "Étiquette pour le champ de la date d'achat" 
+},
+
+"purchaseDateHint": "Entrez la date d'achat de la voiture",
+"@purchaseDateHint": { 
+  "description": "Indice pour le champ de la date d'achat" 
+},
+
+"purchasePriceLabel": "Prix d'achat",
+"@purchasePriceLabel": { 
+  "description": "Étiquette pour le champ du prix d'achat" 
+},
+
+"purchasePriceHint": "Entrez le prix d'origine",
+"@purchasePriceHint": { 
+  "description": "Indice pour le champ du prix d'achat" 
+},
+
+"originalOdometerLabel": "Nombre au compteur d'origine",
+"@originalOdometerLabel": { 
+  "description": "Étiquette pour le champ du compteur d'origine" 
+},
+
+"originalOdometerHint": "Entrez le kilométrage à l'achat",
+"@originalOdometerHint": { 
+  "description": "Indice pour le champ du compteur d'origine" 
+},
+
+"recalculateFuelTotalsTitle": "Recalculer tous les totaux de carburant",
+"@recalculateFuelTotalsTitle": {
+  "description": "Titre du bouton dans les paramètres pour recalculer tous les totaux de carburant",
+  "type": "text"
+},
+
+"recalculateFuelTotalsSubtitle": "Corrige les totaux de carburant à vie pour tous les véhicules",
+"@recalculateFuelTotalsSubtitle": {
+  "description": "Sous-titre expliquant que cela corrige les totaux de carburant pour tous les véhicules",
+  "type": "text"
+},
+
+"recalculateFuelTotalsDialogTitle": "Recalculer les coûts de carburant ?",
+"@recalculateFuelTotalsDialogTitle": {
+  "description": "Titre de la boîte de dialogue de confirmation avant de recalculer les totaux de carburant",
+  "type": "text"
+},
+
+"recalculateFuelTotalsDialogBody": "Cela écrasera les totaux de carburant à vie avec la somme de tous les enregistrements de carburant. Continuer ?",
+"@recalculateFuelTotalsDialogBody": {
+  "description": "Texte du corps avertissant de l'écrasement des anciens totaux de carburant",
+  "type": "text"
+},
+
+"recalculateFuelTotalsCancel": "Annuler",
+"@recalculateFuelTotalsCancel": {
+  "description": "Texte du bouton annuler dans la boîte de dialogue de recalcul",
+  "type": "text"
+},
+
+"recalculateFuelTotalsConfirm": "Recalculer",
+"@recalculateFuelTotalsConfirm": {
+  "description": "Texte du bouton confirmer dans la boîte de dialogue de recalcul",
+  "type": "text"
+},
+
+"recalculateFuelTotalsSuccess": "Tous les totaux de carburant ont été recalculés.",
+"@recalculateFuelTotalsSuccess": {
+  "description": "Message SnackBar affiché après le recalcul des totaux de carburant",
+  "type": "text"
+},
+
+"addVehicleForm": "Formulaire d'ajout de véhicule",
+"@addVehicleForm": {
+  "description": "Titre du formulaire d'ajout de véhicule"
+},
+
+"fillDetailsForFutureReference": "Remplissez ces détails pour référence future en déplacement !",
+"@fillDetailsForFutureReference": {
+  "description": "Message invitant à remplir les détails pour référence future en déplacement"
+},
+
+"buttonAddFuel": "Ajouter du carburant",
+"@buttonAddFuel": {
+  "description": "Étiquette pour le bouton qui mène à l'ajout d'un nouvel enregistrement de carburant"
+},
+
+"buttonAddWork": "Ajouter une intervention",
+"@buttonAddWork": {
+  "description": "Étiquette pour le bouton qui mène à l'ajout d'un nouvel enregistrement de travail/maintenance"
+},
+
+"buttonViewFuel": "Voir le carburant",
+"@buttonViewFuel": {
+  "description": "Étiquette pour le bouton qui mène à la consultation des enregistrements de carburant existants"
+},
+
+"buttonViewWork": "Voir les interventions",
+"@buttonViewWork": {
+  "description": "Étiquette pour le bouton qui mène à la consultation des enregistrements de travaux/maintenance existants"
+},
+
+"archivedVehiclesTitle": "Véhicules archivés",
+"@archivedVehiclesTitle": {
+  "description": "Titre de la page affichant les véhicules archivés"
+},
+
+"selectVehicleHint": "Sélectionner un véhicule",
+"@selectVehicleHint": {
+  "description": "Texte d'indice pour le menu déroulant utilisé pour sélectionner un véhicule"
+},
+
+"archiveButtonLabel": "Archiver",
+"@archiveButtonLabel": {
+  "description": "Étiquette pour le bouton qui archive le véhicule sélectionné"
+},
+
+"noArchivedVehiclesMessage": "Aucun véhicule archivé",
+"@noArchivedVehiclesMessage": {
+  "description": "Affiché lorsqu'il n'y a pas de véhicules archivés à afficher"
+},
+
+"confirmDeletionMessage": "Êtes-vous sûr de vouloir supprimer ce véhicule et tous les enregistrements de carburant ?",
+"@confirmDeletionMessage": {
+  "description": "Message dans la boîte de dialogue de confirmation pour supprimer un véhicule et les enregistrements associés"
+},
+
+"deleteSnackBarMessage": "Véhicule et enregistrements de carburant supprimés !",
+"@deleteSnackBarMessage": {
+  "description": "Message SnackBar affiché après la suppression d'un véhicule et de ses enregistrements de carburant"
+},
+
+"continueAsGuest": "Continuer en tant qu'invité",
+"@continueAsGuest": {
+  "description": "Étiquette du bouton pour continuer dans l'application sans créer de compte"
+},
+
+"guestCannotCreateRecords": "Les comptes invités ne peuvent pas créer d'enregistrements. Veuillez vous connecter ou vous inscrire.",
+"@guestCannotCreateRecords": {
+  "description": "Étiquette affichée lorsqu'un compte invité tente de créer un enregistrement"
+},
+
+"january": "Janvier",
+"february": "Février",
+"march": "Mars",
+"april": "Avril",
+"may": "Mai",
+"june": "Juin",
+"july": "Juillet",
+"august": "Août",
+"september": "Septembre",
+"october": "Octobre",
+"november": "Novembre",
+"december": "Décembre",
+
+"@january": { "description": "Mois de janvier" },
+"@february": { "description": "Mois de février" },
+"@march": { "description": "Mois de mars" },
+"@april": { "description": "Mois d'avril" },
+"@may": { "description": "Mois de mai" },
+"@june": { "description": "Mois de juin" },
+"@july": { "description": "Mois de juillet" },
+"@august": { "description": "Mois d'août" },
+"@september": { "description": "Mois de septembre" },
+"@october": { "description": "Mois d'octobre" },
+"@november": { "description": "Mois de novembre" },
+"@december": { "description": "Mois de décembre" }
+}

@@ -14,6 +14,9 @@ class AuthState extends ChangeNotifier {
   bool isLoading = true;
   bool _isGuest = false;
 
+  bool _initialized = false;
+  bool get initialized => _initialized;
+
   User? get user => _user;
   String? get userId => _user?.uid;
   bool get isGuest => _isGuest;
@@ -44,6 +47,7 @@ class AuthState extends ChangeNotifier {
         }
       }
     }
+    _initialized = true;
     isLoading = false;
     notifyListeners();
   }

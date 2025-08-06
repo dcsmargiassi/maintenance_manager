@@ -20,9 +20,8 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
   // Maps for languages
   final Map<String, String> _languages = {
     'English (US)': 'en',
-    //'English (UK)': 'en-GB',
-    //'Spanish': 'es',
-    //'French': 'fr',
+    'Spanish': 'es',
+    'French': 'fr',
     //'German': 'de',
     //'Italian': 'it',
   };
@@ -51,10 +50,29 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
     try {
       final doc = await _firestore.collection('users').doc(_currentUser!.uid).get();
-
       if (doc.exists) {
         final data = doc.data()!;
-        String? storedLangCode = data['language'];
+        if (context.mounted) {
+          // ignore: use_build_context_synchronously
+          final prefs = Provider.of<UserPreferences>(context, listen: false);
+          prefs.update(
+            currency: data['currency'],
+            distanceUnit: data['distanceUnit'],
+            dateFormat: data['dateFormat'],
+            theme: data['theme'],
+          );
+          final languageCode = data['languageCode'];
+          if (languageCode != null && languageCode.isNotEmpty && mounted) {
+            // Set locale from stored languageCode
+            Future.microtask(() {
+              // ignore: use_build_context_synchronously
+              final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+              languageProvider.setLocale(Locale(languageCode));
+              debugPrint('Locale set to: $languageCode');
+            });
+          }
+        }
+        String storedLangCode = data['language'] ?? 'en';
 
         // Find label matching the code
         String defaultLabel = _languages.entries.firstWhere(
@@ -81,7 +99,7 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
   void setDefaults() {
     setState(() {
-       _selectedLanguageLabel = _languages.keys.first;
+      _selectedLanguageLabel = _languages.keys.first;
       _selectedCurrency = _currencies.first;
       _selectedDistanceUnit = _distanceUnits.first;
       _selectedDateFormat = _dateFormats.first;
@@ -96,8 +114,9 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
     setState(() => _isSaving = true);
 
     try {
+      final langCode = _languages[_selectedLanguageLabel];
       await _firestore.collection('users').doc(_currentUser!.uid).set({
-        'languageCode': _languages[_selectedLanguageLabel],
+        'languageCode': langCode,
         'currency': _selectedCurrency,
         'distanceUnit': _selectedDistanceUnit,
         'dateFormat': _selectedDateFormat,
@@ -108,6 +127,13 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
       final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
       languageProvider.setLocale(Locale(_selectedLanguageLabel!));
       
+      if(!mounted) return;
+
+      if (langCode != null) {
+        final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+        languageProvider.setLocale(Locale(langCode));
+      }
+
       if(!mounted) return;
 
       Provider.of<UserPreferences>(context, listen: false).update(
