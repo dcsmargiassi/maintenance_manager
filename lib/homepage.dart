@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
     String myVehicles = localizations.myVehiclesButton;
     String archivedVehicles = localizations.archivedVehiclesButton;
     String addRemoveVehicle = localizations.addVehicleButton;
-    const double buttonFontSize = 20.0;
+    const double buttonFontSize = 18.0;
     const double homeScreenButtonHeight = 50.0;
     const double homeScreenButtonWidth = 240.0;
     const double buttonSpacingBoxHeight = 50.0;

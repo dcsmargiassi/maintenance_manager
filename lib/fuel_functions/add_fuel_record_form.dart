@@ -234,7 +234,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                     try {
                       await fuelOperations.createFuelRecord(fuelRecords);
                         if (!context.mounted) return;
-                        await updateCurrentOdometerNumber(widget.vehicleId, userId!, double.parse(odometerAmountController.text));
+                        await updateCurrentOdometerNumber(widget.vehicleId, userId!, odometerAmountController.text.trim().isEmpty ? 0.0 : double.parse(odometerAmountController.text));
                         // Updating lifetime fuel costs.
                         await incrementLifeTimeFuelCosts(widget.vehicleId, userId, double.parse(refuelCostController.text));
                         if (!context.mounted) return;
