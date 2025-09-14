@@ -185,7 +185,6 @@ class SignInPageState extends State<SignInPage> {
               
                   try {
                     final guestUser = await FirebaseAuth.instance.signInAnonymously();
-              
                     if (guestUser.user != null) {
                       final userId = guestUser.user!.uid;
                       final documentReference = FirebaseFirestore.instance.collection('users').doc(userId);

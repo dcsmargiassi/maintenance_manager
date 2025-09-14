@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -31,17 +32,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
     final data = doc.data();
 
-    if (data != null) {
-      _firstNameController.text = data['firstName'] ?? '';
-      _lastNameController.text = data['lastName'] ?? '';
-      _usernameController.text = data['username'] ?? '';
+    if (data == null) {
+      setState(() => isLoading = false);
+      return;
     }
 
+    final decryptedFields = <String, String>{};
+      for (final field in ['firstName', 'lastName', 'username']) {
+        final value = data[field];
+        if (value != null && value is String && value.contains(':')) {
+          try {
+            decryptedFields[field] = await decryptField(value);
+          } catch (_) {
+            decryptedFields[field] = '[Error]';
+          }
+        } else if (value != null) {
+          decryptedFields[field] = value;
+        } else {
+          decryptedFields[field] = '';
+        }
+      }
+
+
+    _firstNameController.text = decryptedFields['firstName'] ?? '';
+    _lastNameController.text = decryptedFields['lastName'] ?? '';
+    _usernameController.text = decryptedFields['username'] ?? '';
     if (!mounted) return;
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
   }
+
 
   Future<void> saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
@@ -51,9 +70,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        AppLocalizations.of(context)!.firstName: _firstNameController.text.trim(),
-        AppLocalizations.of(context)!.lastName: _lastNameController.text.trim(),
-        AppLocalizations.of(context)!.username: _usernameController.text.trim(),
+        'firstName': await encryptField(_firstNameController.text.trim()),
+        'lastName': await encryptField(_lastNameController.text.trim()),
+        'username': await encryptField(_usernameController.text.trim()),
       });
 
       if (!mounted) return;
