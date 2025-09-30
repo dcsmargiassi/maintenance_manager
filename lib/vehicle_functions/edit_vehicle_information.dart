@@ -121,6 +121,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       purchasePriceController.text = dataVehicle.purchasePrice.toString();
       sellPriceController.text = dataVehicle.sellPrice.toString();
       archiveController = dataVehicle.archived!;
+      licensePlateController.text = dataVehicle.licensePlate!;
 
       engineDetailsIdController.text = engineDetailsId.toString();
       engineSizeController.text = dataEngine.engineSize!;
@@ -352,6 +353,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                       purchasePrice: double.parse(purchasePriceController.text),
                       sellPrice: null,
                       archived: archiveController,
+                      licensePlate: licensePlateController.text,
                     );
                     VehicleOperations vehicleOperations = VehicleOperations();
                     await vehicleOperations.updateVehicle(vehicleInformation);
