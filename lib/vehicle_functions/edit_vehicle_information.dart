@@ -50,6 +50,8 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController sellPriceController = TextEditingController();
   late int archiveController = 0;
   final TextEditingController licensePlateController = TextEditingController();
+  late double lifeTimeFuelCost;
+  late double lifeTimeMaintenanceCost;
 
   // Engine Controllers
   TextEditingController engineDetailsIdController = TextEditingController();
@@ -121,6 +123,8 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       purchasePriceController.text = dataVehicle.purchasePrice.toString();
       sellPriceController.text = dataVehicle.sellPrice.toString();
       archiveController = dataVehicle.archived!;
+      lifeTimeFuelCost = dataVehicle.lifeTimeFuelCost!;
+      lifeTimeMaintenanceCost = dataVehicle.lifeTimeMaintenanceCost!;
       licensePlateController.text = dataVehicle.licensePlate!;
 
       engineDetailsIdController.text = engineDetailsId.toString();
@@ -353,6 +357,8 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                       purchasePrice: double.parse(purchasePriceController.text),
                       sellPrice: null,
                       archived: archiveController,
+                      lifeTimeFuelCost: lifeTimeFuelCost,
+                      lifeTimeMaintenanceCost: lifeTimeMaintenanceCost,
                       licensePlate: licensePlateController.text,
                     );
                     VehicleOperations vehicleOperations = VehicleOperations();
