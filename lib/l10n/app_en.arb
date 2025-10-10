@@ -1178,6 +1178,21 @@
     "description": "Label for when guest account attempts to create record."
   },
 
+  "notificationsDisabledTitle": "Notifications Disabled",
+  "@notificationsDisabledTitle": {
+    "description": "Title to state Notifications are disabled by system settings"
+  },
+
+  "notificationsDisabledMessage": "Notifications are disabled by device settings.",
+  "@notificationsDisabledTitle": {
+    "description": "Message to state Notifications are disabled by system settings"
+  },
+
+  "ok": "Ok",
+  "@ok": {
+    "description": "Message to click Ok and proceed"
+  },
+
 "january": "January",
 "february": "February",
 "march": "March",

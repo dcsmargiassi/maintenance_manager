@@ -722,6 +722,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Guest accounts cannot create records. Please sign in or register.';
 
   @override
+  String get notificationsDisabledTitle => 'Notifications Disabled';
+
+  @override
+  String get notificationsDisabledMessage =>
+      'Notifications are disabled by device settings.';
+
+  @override
+  String get ok => 'Ok';
+
+  @override
   String get january => 'January';
 
   @override

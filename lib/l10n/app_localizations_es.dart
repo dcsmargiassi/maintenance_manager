@@ -731,6 +731,16 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las cuentas de invitado no pueden crear registros. Por favor inicia sesión o regístrate.';
 
   @override
+  String get notificationsDisabledTitle => 'Notificaciones desactivadas';
+
+  @override
+  String get notificationsDisabledMessage =>
+      'Las notificaciones están desactivadas en la configuración del dispositivo.';
+
+  @override
+  String get ok => 'Aceptar';
+
+  @override
   String get january => 'Enero';
 
   @override

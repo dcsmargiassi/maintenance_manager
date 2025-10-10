@@ -733,6 +733,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les comptes invités ne peuvent pas créer d\'enregistrements. Veuillez vous connecter ou vous inscrire.';
 
   @override
+  String get notificationsDisabledTitle => 'Notifications désactivées';
+
+  @override
+  String get notificationsDisabledMessage =>
+      'Les notifications sont désactivées dans les paramètres de l’appareil.';
+
+  @override
+  String get ok => 'Ok';
+
+  @override
   String get january => 'Janvier';
 
   @override

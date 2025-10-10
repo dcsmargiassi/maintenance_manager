@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:maintenance_manager/data/database.dart';
@@ -14,6 +15,78 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  debugPrint("🔔 Handling a background message: ${message.messageId}");
+}
+
+Future<void> _saveTokenToFirestore(String token) async {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  if (uid != null) {
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .collection('tokens')
+      .doc(token)
+      .set({
+        'token': token,
+        'createdAt': FieldValue.serverTimestamp(),
+        'platform': defaultTargetPlatform.toString(),
+      });
+  }
+}
+
+// Initializes push notifications safely on iOS & Android
+Future<void> _initPushNotifications() async {
+  final messaging = FirebaseMessaging.instance;
+
+  // Register background handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Ask for iOS notification permissions
+  final settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    debugPrint('✅ User granted notification permission');
+  } else {
+    debugPrint('🚫 Notification permission not granted');
+  }
+
+  // iOS only: wait for APNs token (needed before getToken)
+  messaging.onTokenRefresh.listen((newToken) {
+    debugPrint('🔄 FCM Token refreshed: $newToken');
+  });
+
+  // Optional: attempt to get token, but handle null safely
+  try {
+    final fcmToken = await messaging.getToken();
+    if (fcmToken != null) {
+      debugPrint('📱 FCM Token: $fcmToken');
+      await _saveTokenToFirestore(fcmToken);
+    } else {
+      debugPrint('⚠️ FCM Token not available yet (iOS sandbox)');
+    }
+  } catch (e) {
+    debugPrint('⚠️ Error fetching FCM token: $e');
+  }
+
+  // Listen for foreground messages
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    debugPrint('💬 Received a foreground message: ${message.notification?.title}');
+  });
+
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    debugPrint('🔄 Token refreshed: $newToken');
+  });
+
+  
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +95,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await _initPushNotifications();
 
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;

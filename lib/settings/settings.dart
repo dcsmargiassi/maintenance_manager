@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
@@ -72,6 +73,28 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   title: Text(localizations.enablePushNotifications),
                   value: pushNotificationsEnabled,
                   onChanged: (value) async {
+                    final messaging = FirebaseMessaging.instance;
+                    final settings = await messaging.getNotificationSettings();
+                    if (value && settings.authorizationStatus != AuthorizationStatus.authorized) {
+                      showDialog(
+                        // ignore: use_build_context_synchronously
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(localizations.notificationsDisabledTitle),
+                          content: Text(localizations.notificationsDisabledMessage),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(localizations.ok),
+                              ),
+                          ],
+                        ),
+                      );
+                      setState(() {
+                      pushNotificationsEnabled = false;
+                      return;
+                    });
+                    }
                     setState(() {
                       pushNotificationsEnabled = value;
                     });

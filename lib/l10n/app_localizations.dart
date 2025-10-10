@@ -1462,6 +1462,24 @@ abstract class AppLocalizations {
   /// **'Guest accounts cannot create records. Please sign in or register.'**
   String get guestCannotCreateRecords;
 
+  /// Message to state Notifications are disabled by system settings
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Disabled'**
+  String get notificationsDisabledTitle;
+
+  /// No description provided for @notificationsDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled by device settings.'**
+  String get notificationsDisabledMessage;
+
+  /// Message to click Ok and proceed
+  ///
+  /// In en, this message translates to:
+  /// **'Ok'**
+  String get ok;
+
   /// Month of January
   ///
   /// In en, this message translates to:

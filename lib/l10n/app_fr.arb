@@ -1184,6 +1184,21 @@
   "description": "Étiquette affichée lorsqu'un compte invité tente de créer un enregistrement"
 },
 
+"notificationsDisabledTitle": "Notifications désactivées",
+"@notificationsDisabledTitle": {
+  "description": "Title to state Notifications are disabled by system settings"
+},
+
+"notificationsDisabledMessage": "Les notifications sont désactivées dans les paramètres de l’appareil.",
+"@notificationsDisabledTitle": {
+  "description": "Message to state Notifications are disabled by system settings"
+},
+
+"ok": "Ok",
+"@ok": {
+  "description": "Message to click Ok and proceed"
+},
+
 "january": "Janvier",
 "february": "Février",
 "march": "Mars",
