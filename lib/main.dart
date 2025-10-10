@@ -91,10 +91,14 @@ Future<void> _initPushNotifications() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await findSystemLocale();
-
+try {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  debugPrint("***FIREBASE INITIALIZED***");
+  }catch (e, st) { 
+    debugPrint('X Firebase init failed: $e\n$st');
+  }
 
   await _initPushNotifications();
 
