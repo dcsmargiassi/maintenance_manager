@@ -21,6 +21,53 @@ import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+// Helper function to assist in creation of settings sub document for each existing user. If settings exist, skip steps.
+Future<void> migrateUserSettingsIfNeeded(String userId) async {
+  final firestore = FirebaseFirestore.instance;
+  final userDocRef = firestore.collection('users').doc(userId);
+  final settingsDocRef = firestore.collection('settings').doc(userId);
+
+  final userSnapshot = await userDocRef.get();
+  final settingsSnapshot = await settingsDocRef.get();
+
+  // Skip if settings doc already exists
+  if (settingsSnapshot.exists) return;
+
+  if (userSnapshot.exists) {
+    final userData = userSnapshot.data() ?? {};
+
+    // Extract settings fields
+    final settingsData = {
+      'pushNotifications': userData['pushNotifications'] ?? true,
+      'darkModeEnabled': userData['darkModeEnabled'] ?? false,
+      'languageCode': userData['languageCode'] ?? "",
+      'acceptedTermsVersion': userData['acceptedTermsVersion'] ?? 1,
+      'privacyAnalytics': userData['privacyAnalytics'] ?? false,
+      'enableCloudSync': true,
+      'currency': userData['currency'] ?? 'USD',
+      'distanceUnit': userData['distanceUnit'] ?? 'Miles',
+      'dateFormat': userData['dateFormat'] ?? 'MM/dd/yyyy',
+      'theme': userData['theme'] ?? 'Light',
+    };
+
+    // Create new settings document
+    await settingsDocRef.set(settingsData);
+
+    // remove migrated fields from main user doc
+    await userDocRef.update({
+      'pushNotifications': FieldValue.delete(),
+      'darkModeEnabled': FieldValue.delete(),
+      'languageCode': FieldValue.delete(),
+      'acceptedTermsVersion': FieldValue.delete(),
+      'privacyAnalytics': FieldValue.delete(),
+      'currency': FieldValue.delete(),
+      'distanceUnit': FieldValue.delete(),
+      'dateFormat': FieldValue.delete(),
+      'theme': FieldValue.delete(),
+    });
+  }
+}
+
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
   
@@ -76,7 +123,7 @@ class SignInPageState extends State<SignInPage> {
                 onPressed: () async {
                   final authState = Provider.of<AuthState>(context, listen: false);
                   final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-                  //authState.setUser(FirebaseAuth.instance.currentUser);
+
                   // Check for blank email or password
                   if(emailController.text.isEmpty || passwordController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -95,36 +142,21 @@ class SignInPageState extends State<SignInPage> {
 
                     // Fetch user document
                     final documentReference = FirebaseFirestore.instance.collection('users').doc(userId);
-                    // Updating the last time a user logged in
-                    await documentReference.update({
-                      'lastLogin': FieldValue.serverTimestamp(),
-                    });
                     final documentSnapshot = await documentReference.get();
                     final data = documentSnapshot.data() ?? {};
 
-                    // If pushNotifications or other fields is missing add to user database
-                    final Map<String, dynamic> updates = {};
-                    if (!data.containsKey('pushNotifications')) {
-                      updates['pushNotifications'] = true;
+                    // Updating the last time a user logged in
+                    if (!documentSnapshot.exists) {
+                      await documentReference.set({
+                        'createdAt': FieldValue.serverTimestamp(),
+                        'email': userCredential.user?.email ?? '',
+                      });
                     }
-                    if (!data.containsKey('darkModeEnabled')) {
-                      updates['darkModeEnabled'] = false;
-                    }
-                    if (!data.containsKey('phoneNumber')) {
-                      updates['phoneNumber'] = "";
-                    }
-                    if (!data.containsKey('languageCode')) {
-                      updates['languageCode'] = "";
-                    }
-                    if (!data.containsKey('acceptedTermsVersion')) {
-                      updates['acceptedTermsVersion'] = 1;
-                    }
-                    if (!data.containsKey('privacyAnalytics')) {
-                      updates['privacyAnalytics'] = false;
-                    }
-                    if (updates.isNotEmpty) {
-                      await documentReference.update(updates);
-                    }
+                    
+                    await documentReference.set({'lastLogin': FieldValue.serverTimestamp()}, SetOptions(merge: true));
+
+                    // Migrate settings to subdocument if needed
+                    await migrateUserSettingsIfNeeded(userId);
 
                     // Defining app language locale
                     final supportedCodes = [
@@ -151,12 +183,12 @@ class SignInPageState extends State<SignInPage> {
                       navigateToHomePage(context);
                     });
                   } 
-                  }
-                  on FirebaseAuthException catch (e) {
-                    debugPrint("Sign in error: $e");
-                    if (!mounted) return;
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
+                }
+                on FirebaseAuthException catch (e) {
+                  debugPrint("Sign in error: $e");
+                  if (!mounted) return;
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       // ignore: use_build_context_synchronously
                       content: Text(e.message ?? AppLocalizations.of(context)!.genericError), // ${e.message}

@@ -49,9 +49,9 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
     if (_currentUser == null) return;
 
     try {
-      final doc = await _firestore.collection('users').doc(_currentUser!.uid).get();
-      if (doc.exists) {
-        final data = doc.data()!;
+      final settingsDoc = await _firestore.collection('settings').doc(_currentUser!.uid).get();
+      if (settingsDoc.exists) {
+        final data = settingsDoc.data()!;
         if (context.mounted) {
           // ignore: use_build_context_synchronously
           final prefs = Provider.of<UserPreferences>(context, listen: false);
@@ -115,7 +115,7 @@ class _DisplayOptionsPageState extends State<DisplayOptionsPage> {
 
     try {
       final langCode = _languages[_selectedLanguageLabel];
-      await _firestore.collection('users').doc(_currentUser!.uid).set({
+      await _firestore.collection('settings').doc(_currentUser!.uid).set({
         'languageCode': langCode,
         'currency': _selectedCurrency,
         'distanceUnit': _selectedDistanceUnit,

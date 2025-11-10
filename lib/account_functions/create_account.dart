@@ -152,8 +152,12 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                     final encyptedFirstName = await encryptField(firstNameController.text.trim());
                     final encryptedLastName = await encryptField(lastNameController.text.trim());
 
+                    final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+                    final settingsDoc = FirebaseFirestore.instance
+                        .collection('settings')
+                        .doc(user.uid);
                     // Save user details in Firestore
-                    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+                    await userDoc.set({
                       'userId': user.uid,
                       'email': emailController.text.trim(),
                       'emailVerified': user.emailVerified,
@@ -165,8 +169,20 @@ class CreateAccountPageState extends State<CreateAccountPage> {
                       'createdAt': now,
                       'lastPasswordChange': now,
                       'failedLoginAttempts': 0,
+                    });
+
+                    // Save user settings details in Firestore as subcollection
+                    await settingsDoc.set({
                       'pushNotifications': true,
+                      'darkModeEnabled': false,
+                      'languageCode': "",
+                      'acceptedTermsVersion': 1,
                       'privacyAnalytics': privacyAnalytics,
+                      'enableCloudSync': true,
+                      'currency': 'USD',
+                      'distanceUnit': 'Miles',
+                      'dateFormat': 'MM/dd/yyyy',
+                      'theme': 'Light',
                     });
 
                     if (!context.mounted) return;

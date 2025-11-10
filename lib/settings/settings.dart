@@ -30,7 +30,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
   final userId = authState.userId;
   if (userId == null) return;
 
-  final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  final doc = await FirebaseFirestore.instance.collection('settings').doc(userId).get();
   final data = doc.data();
 
   if (data != null && mounted) {
@@ -100,7 +100,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                     });
                     if(userId != null) {
                       await FirebaseFirestore.instance
-                      .collection('users')
+                      .collection('settings')
                       .doc(userId)
                       .update({'pushNotifications': value});
                     }
@@ -118,7 +118,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                     });
                     if(userId != null) {
                       await FirebaseFirestore.instance
-                      .collection('users')
+                      .collection('settings')
                       .doc(userId)
                       .update({'privacyAnalytics': value});
                       await FirebaseAnalytics.instance
@@ -218,7 +218,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                 applicationName: localizations.applicationName,
                 applicationIcon: Image.asset('assets/icon/1024.png',
                 width: 124, height: 124),
-                applicationVersion: '0.6.4',
+                applicationVersion: '0.6.5',
                 applicationLegalese: localizations.applicationLegalese,
                 aboutBoxChildren: [
                   const SizedBox(height: 10),

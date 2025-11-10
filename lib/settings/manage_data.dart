@@ -36,7 +36,11 @@ class ManageDataPageState extends State<ManageDataPage> {
       await user.reauthenticateWithCredential(credential);
 
       // Deleting user auth account
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+      final firestore = FirebaseFirestore.instance;
+      final settingsDocRef = firestore.collection('settings').doc(user.uid);
+      final userDocRef = firestore.collection('users').doc(user.uid);
+      await settingsDocRef.delete();
+      await userDocRef.delete();
       await user.delete();
 
       if (!mounted) return;
