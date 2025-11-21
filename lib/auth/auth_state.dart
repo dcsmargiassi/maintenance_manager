@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:maintenance_manager/helper_functions/migration.dart';
 
 class AuthState extends ChangeNotifier {
   User? _user;
@@ -46,6 +47,13 @@ class AuthState extends ChangeNotifier {
           _user = null;
         }
       }
+      if (_user != null) {
+      try {
+        await migrateUserSettingsIfNeeded();
+      } catch (e) {
+        debugPrint("Migration failed: $e");
+      }
+    }
     }
     _initialized = true;
     isLoading = false;
