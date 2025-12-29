@@ -218,7 +218,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                 applicationName: localizations.applicationName,
                 applicationIcon: Image.asset('assets/icon/1024.png',
                 width: 124, height: 124),
-                applicationVersion: '0.6.6',
+                applicationVersion: '0.6.7',
                 applicationLegalese: localizations.applicationLegalese,
                 aboutBoxChildren: [
                   const SizedBox(height: 10),
