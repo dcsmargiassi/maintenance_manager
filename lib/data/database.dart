@@ -4,6 +4,7 @@
  - Section to easily update database tables to new versions
  - Verson 5: adding lifetimefuel cost and lifetimemaintenance cost to respective tables
  - Version 6: Changed userId to text for firebase implementation
+ - Version 8: New Variables to allow data to be uploaded to the cloud
 ---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.
 */
 import 'dart:io';
@@ -19,7 +20,7 @@ class DatabaseRepository {
   DatabaseRepository._privateConstructor();
 
   final _databaseName = 'maintenanceManagerDatabase';
-  final _databaseVersion = 7;
+  final _databaseVersion = 8;
   
   
   static late Database _database;
@@ -39,6 +40,26 @@ class DatabaseRepository {
     Directory documents = await getApplicationDocumentsDirectory();
     String path = join(documents.path, _databaseName);
     return await openDatabase(path, version: _databaseVersion, onCreate: onCreate, onUpgrade: onUpgrade,);
+  }
+  // Adding cloud sync column to track if records are in the cloud or local
+  Future<void> _addCloudSyncColumn(Database db, String tableName) async {
+    final existingColumns = await _getColumnNames(db, tableName);
+
+    if (!existingColumns.contains('isCloudSynced')) {
+      await db.execute(
+        'ALTER TABLE $tableName ADD COLUMN isCloudSynced INTEGER DEFAULT 0;'
+      );
+    }
+  } 
+  // Adding cloud id column to track cloud record number if already synced to cloud
+  Future<void> _addCloudIdColumn(Database db, String tableName) async {
+   final existingColumns = await _getColumnNames(db, tableName);
+
+   if (!existingColumns.contains('cloudId')) {
+     await db.execute(
+       'ALTER TABLE $tableName ADD COLUMN cloudId TEXT;'
+     );
+   }
   }
 
   // Updating database with missing table columns, if necessary
@@ -78,9 +99,27 @@ class DatabaseRepository {
           fogLamp TEXT,
           brakeLamp TEXT,
           licensePlateLamp TEXT,
+          cloudId TEXT,
+          isCloudSynced INTEGER NOT NULL DEFAULT 0,
           FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
         );
     ''');
+    }
+    // Updating Vehicle Information Table
+    if (oldVersion < 8) {
+      await _addCloudIdColumn(db, 'vehicleInformation');
+    await _addCloudIdColumn(db, 'fuelRecords');
+    await _addCloudIdColumn(db, 'engineDetails');
+    await _addCloudIdColumn(db, 'batteryDetails');
+    await _addCloudIdColumn(db, 'maintenanceRecords');
+    await _addCloudIdColumn(db, 'exteriorDetails');
+
+      await _addCloudSyncColumn(db, 'vehicleInformation');
+      await _addCloudSyncColumn(db, 'fuelRecords');
+      await _addCloudSyncColumn(db, 'engineDetails');
+      await _addCloudSyncColumn(db, 'batteryDetails');
+      await _addCloudSyncColumn(db, 'maintenanceRecords');
+      await _addCloudSyncColumn(db, 'exteriorDetails');
     }
   }
 
@@ -110,7 +149,9 @@ class DatabaseRepository {
         archived INTEGER,
         lifeTimeFuelCost REAL,
         lifeTimeMaintenanceCost REAL,
-        licensePlate TEXT
+        licensePlate TEXT,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0
       );
     ''');
     await db.execute('''
@@ -124,6 +165,8 @@ class DatabaseRepository {
         odometerAmount REAL,
         date TEXT,
         notes TEXT,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');
@@ -140,6 +183,8 @@ class DatabaseRepository {
         oilClass TEXT,
         oilFilter TEXT,
         engineFilter TEXT,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');
@@ -151,6 +196,8 @@ class DatabaseRepository {
         batterySeriesType TEXT,
         batterySize TEXT,
         coldCrankAmps REAL,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');
@@ -164,6 +211,8 @@ class DatabaseRepository {
         notes TEXT,
         oilChange INTEGER,
         tireRotationAlignment INTEGER,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');
@@ -182,6 +231,8 @@ class DatabaseRepository {
         fogLamp TEXT,
         brakeLamp TEXT,
         licensePlateLamp TEXT,
+        cloudId TEXT NULL,
+        isCloudSynced INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (vehicleId) REFERENCES vehicleInformation(vehicleId)
       );
     ''');
