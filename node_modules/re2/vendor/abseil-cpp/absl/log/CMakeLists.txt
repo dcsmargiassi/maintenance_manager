@@ -47,6 +47,7 @@ absl_cc_library(
     absl::base
     absl::config
     absl::core_headers
+    absl::has_ostream_operator
     absl::leak_check
     absl::log_internal_nullguard
     absl::log_internal_nullstream
@@ -218,6 +219,7 @@ absl_cc_library(
     absl::span
     absl::strerror
     absl::strings
+    absl::strings_internal
     absl::time
 )
 
@@ -379,6 +381,7 @@ absl_cc_library(
     ${ABSL_DEFAULT_LINKOPTS}
   DEPS
     absl::config
+    absl::core_headers
 )
 
 absl_cc_library(
@@ -394,6 +397,7 @@ absl_cc_library(
   DEPS
     absl::config
     absl::strings
+    absl::strings_internal
     absl::span
 )
 
@@ -569,6 +573,7 @@ absl_cc_library(
     absl::config
     absl::core_headers
     absl::log_internal_config
+    absl::log_internal_proto
     absl::log_severity
     absl::span
     absl::strings
@@ -748,6 +753,7 @@ absl_cc_library(
     absl::log_internal_fnmatch
     absl::memory
     absl::no_destructor
+    absl::nullability
     absl::strings
     absl::synchronization
     absl::optional
@@ -1006,6 +1012,7 @@ absl_cc_test(
     ${ABSL_DEFAULT_LINKOPTS}
   DEPS
     absl::check
+    absl::config
     absl::log
     absl::log_internal_test_matchers
     absl::optional
