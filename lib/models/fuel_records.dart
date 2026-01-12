@@ -17,9 +17,23 @@ class FuelRecords {
   String? date;
   String? notes;
 
+  String? cloudId;
+  int? isCloudSynced;
+
 // Fuel Records table constructor
-  FuelRecords({required this.fuelRecordId, required this.userId, required this.vehicleId, required this.fuelAmount, 
-  required this.fuelPrice, this.refuelCost, this.odometerAmount, this.date, this.notes});
+  FuelRecords({
+      required this.fuelRecordId, 
+      required this.userId, 
+      required this.vehicleId, 
+      required this.fuelAmount, 
+      required this.fuelPrice, 
+      this.refuelCost, 
+      this.odometerAmount, 
+      this.date, 
+      this.notes, 
+      this.cloudId,
+      this.isCloudSynced
+    });
   
   FuelRecords.fromMap(dynamic obj) { 
     fuelRecordId = obj['fuelRecordId'];
@@ -31,6 +45,8 @@ class FuelRecords {
     odometerAmount = obj['odometerAmount'];
     date = obj['date'];
     notes = obj['notes'];
+    cloudId = obj['cloudId'];
+    isCloudSynced = obj['isCloudSynced'];
   }
 
   Map<String, dynamic> toMap() {
@@ -44,6 +60,8 @@ class FuelRecords {
       'odometerAmount': odometerAmount,
       'date': date,
       'notes': notes,
+      'cloudId': cloudId,
+      'isCloudSynced': isCloudSynced,
     };
     return map;
   }

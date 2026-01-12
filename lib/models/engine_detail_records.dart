@@ -19,6 +19,9 @@ class EngineDetailsModel {
   final String? oilFilter;
   final String? engineFilter;
 
+  final String? cloudId;
+  final int? isCloudSynced;
+
   EngineDetailsModel({
     this.engineDetailsId,
     required this.userId,
@@ -31,6 +34,8 @@ class EngineDetailsModel {
     this.oilClass,
     this.oilFilter,
     this.engineFilter,
+    this.cloudId,
+    this.isCloudSynced,
   });
 
   Map<String, dynamic> toMap() {
@@ -46,6 +51,8 @@ class EngineDetailsModel {
       'oilClass': oilClass,
       'oilFilter': oilFilter,
       'engineFilter': engineFilter,
+      'cloudId': cloudId,
+      'isCloudSynced': isCloudSynced,
     };
   }
 
@@ -62,6 +69,8 @@ class EngineDetailsModel {
       oilClass: map['oilClass'],
       oilFilter: map['oilFilter'],
       engineFilter: map['engineFilter'],
+      cloudId: map['cloudId'],
+      isCloudSynced: map['isCloudSynced'],
     );
   }
 }

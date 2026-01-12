@@ -228,6 +228,8 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                           : double.parse(odometerAmountController.text),
                         date: isoDateToStore,//dateController.text,
                         notes: null,
+                        cloudId: null,
+                        isCloudSynced: 0,
                       );
                     //Create an instance of VehicleOperations
                     final FuelRecordOperations fuelOperations = FuelRecordOperations();

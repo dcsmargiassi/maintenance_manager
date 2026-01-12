@@ -28,11 +28,14 @@ class VehicleInformationModel {
   double? lifeTimeMaintenanceCost;
   String? licensePlate;
 
+  String? cloudId;
+  int? isCloudSynced;
+
 
 // Vehicle Information table constructor
   VehicleInformationModel({this.vehicleId, required this.userId, this.vehicleNickName, this.vin, this.make,  this.model, this.version, this.year, this.purchaseDate,
   this.sellDate, this.odometerBuy, this.odometerSell, this.odometerCurrent, this.purchasePrice, this.sellPrice, this.archived,
-  this.lifeTimeFuelCost, this.lifeTimeMaintenanceCost, this.licensePlate});
+  this.lifeTimeFuelCost, this.lifeTimeMaintenanceCost, this.licensePlate, this.cloudId, this.isCloudSynced});
   
   VehicleInformationModel.fromMap(dynamic obj) { 
     vehicleId = obj['vehicleId'];
@@ -54,6 +57,8 @@ class VehicleInformationModel {
     lifeTimeFuelCost = obj['lifeTimeFuelCost'] ?? 0.0;
     lifeTimeMaintenanceCost = obj['lifeTimeMaintenanceCost'] ?? 0.0;
     licensePlate = obj['licensePlate'] ?? '';
+    cloudId = obj['cloudId'];
+    isCloudSynced = obj['isCloudSynced'];
   }
 
   Map<String, dynamic> toMap() {
@@ -77,6 +82,8 @@ class VehicleInformationModel {
       'lifeTimeFuelCost': lifeTimeFuelCost,
       'lifeTimeMaintenanceCost': lifeTimeMaintenanceCost,
       'licensePlate': licensePlate,
+      'cloudId': cloudId,
+      'isCloudSynced': isCloudSynced,
     };
     return map;
   }
@@ -102,6 +109,8 @@ class VehicleInformationModel {
       lifeTimeFuelCost: json['lifeTimeFuelCost'] ?? 0.0,
       lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'] ?? 0.0,
       licensePlate: json['licensePlate'] ?? '',
+      cloudId: json['cloudId'],
+    isCloudSynced: (json['isCloudSynced'] ?? 0),
     );
   }
 }

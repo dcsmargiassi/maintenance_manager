@@ -14,6 +14,9 @@ class BatteryDetailsModel {
   final String? batterySize;
   final double? coldCrankAmps;
 
+  final String? cloudId;
+  final int? isCloudSynced;
+
   BatteryDetailsModel({
     this.batteryDetailsId,
     required this.userId,
@@ -21,6 +24,8 @@ class BatteryDetailsModel {
     this.batterySeriesType,
     this.batterySize,
     this.coldCrankAmps,
+    this.cloudId,
+    this.isCloudSynced,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +36,8 @@ class BatteryDetailsModel {
       'batterySeriesType': batterySeriesType,
       'batterySize': batterySize,
       'coldCrankAmps': coldCrankAmps,
+      'cloudId': cloudId,
+      'isCloudSynced': isCloudSynced,
     };
   }
 
@@ -42,6 +49,8 @@ class BatteryDetailsModel {
       batterySeriesType: map['batterySeriesType'],
       batterySize: map['batterySize'],
       coldCrankAmps: map['coldCrankAmps'],
+      cloudId: map['cloudId'],
+      isCloudSynced: map['isCloudSynced'],
     );
   }
 }

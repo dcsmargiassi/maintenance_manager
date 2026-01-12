@@ -21,6 +21,9 @@ class ExteriorDetailsModel {
   final String? brakeLamp;
   final String? licensePlateLamp;
 
+  final String? cloudId;
+  final int? isCloudSynced;
+
   ExteriorDetailsModel({
     this.exteriorDetailsId,
     required this.userId,
@@ -35,6 +38,8 @@ class ExteriorDetailsModel {
     this.fogLamp,
     this.brakeLamp,
     this.licensePlateLamp,
+    this.cloudId,
+    this.isCloudSynced,
   });
 
   Map<String, dynamic> toMap() {
@@ -52,6 +57,8 @@ class ExteriorDetailsModel {
       'fogLamp': fogLamp,
       'brakeLamp': brakeLamp,
       'licensePlateLamp': licensePlateLamp,
+      'cloudId': cloudId,
+      'isCloudSynced': isCloudSynced,
     };
   }
 
@@ -71,6 +78,8 @@ class ExteriorDetailsModel {
       fogLamp: map['fogLamp'] ?? '',
       brakeLamp: map['brakeLamp'] ?? '',
       licensePlateLamp: map['licensePlateLamp'] ?? '',
+      cloudId: map['cloudId'],
+      isCloudSynced: map['isCloudSynced'],
     );
   }
 }

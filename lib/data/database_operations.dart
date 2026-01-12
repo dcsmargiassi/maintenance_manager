@@ -15,6 +15,8 @@ import 'package:maintenance_manager/models/fuel_records.dart';
 //import 'package:maintenance_manager/models/maintenance_records.dart';
 
 // Vehicle information table operation functions
+// Flag for testing of cloud writing
+const bool enableVehicleCloudWrite = true;
 
 class VehicleOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
