@@ -89,11 +89,11 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                           final archiveDate = DateTime.now();
                           final date = formatDateToString(archiveDate);
                           setState(() => _isLoading = true);
-                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!, date);
+                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!, userId!, date);
                           setState(() {
-                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
+                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
                           });
-                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId!);
+                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId);
                           _selectedVehicle = null;
                           setState(() => _isLoading = false);
                         },
