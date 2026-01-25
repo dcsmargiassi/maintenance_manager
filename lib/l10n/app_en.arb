@@ -244,7 +244,7 @@
     "description": "Fuel price label"
   },
 
-  "fuelPriceLabelHint": "Enter amount of fuel",
+  "fuelPriceLabelHint": "Enter price of fuel",
   "@fuelPriceLabelHint": {
     "description": "Fuel price label hint"
   },
@@ -1184,9 +1184,9 @@
   },
 
   "notificationsDisabledMessage": "Notifications are disabled by device settings.",
-  "@notificationsDisabledTitle": {
+  "@notificationsDisabledMessage": {
     "description": "Message to state Notifications are disabled by system settings"
-  },
+  }, 
 
   "ok": "Ok",
   "@ok": {

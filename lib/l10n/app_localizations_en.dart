@@ -159,7 +159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fuelPriceLabel => 'Fuel Price';
 
   @override
-  String get fuelPriceLabelHint => 'Enter amount of fuel';
+  String get fuelPriceLabelHint => 'Enter price of fuel';
 
   @override
   String get totalFuelCostLabel => 'Total Cost';

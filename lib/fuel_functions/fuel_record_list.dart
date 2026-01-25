@@ -129,7 +129,7 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                         return _displayFuelRecords(record, () async {
                           // Decrement lifetime fuel costs prior to fully deleting record
                           decrementLifeTimeFuelCosts(widget.vehicleId, record.userId!, record.refuelCost!);
-                          await FuelRecordOperations().deleteFuelRecord(record.fuelRecordId!);
+                          await FuelRecordOperations().deleteFuelRecord(record);
                           setState(() {
                             records.removeAt(index);
                           });

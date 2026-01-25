@@ -385,7 +385,7 @@ abstract class AppLocalizations {
   /// Fuel price label hint
   ///
   /// In en, this message translates to:
-  /// **'Enter amount of fuel'**
+  /// **'Enter price of fuel'**
   String get fuelPriceLabelHint;
 
   /// Total fuel cost label
@@ -1462,13 +1462,13 @@ abstract class AppLocalizations {
   /// **'Guest accounts cannot create records. Please sign in or register.'**
   String get guestCannotCreateRecords;
 
-  /// Message to state Notifications are disabled by system settings
+  /// Title to state Notifications are disabled by system settings
   ///
   /// In en, this message translates to:
   /// **'Notifications Disabled'**
   String get notificationsDisabledTitle;
 
-  /// No description provided for @notificationsDisabledMessage.
+  /// Message to state Notifications are disabled by system settings
   ///
   /// In en, this message translates to:
   /// **'Notifications are disabled by device settings.'**
