@@ -82,4 +82,40 @@ class ExteriorDetailsModel {
       isCloudSynced: map['isCloudSynced'],
     );
   }
+
+  ExteriorDetailsModel copyWith({
+    int? exteriorDetailsId,
+    String? userId,
+    int? vehicleId,
+    String? driverWindshieldWiper,
+    String? passengerWindshieldWiper,
+    String? rearWindshieldWiper,
+    String? headlampHighBeam,
+    String? headlampLowBeam,
+    String? turnLamp,
+    String? backupLamp,
+    String? fogLamp,
+    String? brakeLamp,
+    String? licensePlateLamp,
+    String? cloudId,
+    int? isCloudSynced,
+  }) {
+    return ExteriorDetailsModel(
+      exteriorDetailsId: exteriorDetailsId ?? this.exteriorDetailsId,
+      userId: userId ?? this.userId,
+      vehicleId: vehicleId ?? this.vehicleId,
+      driverWindshieldWiper: driverWindshieldWiper ?? this.driverWindshieldWiper,
+      passengerWindshieldWiper: passengerWindshieldWiper ?? this.passengerWindshieldWiper,
+      rearWindshieldWiper: rearWindshieldWiper ?? this.rearWindshieldWiper,
+      headlampHighBeam: headlampHighBeam ?? this.headlampHighBeam,
+      headlampLowBeam: headlampLowBeam ?? this.headlampLowBeam,
+      turnLamp: turnLamp ?? this.turnLamp,
+      backupLamp: backupLamp ?? this.backupLamp,
+      fogLamp: fogLamp ?? this.fogLamp,
+      brakeLamp: brakeLamp ?? this.brakeLamp,
+      licensePlateLamp: licensePlateLamp ?? this.licensePlateLamp,
+      cloudId: cloudId ?? this.cloudId,
+      isCloudSynced: isCloudSynced ?? this.isCloudSynced,
+    );
+  }
 }

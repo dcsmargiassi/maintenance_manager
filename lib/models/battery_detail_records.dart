@@ -53,4 +53,26 @@ class BatteryDetailsModel {
       isCloudSynced: map['isCloudSynced'],
     );
   }
+  
+  BatteryDetailsModel copyWith({
+    int? batteryDetailsId,
+    String? userId,
+    int? vehicleId,
+    String? batterySeriesType,
+    String? batterySize,
+    double? coldCrankAmps,
+    String? cloudId,
+    int? isCloudSynced,
+  }) {
+    return BatteryDetailsModel(
+      batteryDetailsId: batteryDetailsId ?? this.batteryDetailsId,
+      userId: userId ?? this.userId,
+      vehicleId: vehicleId ?? this.vehicleId,
+      batterySeriesType: batterySeriesType ?? this.batterySeriesType,
+      batterySize: batterySize ?? this.batterySize,
+      coldCrankAmps: coldCrankAmps ?? this.coldCrankAmps,
+      cloudId: cloudId ?? this. cloudId,
+      isCloudSynced: isCloudSynced ?? this.isCloudSynced,
+    );
+  }
 }

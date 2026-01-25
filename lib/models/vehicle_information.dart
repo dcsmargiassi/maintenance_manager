@@ -110,7 +110,56 @@ class VehicleInformationModel {
       lifeTimeMaintenanceCost: json['lifeTimeMaintenanceCost'] ?? 0.0,
       licensePlate: json['licensePlate'] ?? '',
       cloudId: json['cloudId'],
-    isCloudSynced: (json['isCloudSynced'] ?? 0),
+      isCloudSynced: (json['isCloudSynced'] ?? 0),
+    );
+  }
+
+  VehicleInformationModel copyWith({
+    int? vehicleId,
+    String? userId,
+    String? vehicleNickName,
+    String? vin,
+    String? make,
+    String? model,
+    String? version,
+    int? year,
+    String? purchaseDate,
+    String? sellDate,
+    double? odometerBuy,
+    double? odometerSell,
+    double? odometerCurrent,
+    double? purchasePrice,
+    double? sellPrice,
+    int? archived,
+    double? lifeTimeFuelCost,
+    double? lifeTimeMaintenanceCost,
+    String? licensePlate,
+    String? cloudId,
+    int? isCloudSynced,
+  }) {
+    return VehicleInformationModel(
+      vehicleId: vehicleId ?? this.vehicleId,
+      userId: userId ?? this.userId,
+      vehicleNickName: vehicleNickName ?? this.vehicleNickName,
+      vin: vin ?? this.vin,
+      make: make ?? this.make,
+      model: model ?? this.model,
+      version: version ?? this.version,
+      year: year ?? this.year,
+      purchaseDate: purchaseDate ?? this.purchaseDate,
+      sellDate: sellDate ?? this.sellDate,
+      odometerBuy: odometerBuy ?? this.odometerBuy,
+      odometerSell: odometerSell ?? this.odometerSell,
+      odometerCurrent: odometerCurrent ?? this.odometerCurrent,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      sellPrice: sellPrice ?? this.sellPrice,
+      archived: archived ?? this.archived,
+      lifeTimeFuelCost: lifeTimeFuelCost ?? this.lifeTimeFuelCost,
+      lifeTimeMaintenanceCost:
+      lifeTimeMaintenanceCost ?? this.lifeTimeMaintenanceCost,
+      licensePlate: licensePlate ?? this.licensePlate,
+      cloudId: cloudId ?? this.cloudId,
+      isCloudSynced: isCloudSynced ?? this.isCloudSynced,
     );
   }
 }

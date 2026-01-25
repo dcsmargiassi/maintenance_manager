@@ -73,4 +73,35 @@ class EngineDetailsModel {
       isCloudSynced: map['isCloudSynced'],
     );
   }
+  EngineDetailsModel copyWith({
+    int? engineDetailsId,
+    String? userId,
+    int? vehicleId,
+    String? engineSize,
+    String? cylinders,
+    String? engineType,
+    String? oilWeight,
+    String? oilComposition,
+    String? oilClass,
+    String? oilFilter,
+    String? engineFilter,
+    String? cloudId,
+    int? isCloudSynced,
+  }) {
+  return EngineDetailsModel(
+    engineDetailsId: engineDetailsId ?? this.engineDetailsId,
+    userId: userId ?? this.userId,
+    vehicleId: vehicleId ?? this.vehicleId,
+    engineSize: engineSize ?? this.engineSize,
+    cylinders: cylinders ?? this.cylinders,
+    engineType: engineType ?? this.engineType,
+    oilWeight: oilWeight ?? this.oilWeight,
+    oilComposition: oilComposition ?? this.oilComposition,
+    oilClass: oilClass ?? this.oilClass,
+    oilFilter: oilFilter ?? this.oilFilter,
+    engineFilter: engineFilter ?? this.engineFilter,
+    cloudId: cloudId ?? this.cloudId,
+    isCloudSynced: isCloudSynced ?? this.isCloudSynced,
+    );
+  }
 }
