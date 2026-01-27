@@ -108,11 +108,11 @@ class DatabaseRepository {
     // Updating Vehicle Information Table
     if (oldVersion < 8) {
       await _addCloudIdColumn(db, 'vehicleInformation');
-    await _addCloudIdColumn(db, 'fuelRecords');
-    await _addCloudIdColumn(db, 'engineDetails');
-    await _addCloudIdColumn(db, 'batteryDetails');
-    await _addCloudIdColumn(db, 'maintenanceRecords');
-    await _addCloudIdColumn(db, 'exteriorDetails');
+      await _addCloudIdColumn(db, 'fuelRecords');
+      await _addCloudIdColumn(db, 'engineDetails');
+      await _addCloudIdColumn(db, 'batteryDetails');
+      await _addCloudIdColumn(db, 'maintenanceRecords');
+      await _addCloudIdColumn(db, 'exteriorDetails');
 
       await _addCloudSyncColumn(db, 'vehicleInformation');
       await _addCloudSyncColumn(db, 'fuelRecords');
