@@ -86,7 +86,7 @@ class BatteryDetailsSection extends StatelessWidget {
             hintText: localizations.coldCrankAmpsHint
           ),
           validator: (String? value) {
-            return validateNumber(value, context, maxInt: 1500, minInt: 0, maxDecimalPlaces: 0, allowEmpty: true);
+            return validateNumber(value, context, maxInt: 1500, minInt: 0, maxDecimalPlaces: 1, allowEmpty: true);
           },
         ),
 
