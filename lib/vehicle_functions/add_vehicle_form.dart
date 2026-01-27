@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/data/battery_local_database_operations.dart';
+import 'package:maintenance_manager/data/engine_local_database_operations.dart';
+import 'package:maintenance_manager/data/exterior_local_database_operations.dart';
+import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';

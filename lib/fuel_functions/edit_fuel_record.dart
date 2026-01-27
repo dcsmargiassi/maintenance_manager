@@ -8,7 +8,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/database_operations.dart';
+import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
