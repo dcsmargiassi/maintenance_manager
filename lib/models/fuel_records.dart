@@ -65,4 +65,31 @@ class FuelRecords {
     };
     return map;
   }
+  FuelRecords copyWith({
+  int? fuelRecordId,
+  String? userId,
+  int? vehicleId,
+  double? fuelAmount,
+  double? fuelPrice,
+  double? refuelCost,
+  double? odometerAmount,
+  String? date,
+  String? notes,
+  String? cloudId,
+  int? isCloudSynced,
+  }) {
+    return FuelRecords(
+      fuelRecordId: fuelRecordId ?? this.fuelRecordId,
+      userId: userId ?? this.userId,
+      vehicleId: vehicleId ?? this.vehicleId,
+      fuelAmount: fuelAmount ?? this.fuelAmount,
+      fuelPrice: fuelAmount ?? this.fuelPrice,
+      refuelCost: refuelCost ?? this.refuelCost,
+      odometerAmount: odometerAmount ?? this.odometerAmount,
+      date: date ?? this.date,
+      notes: notes ?? this.notes,
+      cloudId: cloudId ?? this.cloudId,
+      isCloudSynced: isCloudSynced ?? this.isCloudSynced,
+    );
+  }
 }
