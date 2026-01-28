@@ -156,7 +156,7 @@ class EngineDetailsSection extends StatelessWidget {
         SizedBox(height: sizedBoxHeight),
 
                 DropdownSearch<String> (
-          selectedItem: oilCompositionController.text.isNotEmpty ? engineTypeController.text : null,
+          selectedItem: oilCompositionController.text.isNotEmpty ? oilCompositionController.text : null,
           mode: Mode.form,
           onChanged: (value) {
             if(value != null) {
@@ -188,7 +188,7 @@ class EngineDetailsSection extends StatelessWidget {
         SizedBox(height: sizedBoxHeight),
 
         DropdownSearch<String> (
-          selectedItem: oilClassController.text.isNotEmpty ? engineTypeController.text : null,
+          selectedItem: oilClassController.text.isNotEmpty ? oilClassController.text : null,
           mode: Mode.form,
           onChanged: (value) {
             if(value != null) {
