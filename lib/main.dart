@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:maintenance_manager/data/cloud_sync_service.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/helper_functions/global_theme.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
@@ -16,6 +18,10 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+// DEBUG
+bool _didRunBackfillThisSession = false;
+String? _didRunBackfillForUserId;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -84,9 +90,25 @@ Future<void> _initPushNotifications() async {
   FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
     debugPrint('🔄 Token refreshed: $newToken');
   });
-
-  
 }
+
+final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
+
+// Initialization of remote config for cloud writing settings
+Future<void> initRemoteConfig() async {
+  await remoteConfig.setDefaults({
+    'enableCloudWrite': false, // safe default
+  });
+
+  await remoteConfig.setConfigSettings(RemoteConfigSettings(
+    fetchTimeout: const Duration(seconds: 10),
+    minimumFetchInterval: const Duration(minutes: 5),
+  ));
+
+  await remoteConfig.fetchAndActivate();
+}
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,7 +122,11 @@ try {
     debugPrint('X Firebase init failed: $e\n$st');
   }
 
+  // Call to initialize push notification connection
   await _initPushNotifications();
+
+  // Call to initialize remote config connection
+  await initRemoteConfig();
 
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
@@ -109,6 +135,15 @@ try {
     await DatabaseRepository.instance.database;
   } catch (e) {
     debugPrint('Error initializing Database: $e');
+  }
+
+  // DEBUG TESTING DEFAULT VALUE: FALSE Only utilize during testing of syncing data to cloud database
+   const bool kResetCloudSyncOnStartup =
+      bool.fromEnvironment('RESET_CLOUD_SYNC', defaultValue: false);
+
+  if (kResetCloudSyncOnStartup) {
+    await resetAllCloudSyncState(); // sets isCloudSynced=0, cloudId=null
+    debugPrint('Reset cloud sync state on startup');
   }
 
   runApp(
@@ -128,6 +163,35 @@ try {
       child: const MyApp(),
     ),
   );
+}
+
+Future<void> resetAllCloudSyncState() async {
+  final db = await DatabaseRepository.instance.database;
+
+  // All tables that participate in cloud sync
+  final tables = [
+    'vehicleInformation',
+    'engineDetails',
+    'batteryDetails',
+    'exteriorDetails',
+    'fuelRecords',
+  ];
+
+  await db.transaction((txn) async {
+    for (final table in tables) {
+      final updated = await txn.update(
+        table,
+        {
+          'isCloudSynced': 0,
+          'cloudId': null,
+        },
+      );
+      
+      debugPrint('🔁 Reset $table → rows affected: $updated');
+    }
+  });
+
+  debugPrint('✅ All cloud sync state reset complete');
 }
 
 class MyApp extends StatelessWidget {
@@ -167,6 +231,16 @@ class MyApp extends StatelessWidget {
               if (languageCode != null && languageCode.isNotEmpty) {
                 languageProvider.setLocale(Locale(languageCode));
               }
+
+              // DEBUG
+              final uid = authState.userId;
+                if (uid != null &&
+                    (!_didRunBackfillThisSession || _didRunBackfillForUserId != uid)) {
+                  _didRunBackfillThisSession = true;
+                  _didRunBackfillForUserId = uid;
+
+                  await CloudBackfillService.instance.runOnce(uid);
+                }
             }
           });
         } else {
