@@ -160,7 +160,7 @@ class EngineDetailsSection extends StatelessWidget {
           mode: Mode.form,
           onChanged: (value) {
             if(value != null) {
-            engineTypeController.text = value;
+            oilCompositionController.text = value;
             }
           },
           items: (String? filter, LoadProps? props) async {
@@ -192,7 +192,7 @@ class EngineDetailsSection extends StatelessWidget {
           mode: Mode.form,
           onChanged: (value) {
             if(value != null) {
-            engineTypeController.text = value;
+            oilClassController.text = value;
             }
           },
           items: (String? filter, LoadProps? props) async {
