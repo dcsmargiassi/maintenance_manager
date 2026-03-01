@@ -108,6 +108,12 @@ Future<void> initRemoteConfig() async {
   await remoteConfig.fetchAndActivate();
 }
 
+Future<void> initFirestoreCache() async {
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
+}
 
 
 void main() async {
@@ -121,6 +127,13 @@ try {
   }catch (e, st) { 
     debugPrint('X Firebase init failed: $e\n$st');
   }
+  // Initializing firestone offline persistance
+  try {
+    await initFirestoreCache();
+  }catch(e, st) {
+    debugPrint('X Firebase cache init failed: $e\n$st');
+  }
+  
 
   // Call to initialize push notification connection
   await _initPushNotifications();

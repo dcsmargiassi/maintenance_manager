@@ -1,9 +1,9 @@
-import 'package:maintenance_manager/data/battery_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/battery_cloud_database_operations.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/engine_cloud_database_operations.dart';
-import 'package:maintenance_manager/data/exterior_cloud_database_operations.dart';
-import 'package:maintenance_manager/data/fuel_cloud_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/engine_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/exterior_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/fuel_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
@@ -23,13 +23,13 @@ import 'package:maintenance_manager/models/vehicle_information.dart';
 class CloudBackfillService {
   CloudBackfillService._internal({
     DatabaseRepository? dbRepository,
-    VehicleCloudOperations? vehicleCloud,
+    VehicleCloudWriteOperations? vehicleCloud,
     EngineCloudOperations? engineCloud,
     BatteryCloudOperations? batteryCloud,
     ExteriorCloudOperations? exteriorCloud,
     FuelCloudOperations? fuelCloud,
   })  : dbRepository = dbRepository ?? DatabaseRepository.instance,
-        vehicleCloud = vehicleCloud ?? VehicleCloudOperations(),
+        vehicleCloud = vehicleCloud ?? VehicleCloudWriteOperations(),
         engineCloud = engineCloud ?? EngineCloudOperations(),
         batteryCloud = batteryCloud ?? BatteryCloudOperations(),
         exteriorCloud = exteriorCloud ?? ExteriorCloudOperations(),
@@ -38,7 +38,7 @@ class CloudBackfillService {
   static final CloudBackfillService instance = CloudBackfillService._internal();
 
   final DatabaseRepository dbRepository;
-  final VehicleCloudOperations vehicleCloud;
+  final VehicleCloudWriteOperations vehicleCloud;
   final EngineCloudOperations engineCloud;
   final BatteryCloudOperations batteryCloud;
   final ExteriorCloudOperations exteriorCloud;
@@ -48,13 +48,13 @@ class CloudBackfillService {
 
   CloudBackfillService({
     DatabaseRepository? dbRepository,
-    VehicleCloudOperations? vehicleCloud,
+    VehicleCloudWriteOperations? vehicleCloud,
     EngineCloudOperations? engineCloud,
     BatteryCloudOperations? batteryCloud,
     ExteriorCloudOperations? exteriorCloud,
     FuelCloudOperations? fuelCloud,
   })  : dbRepository = dbRepository ?? DatabaseRepository.instance,
-        vehicleCloud = vehicleCloud ?? VehicleCloudOperations(),
+        vehicleCloud = vehicleCloud ?? VehicleCloudWriteOperations(),
         engineCloud = engineCloud ?? EngineCloudOperations(),
         batteryCloud = batteryCloud ?? BatteryCloudOperations(),
         exteriorCloud = exteriorCloud ?? ExteriorCloudOperations(),

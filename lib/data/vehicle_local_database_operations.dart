@@ -1,6 +1,6 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/vehicle_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 
 bool get enableVehicleCloudWrite =>
@@ -14,7 +14,7 @@ class VehicleOperations {
     final vehicleId = await db.insert('vehicleInformation', vehicle.toMap());
     if (enableVehicleCloudWrite) {
       // Create a new instance of the cloud service
-      final cloudId = await VehicleCloudOperations().createVehicle(vehicle);
+      final cloudId = await VehicleCloudWriteOperations().createVehicle(vehicle);
 
       // Update the local DB with cloudId and mark as synced
       await db.update(
@@ -102,7 +102,7 @@ class VehicleOperations {
 
   // Create cloud record if not existing
   if (existing.cloudId == null) {
-    final cloudId = await VehicleCloudOperations().createVehicle(merged);
+    final cloudId = await VehicleCloudWriteOperations().createVehicle(merged);
 
     await db.update(
       'vehicleInformation',
@@ -114,7 +114,7 @@ class VehicleOperations {
   }
 
   // Normal cloud update uses PATCH, not full update
-  await VehicleCloudOperations().updateVehiclePatch(
+  await VehicleCloudWriteOperations().updateVehiclePatch(
     userId: merged.userId!,
     cloudId: existing.cloudId!,
     patch: patch,
@@ -133,7 +133,7 @@ class VehicleOperations {
     await db.update('vehicleInformation', {'archived': 1,'sellDate': date}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
     if (enableVehicleCloudWrite) {
         final vehicle = await getVehicleById(vehicleId, userId);
-        await VehicleCloudOperations().updateVehicle(vehicle);
+        await VehicleCloudWriteOperations().updateVehicle(vehicle);
     }
   }
 
@@ -147,7 +147,7 @@ class VehicleOperations {
   );
   if (enableVehicleCloudWrite) {
       final vehicle = await getVehicleById(vehicleId, userId);
-      await VehicleCloudOperations().updateVehicle(vehicle);
+      await VehicleCloudWriteOperations().updateVehicle(vehicle);
     }
   }
 
@@ -167,7 +167,7 @@ class VehicleOperations {
     where:'vehicleId = ? AND userId = ?',
     whereArgs: [vehicleId, userId]);
     if (enableVehicleCloudWrite && vehicle.cloudId != null) {
-      await VehicleCloudOperations().deleteVehicle(vehicle.userId!, vehicleId, vehicle.cloudId);
+      await VehicleCloudWriteOperations().deleteVehicle(vehicle.userId!, vehicleId, vehicle.cloudId);
     }
   }
 
@@ -235,7 +235,7 @@ class VehicleOperations {
       final cloudId = rows.first['cloudId'] as String;
 
       // Cloud update: patch only the lifetime cost (no VIN/plate included)
-      await VehicleCloudOperations().updateVehiclePatch(
+      await VehicleCloudWriteOperations().updateVehiclePatch(
         userId: vehicle.userId!,
         cloudId: cloudId,
         patch: {

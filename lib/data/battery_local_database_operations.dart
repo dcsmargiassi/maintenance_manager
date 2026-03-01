@@ -1,5 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:maintenance_manager/data/battery_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/battery_cloud_database_operations.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 

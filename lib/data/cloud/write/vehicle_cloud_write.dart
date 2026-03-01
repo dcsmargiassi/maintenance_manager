@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 
-const bool enableVehicleCloudWrite = true;
+bool get enableVehicleCloudWrite =>
+    FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
 // Vehicle information table operation functions
 
-class VehicleCloudOperations {
+class VehicleCloudWriteOperations {
   final DatabaseRepository dbRepository = DatabaseRepository.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

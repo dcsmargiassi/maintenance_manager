@@ -1,6 +1,6 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/fuel_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/fuel_cloud_database_operations.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
 
 bool get enableVehicleCloudWrite =>
