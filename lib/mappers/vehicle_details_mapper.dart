@@ -5,7 +5,7 @@ class VehicleInformationMapper {
   // Local -> Cloud
   static VehicleInformationCloudModel localToCloud(VehicleInformationModel local, String cloudId) {
     return VehicleInformationCloudModel(
-      id: cloudId,
+      cloudId: cloudId,
       userId: local.userId ?? '',
       vehicleNickName: local.vehicleNickName,
       vin: local.vin,

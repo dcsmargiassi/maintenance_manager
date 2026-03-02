@@ -1,5 +1,5 @@
 class BatteryDetailsCloudModel {
-  final String id; // Firestore document ID
+  final String cloudId; // Firestore document ID
   final String userId;
   final String vehicleCloudId; // Reference to cloud vehicle
   
@@ -8,7 +8,7 @@ class BatteryDetailsCloudModel {
   final double? coldCrankAmps;
 
   BatteryDetailsCloudModel({
-    required this.id,
+    required this.cloudId,
     required this.userId,
     required this.vehicleCloudId,
     this.batterySeriesType,
@@ -28,11 +28,11 @@ class BatteryDetailsCloudModel {
 
   // Create from Firestore map + doc ID
   factory BatteryDetailsCloudModel.fromMap(
-    String id,
+    String cloudId,
     Map<String, dynamic> map,
   ) {
     return BatteryDetailsCloudModel(
-      id: id,
+      cloudId: cloudId,
       userId: '',
       vehicleCloudId: map['vehicleCloudId'],
       batterySeriesType: map['batterySeriesType'],

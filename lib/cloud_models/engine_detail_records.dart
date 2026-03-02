@@ -1,5 +1,5 @@
 class EngineDetailsCloudModel {
-  final String id; // Firestore document ID
+  final String cloudId; // Firestore document ID
   final String userId;
   final String vehicleCloudId;
 
@@ -13,7 +13,7 @@ class EngineDetailsCloudModel {
   final String engineFilter;
 
   EngineDetailsCloudModel({
-    required this.id,
+    required this.cloudId,
     required this.userId,
     required this.vehicleCloudId,
     required this.engineSize,
@@ -41,9 +41,9 @@ class EngineDetailsCloudModel {
     };
   }
 
-  factory EngineDetailsCloudModel.fromMap(String id, Map<String, dynamic> map) {
+  factory EngineDetailsCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return EngineDetailsCloudModel(
-      id: id,
+      cloudId: cloudId,
       userId: map['userId'] ?? '',
       vehicleCloudId: map['vehicleCloudId'] ?? '',
       engineSize: map['engineSize'] ?? '',
@@ -56,4 +56,25 @@ class EngineDetailsCloudModel {
       engineFilter: map['engineFilter'] ?? '',
     );
   }
+
+  static EngineDetailsCloudModel? fromJson(
+  String cloudId,
+  Map<String, dynamic>? data,
+) {
+  if (data == null) return null;
+
+  return EngineDetailsCloudModel(
+    cloudId: cloudId,
+    userId: data['userId'] ?? '',
+    vehicleCloudId: data['vehicleCloudId'] ?? '',
+    engineSize: data['engineSize'] ?? '',
+    cylinders: data['cylinders'] ?? '',
+    engineType: data['engineType'] ?? '',
+    oilWeight: data['oilWeight'] ?? '',
+    oilComposition: data['oilComposition'] ?? '',
+    oilClass: data['oilClass'] ?? '',
+    oilFilter: data['oilFilter'] ?? '',
+    engineFilter: data['engineFilter'] ?? '',
+  );
+}
 }

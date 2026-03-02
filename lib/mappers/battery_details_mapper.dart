@@ -9,7 +9,7 @@ BatteryDetailsCloudModel mapLocalBatteryToCloud(
   String vehicleCloudId,
 ) {
   return BatteryDetailsCloudModel(
-    id: cloudId,
+    cloudId: cloudId,
     userId: userId,
     vehicleCloudId: vehicleCloudId,
     batterySeriesType: local.batterySeriesType,

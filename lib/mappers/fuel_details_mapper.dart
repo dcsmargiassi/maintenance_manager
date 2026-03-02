@@ -13,7 +13,7 @@ class FuelRecordMapper {
     final fuelPrice = local.fuelPrice ?? 0.0;
 
     return FuelRecordCloudModel(
-      id: cloudDocId,
+      cloudId: cloudDocId,
       userId: userId,
       vehicleCloudId: vehicleCloudId,
       fuelAmount: fuelAmount,

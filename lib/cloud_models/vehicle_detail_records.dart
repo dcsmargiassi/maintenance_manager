@@ -1,5 +1,7 @@
+import 'package:maintenance_manager/helper_functions/encryption_helper.dart';
+
 class VehicleInformationCloudModel {
-  final String id; // Firestore doucment ID
+  final String cloudId; // Firestore doucment ID
   final String userId;
   final String? vehicleNickName;
   final String? vin;
@@ -20,7 +22,7 @@ class VehicleInformationCloudModel {
   final String? licensePlate;
 
   VehicleInformationCloudModel({
-    required this.id,
+    required this.cloudId,
     required this.userId,
     this.vehicleNickName,
     this.vin,
@@ -41,9 +43,9 @@ class VehicleInformationCloudModel {
     this.licensePlate,
   });
 
-  factory VehicleInformationCloudModel.fromMap(String id, Map<String, dynamic> map) {
+  factory VehicleInformationCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return VehicleInformationCloudModel(
-      id: id,
+      cloudId: cloudId,
       userId: map['userId'] ?? '',
       vehicleNickName: map['vehicleNickName'],
       vin: map['vin'],
@@ -87,5 +89,51 @@ class VehicleInformationCloudModel {
       'lifeTimeMaintenanceCost': lifeTimeMaintenanceCost,
       'licensePlate': licensePlate,
     };
+  }
+
+  static Future<VehicleInformationCloudModel?> fromJson(
+    String cloudId,
+    Map<String, dynamic>? data, {
+    bool decryptSensitive = true,
+  }) async {
+    if (data == null) return null;
+
+    Future<String?> tryDecrypt(dynamic v) async {
+      if (v == null) return null;
+      final s = v.toString();
+      if (s.isEmpty) return s;
+
+      if (!decryptSensitive) return s;
+
+      try {
+        return await decryptField(s);
+      } catch (_) {
+        // Offline or decrypt failure → return encrypted value
+        return s;
+      }
+    }
+
+    return VehicleInformationCloudModel(
+      cloudId: cloudId,
+      userId: data['userId'] ?? '',
+      vehicleNickName: data['vehicleNickName'],
+      vin: await tryDecrypt(data['vin']),
+      make: data['make'],
+      model: data['model'],
+      version: data['version'],
+      year: (data['year'] ?? 0) as int,
+      purchaseDate: data['purchaseDate'],
+      sellDate: data['sellDate'],
+      odometerBuy: (data['odometerBuy'] as num?)?.toDouble(),
+      odometerSell: (data['odometerSell'] as num?)?.toDouble(),
+      odometerCurrent: (data['odometerCurrent'] as num?)?.toDouble(),
+      purchasePrice: (data['purchasePrice'] as num?)?.toDouble(),
+      sellPrice: (data['sellPrice'] as num?)?.toDouble(),
+      archived: (data['archived'] ?? 0) as int,
+      lifeTimeFuelCost: (data['lifeTimeFuelCost'] as num?)?.toDouble() ?? 0.0,
+      lifeTimeMaintenanceCost:
+          (data['lifeTimeMaintenanceCost'] as num?)?.toDouble() ?? 0.0,
+      licensePlate: await tryDecrypt(data['licensePlate']),
+    );
   }
 }

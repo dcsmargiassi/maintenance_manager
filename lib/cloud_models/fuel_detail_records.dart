@@ -1,5 +1,5 @@
 class FuelRecordCloudModel {
-  final String? id; // Firestore document ID
+  final String? cloudId; // Firestore document ID
   final String userId;
   final String vehicleCloudId;
 
@@ -10,7 +10,7 @@ class FuelRecordCloudModel {
   final String date;
 
   FuelRecordCloudModel({
-    this.id,
+    this.cloudId,
     required this.userId,
     required this.vehicleCloudId,
     required this.fuelAmount,
@@ -32,9 +32,9 @@ class FuelRecordCloudModel {
     };
   }
 
-  factory FuelRecordCloudModel.fromMap(String id, Map<String, dynamic> map) {
+  factory FuelRecordCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return FuelRecordCloudModel(
-      id: id,
+      cloudId: cloudId,
       userId: (map['userId'] ?? ''),
       vehicleCloudId: (map['vehicleCloudId'] ?? ''),
       fuelAmount: (map['fuelAmount'] ?? 0).toDouble(),

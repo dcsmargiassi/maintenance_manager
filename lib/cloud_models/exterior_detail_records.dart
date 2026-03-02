@@ -1,5 +1,5 @@
 class ExteriorDetailsCloudModel {
-  final String id; // Firestore document ID
+  final String cloudId; // Firestore document ID
   final String userId;
   final String vehicleCloudId;
 
@@ -15,7 +15,7 @@ class ExteriorDetailsCloudModel {
   final String licensePlateLamp;
 
   ExteriorDetailsCloudModel({
-    required this.id,
+    required this.cloudId,
     required this.userId,
     required this.vehicleCloudId,
     required this.driverWindshieldWiper,
@@ -47,9 +47,9 @@ class ExteriorDetailsCloudModel {
     };
   }
 
-  factory ExteriorDetailsCloudModel.fromMap(String id, Map<String, dynamic> map) {
+  factory ExteriorDetailsCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return ExteriorDetailsCloudModel(
-      id: id,
+      cloudId: cloudId,
       userId: map['userId'] ?? '',
       vehicleCloudId: map['vehicleCloudId'] ?? '',
       driverWindshieldWiper: map['driverWindshieldWiper'] ?? '',

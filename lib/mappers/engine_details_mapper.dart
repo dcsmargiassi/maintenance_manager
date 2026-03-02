@@ -10,7 +10,7 @@ class EngineDetailsMapper {
     String vehicleCloudId,
   ) {
     return EngineDetailsCloudModel(
-      id: cloudDocId,
+      cloudId: cloudDocId,
       userId: userId,
       vehicleCloudId: vehicleCloudId,
       engineSize: local.engineSize ?? '',

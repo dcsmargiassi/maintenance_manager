@@ -10,7 +10,7 @@ class ExteriorDetailsMapper {
     String vehicleCloudId,
   ) {
     return ExteriorDetailsCloudModel(
-      id: cloudDocId,
+      cloudId: cloudDocId,
       userId: userId,
       vehicleCloudId: vehicleCloudId,
       driverWindshieldWiper: local.driverWindshieldWiper ?? '',
