@@ -49,6 +49,8 @@ class VehicleInformationMapper {
       lifeTimeFuelCost: cloud.lifeTimeFuelCost,
       lifeTimeMaintenanceCost: cloud.lifeTimeMaintenanceCost,
       licensePlate: cloud.licensePlate,
+      cloudId: cloud.cloudId,
+      isCloudSynced: 1,
     );
   }
 }

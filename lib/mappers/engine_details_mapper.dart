@@ -3,7 +3,7 @@ import 'package:maintenance_manager/models/engine_detail_records.dart';
 
 class EngineDetailsMapper {
   // Local -> Cloud Firestore
-  static EngineDetailsCloudModel mapEnginelocalToCloud(
+  static EngineDetailsCloudModel localToCloud(
     EngineDetailsModel local,
     String cloudDocId,
     String userId,
@@ -25,7 +25,7 @@ class EngineDetailsMapper {
   }
 
   // Cloud -> Local SQLite model
-  static EngineDetailsModel mapEngineCloudToLocal(
+  static EngineDetailsModel cloudToLocal(
     EngineDetailsCloudModel cloud,
     int localVehicleId,
   ) {
@@ -41,6 +41,8 @@ class EngineDetailsMapper {
       oilClass: cloud.oilClass,
       oilFilter: cloud.oilFilter,
       engineFilter: cloud.engineFilter,
+      cloudId: cloud.cloudId,
+      isCloudSynced: 1,
     );
   }
 }

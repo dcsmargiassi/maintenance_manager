@@ -29,7 +29,6 @@ class ExteriorDetailsMapper {
   // Convert Cloud Firestore -> Local SQLite
   static ExteriorDetailsModel cloudToLocal(
     ExteriorDetailsCloudModel cloud,
-    String userId,
     int vehicleId,
   ) {
     return ExteriorDetailsModel(
@@ -46,6 +45,8 @@ class ExteriorDetailsMapper {
       fogLamp: cloud.fogLamp,
       brakeLamp: cloud.brakeLamp,
       licensePlateLamp: cloud.licensePlateLamp,
+      cloudId: cloud.cloudId,
+      isCloudSynced: 1,
     );
   }
 }
