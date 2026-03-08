@@ -1,15 +1,19 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
+//import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/models/vehicle_information.dart';
 
 bool get enableVehicleCloudWrite =>
     FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
+@Deprecated("Legacy File use the new cloud based VehicleCloudOperations")
 class VehicleOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
   Future<int> createVehicle(VehicleInformationModel vehicle) async {
+    throw UnimplementedError(
+    'VehicleOperations.createVehicle is deprecated. Use VehicleCloudOperations.createVehicle instead.'
+  );/*
     final db = await dbRepository.database;
     final vehicleId = await db.insert('vehicleInformation', vehicle.toMap());
     if (enableVehicleCloudWrite) {
@@ -27,10 +31,13 @@ class VehicleOperations {
         whereArgs: [vehicleId],
       );
     }
-    return vehicleId;
+    return vehicleId;*/
   }
 
   Future<void> updateVehicle(VehicleInformationModel vehicle) async {
+    throw UnimplementedError(
+    'VehicleOperations.updateVehicle is deprecated. Use VehicleCloudOperations.updateVehicle instead.'
+  );/*
   final db = await dbRepository.database;
 
   final result = await db.query(
@@ -125,19 +132,25 @@ class VehicleOperations {
     {'isCloudSynced': 1},
     where: 'vehicleId = ? AND userId = ?',
     whereArgs: [merged.vehicleId, merged.userId],
-  );
+  );*/
 }
 
     Future<void> archiveVehicleById(int vehicleId, String userId, String date) async {
+      throw UnimplementedError(
+    'VehicleOperations.archiveVehicle is deprecated. Use VehicleCloudOperations.archiveVehicle instead.'
+  );/*
       final db = await dbRepository.database;
     await db.update('vehicleInformation', {'archived': 1,'sellDate': date}, where: 'vehicleId = ?', whereArgs: [vehicleId]);
     if (enableVehicleCloudWrite) {
         final vehicle = await getVehicleById(vehicleId, userId);
         await VehicleCloudWriteOperations().updateVehicle(vehicle);
-    }
+    }*/
   }
 
   Future<void> unarchiveVehicleById(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'VehicleOperations.unarchiveVehicle is deprecated. Use VehicleCloudOperations.unarchiveVehicle instead.'
+  );/*
   final db = await dbRepository.database;
   await db.update(
     'vehicleInformation',
@@ -148,10 +161,13 @@ class VehicleOperations {
   if (enableVehicleCloudWrite) {
       final vehicle = await getVehicleById(vehicleId, userId);
       await VehicleCloudWriteOperations().updateVehicle(vehicle);
-    }
+    }*/
   }
 
   Future<void> deleteVehicle(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'VehicleOperations.cdeleteVehicle is deprecated. Use VehicleCloudOperations.deleteVehicle instead.'
+  );/*
     final db = await dbRepository.database;
     VehicleInformationModel vehicle = await getVehicleById(vehicleId, userId);
     db.delete('vehicleInformation', 
@@ -168,10 +184,13 @@ class VehicleOperations {
     whereArgs: [vehicleId, userId]);
     if (enableVehicleCloudWrite && vehicle.cloudId != null) {
       await VehicleCloudWriteOperations().deleteVehicle(vehicle.userId!, vehicleId, vehicle.cloudId);
-    }
+    }*/
   }
 
   Future<void> deleteAllVehicles(String userId) async {
+    throw UnimplementedError(
+    'VehicleOperations.createVehicle is deprecated. Use VehicleCloudOperations.createVehicle instead.'
+  );/*
     final db = await dbRepository.database;
     db.delete('vehicleInformation', 
     where: 'userId = ?', 
@@ -250,6 +269,6 @@ class VehicleOperations {
         where: 'vehicleId = ? AND userId = ?',
         whereArgs: [vehicle.vehicleId, vehicle.userId],
       );
-    }
+    }*/
   }
 }

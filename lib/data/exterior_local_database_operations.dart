@@ -1,20 +1,24 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/cloud/exterior_cloud_database_operations.dart';
+//import 'package:maintenance_manager/data/cloud/write/exterior_cloud_write.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
 
 bool get enableVehicleCloudWrite =>
     FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
+@Deprecated("Legacy File use the new cloud based ExteriorCloudWriteOperations")
 class ExteriorDetailsOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
   Future<void> insertExteriorDetails(ExteriorDetailsModel exterior) async {
+    throw UnimplementedError(
+    'ExteriorDetailsOperations is deprecated. Use ExteriorCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final localId = await db.insert('exteriorDetails', exterior.toMap());
 
     if (enableVehicleCloudWrite) {
       try {
-        final cloudId = await ExteriorCloudOperations().insertExteriorDetails(exterior);
+        final cloudId = await ExteriorCloudWriteOperations().insertExteriorDetails(exterior);
 
         await db.update(
           'exteriorDetails',
@@ -28,10 +32,13 @@ class ExteriorDetailsOperations {
       } catch (e) {
         throw Exception('Exterior insert cloud sync failed: $e');
       }
-    }
+    }*/
   }
 
   Future<void> updateExteriorDetails(ExteriorDetailsModel exterior) async {
+    throw UnimplementedError(
+    'ExteriorDetailsOperations is deprecated. Use ExteriorCloudWriteOperations. instead.'
+  );/*
   final db = await dbRepository.database;
 
   // 1) Load existing row FIRST to preserve cloud bookkeeping
@@ -101,10 +108,13 @@ class ExteriorDetailsOperations {
     {'isCloudSynced': 1},
     where: 'exteriorDetailsId = ? AND userId = ?',
     whereArgs: [merged.exteriorDetailsId, merged.userId],
-  );
+  );*/
 }
 
   Future<void> deleteExteriorDetails(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'ExteriorDetailsOperations is deprecated. Use ExteriorCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     if (enableVehicleCloudWrite) {
       final result = await db.query(
@@ -129,10 +139,13 @@ class ExteriorDetailsOperations {
       'exteriorDetails',
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
-    );
+    );*/
   }
 
   Future<ExteriorDetailsModel> getExteriorDetailsByVehicleId(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'ExteriorDetailsOperations is deprecated. Use ExteriorCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final result = await db.query(
       'exteriorDetails',
@@ -156,9 +169,12 @@ class ExteriorDetailsOperations {
       brakeLamp: '',
       licensePlateLamp: '',
       );
-    }
+    }*/
   }
   Future<bool> exteriorDetailsExists(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'ExteriorDetailsOperations is deprecated. Use ExteriorCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final result = await db.query(
       'exteriorDetails',
@@ -166,6 +182,6 @@ class ExteriorDetailsOperations {
       whereArgs: [userId, vehicleId],
       limit: 1,
     );
-    return result.isNotEmpty;
+    return result.isNotEmpty;*/
   }
 }

@@ -1,15 +1,19 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:maintenance_manager/data/cloud/battery_cloud_database_operations.dart';
+//import 'package:maintenance_manager/data/cloud/write/battery_cloud_write.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 
 bool get enableVehicleCloudWrite =>
     FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
+@Deprecated("Legacy File use the new cloud based BatteryCloudWriteOperations")
 class BatteryDetailsOperations{
   DatabaseRepository dbRepository = DatabaseRepository.instance;
   
   Future<void> insertBatteryDetails(BatteryDetailsModel battery) async {
+    throw UnimplementedError(
+    'BatteryDetailsOperations is deprecated. Use BatteryCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final localId = await db.insert('batteryDetails', battery.toMap());
 
@@ -29,10 +33,13 @@ class BatteryDetailsOperations{
       } catch (e) {
         throw Exception('Battery insert cloud sync failed: $e');
       }
-    }
+    }*/
   }
 
   Future<void> updateBatteryDetails(BatteryDetailsModel battery) async {
+    throw UnimplementedError(
+    'BatteryDetailsOperations is deprecated. Use BatteryCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
 
     final rows = await db.query(
@@ -105,10 +112,13 @@ class BatteryDetailsOperations{
       );
     } catch (e) {
       throw Exception('Battery update cloud sync failed: $e');
-    }
+    }*/
   }
 
   Future<void> deleteBatteryDetails(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'BatteryDetailsOperations is deprecated. Use BatteryCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     if (enableVehicleCloudWrite) {
       final batteries = await db.query(
@@ -131,15 +141,18 @@ class BatteryDetailsOperations{
     await db.delete('batteryDetails',
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
-    );
+    );*/
   }
 
   Future<BatteryDetailsModel> getBatteryDetailsByVehicleId(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'BatteryDetailsOperations is deprecated. Use BatteryCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final result = await db.query('batteryDetails',
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
     );
-      return BatteryDetailsModel.fromMap(result.first);
+      return BatteryDetailsModel.fromMap(result.first);*/
   }
 }

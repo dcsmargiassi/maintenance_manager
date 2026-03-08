@@ -1,18 +1,25 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/cloud/fuel_cloud_database_operations.dart';
+//import 'package:maintenance_manager/data/cloud/write/fuel_cloud_write.dart';
 import 'package:maintenance_manager/models/fuel_records.dart';
+/// LEGACY FILE
+/// Retained temporarily during migration from SQLite to Firestore.
+/// Do not use in new code.
+/// New fuel flows must use FuelCloudReadOperations / FuelCloudOperations.
 
 bool get enableVehicleCloudWrite =>
     FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
+@Deprecated("Legacy local fuel DB path retired in favor of cloud-only operations.")
 class FuelRecordOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
   Future<void> createFuelRecord(FuelRecords fuelRecord) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.createFuelRecord is deprecated. Use FuelCloudOperations.createFuelRecord instead.'
+  );/*
     final db = await dbRepository.database;
     final int id = await db.insert('fuelRecords', fuelRecord.toMap());
-
     if (enableVehicleCloudWrite) {
       final cloudId = await FuelCloudOperations().createFuelRecord(fuelRecord);
 
@@ -24,9 +31,13 @@ class FuelRecordOperations {
         whereArgs: [id],
       );
     }
+*/
   }
 
   Future<void> updateFuelRecord(FuelRecords fuelRecord) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.updateFuelRecord is deprecated. Use FuelCloudOperations.updateFuelRecord instead.'
+  );/*
     final db = await dbRepository.database;
   
     final rows = await db.query(
@@ -95,18 +106,25 @@ class FuelRecordOperations {
       where: 'fuelRecordId = ?',
       whereArgs: [merged.fuelRecordId],
     );
+    */
   }
 
   Future<void> deleteFuelRecord(FuelRecords fuelRecord) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.deleteFuelRecord is deprecated. Use FuelCloudOperations.deleteFuelRecord instead.'
+  );/*
     final db = await dbRepository.database;
     db.delete('fuelRecords', where: 'fuelRecordId = ?', whereArgs: [fuelRecord.fuelRecordId]);
 
     if (enableVehicleCloudWrite && fuelRecord.cloudId != null) {
       await FuelCloudOperations().deleteFuelRecord(fuelRecord);
-    }
+    }*/
   }
 
   Future<void> deleteAllFuelRecordsByVehicleId(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.deleteAllFuelRecordsByVehicleId is deprecated. Use FuelCloudOperations.deleteAllFuelRecordsByVehicleId instead.'
+  );/*
     final db = await dbRepository.database;
     if (enableVehicleCloudWrite) {
       final records = await getAllFuelRecordsByVehicleId(userId, vehicleId);
@@ -121,29 +139,38 @@ class FuelRecordOperations {
       'fuelRecords',
       where: 'userId = ? AND vehicleId = ?',
       whereArgs: [userId, vehicleId],
-    );
+    );*/
   }
 
   Future<List<FuelRecords>> getAllFuelRecords(int vehicleId) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.getAllFuelRecords is deprecated. Use FuelCloudOperations.getAllFuelRecords instead.'
+  );/*
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> allFuelRecords = await db.query(
       "fuelRecords", 
       where: 'vehileId = ?', 
       whereArgs: [vehicleId]);
-    return allFuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
+    return allFuelRecords.map((e) => FuelRecords.fromMap(e)).toList();*/
   }
 
   Future<List<FuelRecords>> getAllFuelRecordsByVehicleId(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.getAllFuelRecordsByVehicleId is deprecated. Use FuelCloudOperations.getAllFuelRecordsBy... instead.'
+  );/*
     final db = await dbRepository.database;
     final List<Map<String, dynamic>> fuelRecords =
       await db.query(
         'fuelRecords',
         where: 'userId = ? AND vehicleId = ?',
         whereArgs: [userId, vehicleId]);
-    return fuelRecords.map((e) => FuelRecords.fromMap(e)).toList();
+    return fuelRecords.map((e) => FuelRecords.fromMap(e)).toList();*/
   }
 
   Future<List<FuelRecords>> getFuelRecordsByMonth(int vehicleId, int year, int month) async {
+    throw UnimplementedError(
+    'FuelRecordOperations.getFuelRecordsByMonth is deprecated. Use FuelCloudOperationsgetFuelRecordsByMonth instead.'
+  );/*
     final db = await dbRepository.database;
     final firstDayOfMonth = DateTime(year, month, 1);
     final lastDayOfMonth = DateTime(year, month + 1, 0, 23, 59, 59); // year, month, day, hour, minute, seconds 
@@ -156,7 +183,7 @@ class FuelRecordOperations {
         lastDayOfMonth.toIso8601String()
       ],
     );
-    return records.map((e) => FuelRecords.fromMap(e)).toList();
+    return records.map((e) => FuelRecords.fromMap(e)).toList();*/
   }
 
   Future<List<FuelRecords>> getFuelRecordsByYear(int vehicleId, int year) async {

@@ -1,15 +1,19 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/cloud/engine_cloud_database_operations.dart';
+//import 'package:maintenance_manager/data/cloud/write/engine_cloud_write.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 
 bool get enableVehicleCloudWrite =>
     FirebaseRemoteConfig.instance.getBool('enableCloudWrite');
 
+@Deprecated("Legacy File use the new cloud based EngineCloudWriteOperations")
 class EngineDetailsOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
   Future<void> insertEngineDetails(EngineDetailsModel engine) async {
+    throw UnimplementedError(
+    'EngineDetailsOperations is deprecated. Use EngineCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final localId = await db.insert('engineDetails', engine.toMap());
 
@@ -30,10 +34,13 @@ class EngineDetailsOperations {
       } catch (e) {
         throw Exception('Engine insert cloud sync failed: $e');
       }
-    }
+    }*/
   }
   
   Future<void> updateEngineDetails(EngineDetailsModel engine) async {
+    throw UnimplementedError(
+    'EngineDetailsOperations is deprecated. Use EngineCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
 
     final rows = await db.query(
@@ -106,10 +113,13 @@ class EngineDetailsOperations {
       );
     } catch (e) {
       throw Exception('Engine update cloud sync failed: $e');
-    }
+    }*/
   }
   
   Future<void> deleteEngineDetails(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'EngineDetailsOperations is deprecated. Use EngineCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
 
     if (enableVehicleCloudWrite) {
@@ -134,15 +144,18 @@ class EngineDetailsOperations {
     await db.delete('engineDetails',
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
-    );
+    );*/
   }
   
   Future<EngineDetailsModel> getEngineDetailsByVehicleId(String userId, int vehicleId) async {
+    throw UnimplementedError(
+    'EngineDetailsOperations is deprecated. Use EngineCloudWriteOperations. instead.'
+  );/*
     final db = await dbRepository.database;
     final result = await db.query('engineDetails',
       where: 'vehicleId = ? AND userId = ?',
       whereArgs: [vehicleId, userId],
     );
-      return EngineDetailsModel.fromMap(result.first);
+      return EngineDetailsModel.fromMap(result.first);*/
   }
 }
