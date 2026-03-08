@@ -19,7 +19,7 @@ class AuthState extends ChangeNotifier {
   bool get initialized => _initialized;
 
   User? get user => _user;
-  String? get userId => _user?.uid;
+  String get userId => _user!.uid;
   bool get isGuest => _isGuest;
 
   AuthState() {

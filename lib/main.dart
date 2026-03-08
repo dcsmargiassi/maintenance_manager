@@ -247,8 +247,7 @@ class MyApp extends StatelessWidget {
 
               // DEBUG
               final uid = authState.userId;
-                if (uid != null &&
-                    (!_didRunBackfillThisSession || _didRunBackfillForUserId != uid)) {
+                if ((!_didRunBackfillThisSession || _didRunBackfillForUserId != uid)) {
                   _didRunBackfillThisSession = true;
                   _didRunBackfillForUserId = uid;
 

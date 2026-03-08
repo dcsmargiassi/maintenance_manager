@@ -26,20 +26,19 @@ class DisplaySettingsState extends State<DisplaySettings> {
   }
   
   Future<void> loadUserPreference() async {
-  final authState = Provider.of<AuthState>(context, listen: false);
-  final userId = authState.userId;
-  if (userId == null) return;
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final userId = authState.userId;
 
-  final doc = await FirebaseFirestore.instance.collection('settings').doc(userId).get();
-  final data = doc.data();
+    final doc = await FirebaseFirestore.instance.collection('settings').doc(userId).get();
+    final data = doc.data();
 
-  if (data != null && mounted) {
-    setState(() {
-      pushNotificationsEnabled = data['pushNotifications'] ?? true;
-      privacyAnalytics = data['privacyAnalytics'] ?? false;
-    });
+    if (data != null && mounted) {
+      setState(() {
+        pushNotificationsEnabled = data['pushNotifications'] ?? true;
+        privacyAnalytics = data['privacyAnalytics'] ?? false;
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -98,15 +97,15 @@ class DisplaySettingsState extends State<DisplaySettings> {
                     setState(() {
                       pushNotificationsEnabled = value;
                     });
-                    if(userId != null) {
+
                       await FirebaseFirestore.instance
                       .collection('settings')
                       .doc(userId)
                       .update({'pushNotifications': value});
-                    }
                   },
                 ),
               ),
+
               Card(
                 child: SwitchListTile(
                   secondary: const Icon(Icons.analytics),
@@ -116,17 +115,16 @@ class DisplaySettingsState extends State<DisplaySettings> {
                     setState(() {
                       privacyAnalytics = value;
                     });
-                    if(userId != null) {
                       await FirebaseFirestore.instance
                       .collection('settings')
                       .doc(userId)
                       .update({'privacyAnalytics': value});
                       await FirebaseAnalytics.instance
                       .setAnalyticsCollectionEnabled(value);
-                    }
                   },
                 ),
               ),
+
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.display_settings),
@@ -137,6 +135,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.privacy_tip),
@@ -147,6 +146,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.article),
@@ -157,6 +157,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.article),
@@ -167,6 +168,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.password),
@@ -177,6 +179,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                   },
                 ),
               ),
+              
               Card(
                 child: ListTile(
                   title: Text(localizations.recalculateFuelTotalsTitle),
@@ -196,7 +199,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                     );
 
                     if (confirm == true) {
-                      await recalculateFuelForAllVehicles(userId!);
+                      await recalculateFuelForAllVehicles(userId);
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(localizations.recalculateFuelTotalsSuccess)),
@@ -218,7 +221,7 @@ class DisplaySettingsState extends State<DisplaySettings> {
                 applicationName: localizations.applicationName,
                 applicationIcon: Image.asset('assets/icon/1024.png',
                 width: 124, height: 124),
-                applicationVersion: '0.6.8',
+                applicationVersion: '0.7.0',
                 applicationLegalese: localizations.applicationLegalese,
                 aboutBoxChildren: [
                   const SizedBox(height: 10),

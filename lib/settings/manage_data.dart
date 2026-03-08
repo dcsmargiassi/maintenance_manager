@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -91,16 +91,8 @@ class ManageDataPageState extends State<ManageDataPage> {
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
 
-    if (userId == null) {
-      setState(() => isDeleting = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.userNotLoggedInMessage)),
-      );
-      return;
-    }
-
     try {
-      await VehicleOperations().deleteAllVehicles(userId);
+      await VehicleCloudWriteOperations().deleteAllVehicles(userId: userId);
 
       if (!mounted) return;
 

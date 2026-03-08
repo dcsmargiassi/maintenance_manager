@@ -9,8 +9,9 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/read/fuel_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/vehicle_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
 
 bool isValidNumber(String? input) {
@@ -60,61 +61,95 @@ Future<bool> confirmDiscardChanges(BuildContext context) async {
 
 // Lifetime Fuel Calculations
 
-Future<void> incrementLifeTimeFuelCosts(int vehicleId, String userId, double cost) async {
+Future<void> incrementLifeTimeFuelCosts(String vehicleCloudId, String userId, double cost) async {
   // Check for blank fuel cost
   if(cost == 0) return;
-   final vehicleOps = VehicleOperations();
-   final data = await vehicleOps.getVehicleById(vehicleId, userId);
-   
-   if(cost >= 0.0){
-    double oldCost = data.lifeTimeFuelCost ?? 0.0;
-    double newCost = oldCost + cost;
-    data.lifeTimeFuelCost = newCost;
-    await vehicleOps.updateLifeTimeFuelCost(data);
-   }
+
+  final vehicleReadOps = VehicleCloudReadOperations();
+  final vehicleWriteOps = VehicleCloudWriteOperations();
+  final data = await vehicleReadOps.getVehicleByCloudId(userId, vehicleCloudId);
+  
+  
+  if(data == null) return;
+  if (cost < 0.0) return;
+  
+  final oldCost = data.lifeTimeFuelCost;
+  final newCost = oldCost + cost;
+
+  await vehicleWriteOps.updateLifeTimeFuelCost(
+    userId: userId,
+    cloudVehicleId: vehicleCloudId,
+    lifeTimeFuelCost: newCost,
+  );
 }
 
-Future<void> decrementLifeTimeFuelCosts(int vehicleId, String userId, double cost) async {
+Future<void> decrementLifeTimeFuelCosts(String vehicleCloudId, String userId, double cost) async {
   // Check for blank fuel cost
   if(cost == 0) return;
-   final vehicleOps = VehicleOperations();
-   final data = await vehicleOps.getVehicleById(vehicleId, userId);
-   if(cost >= 0.0 && data.lifeTimeFuelCost != null){
-    double? oldCost = data.lifeTimeFuelCost;
-    double newCost = (oldCost! - cost).clamp(0.0, double.infinity);
-    data.lifeTimeFuelCost = newCost;
-    await vehicleOps.updateLifeTimeFuelCost(data);
-   }
+
+   final vehicleReadOps = VehicleCloudReadOperations();
+   final vehicleWriteOps = VehicleCloudWriteOperations();
+
+   final data = await vehicleReadOps.getVehicleByCloudId(userId, vehicleCloudId);
+
+  if (data == null) return;
+  if (cost < 0.0) return;
+
+  final oldCost = data.lifeTimeFuelCost;
+  final newCost = (oldCost - cost).clamp(0.0, double.infinity).toDouble();
+
+  await vehicleWriteOps.updateLifeTimeFuelCost(
+    userId: userId,
+    cloudVehicleId: vehicleCloudId,
+    lifeTimeFuelCost: newCost,
+  );
 }
 
 Future<void> recalculateFuelForAllVehicles(String userId) async {
-  final vehicleOps = VehicleOperations();
-  final fuelOps = FuelRecordOperations();
+  final vehicleReadOps = VehicleCloudReadOperations();
+  final vehicleWriteOps = VehicleCloudWriteOperations();
+  final fuelOps = FuelCloudReadOperations();
 
-  final vehicles = await vehicleOps.getAllVehicles(userId);
+  final vehicles = await vehicleReadOps.getAllVehicles(userId);
 
   for (final vehicle in vehicles) {
-    final fuelRecords = await fuelOps.getAllFuelRecordsByVehicleId(userId, vehicle.vehicleId!);
+    final fuelRecords = await fuelOps.fetchAllFuelRecordsForVehicle(
+      userId: userId,
+      vehicleCloudId: vehicle.cloudId,
+    );
 
-    final totalCost = fuelRecords.fold(0.0, (sum, record) {
-      return sum + (record.refuelCost ?? 0.0);
-    });
+    final totalCost = fuelRecords.fold<double>(
+      0.0,
+      (currentTotal, record) => currentTotal + record.refuelCost,
+    );
 
-    vehicle.lifeTimeFuelCost = totalCost;
-    await vehicleOps.updateLifeTimeFuelCost(vehicle);
+    await vehicleWriteOps.updateLifeTimeFuelCost(
+      userId: userId,
+      cloudVehicleId: vehicle.cloudId,
+      lifeTimeFuelCost: totalCost,
+    );
   }
 }
 
 // Updating current odometer number
-Future<void> updateCurrentOdometerNumber(int vehicleId, String userId, double newOdometerValue) async {
-  final vehicleOps = VehicleOperations();
-  final vehicle = await vehicleOps.getVehicleById(vehicleId, userId);
+Future<void> updateCurrentOdometerNumber(String vehicleCloudId, String userId, double newOdometerValue) async {
+  final vehicleReadOps = VehicleCloudReadOperations();
+  final vehicleWriteOps = VehicleCloudWriteOperations();
 
-  if (vehicle.odometerCurrent! >= newOdometerValue) return;
-  if (vehicle.odometerCurrent! < newOdometerValue) {
-    vehicle.odometerCurrent = newOdometerValue;
-  }
-  await vehicleOps.updateVehicle(vehicle);
+  final vehicle = await vehicleReadOps.getVehicleByCloudId(userId, vehicleCloudId);
+
+  if (vehicle == null) return;
+
+  final current = vehicle.odometerCurrent ?? 0.0;
+  if (current >= newOdometerValue) return;
+
+  await vehicleWriteOps.updateVehiclePatch(
+    userId: userId,
+    cloudVehicleId: vehicleCloudId,
+    patch: {
+      'odometerCurrent': newOdometerValue,
+    },
+  );
 }
 
 Map<int, String> getLocalizedMonthNames(BuildContext context) {
