@@ -20,7 +20,7 @@
 </head>
 <body>
   <h1>Privacy Policy for Vehicle Record Tracker</h1>
-  <p><strong>Effective Date:</strong> July 7, 2025</p>
+  <p><strong>Effective Date:</strong> March 8, 2026</p>
 
   <p>Vehicle Record Tracker (“we”, “our”, or “us”) values your privacy. This Privacy Policy explains how we collect, store, and use your information.</p>
 
@@ -30,17 +30,27 @@
     <li><strong>Email address</strong> (stored in cleartext to facilitate login and account recovery)</li>
     <li><strong>First name, last name, and username</strong> (encrypted on the backend to protect your personal data)</li>
   </ul>
-  <p>All vehicle and fuel data you enter is stored locally on your device and is not transmitted or stored externally.</p>
+  <p>Vehicle and maintenance information you enter (such as vehicle details, fuel records, and maintenance history) may be stored securely in cloud infrastructure using Firebase Firestore. This allows the app to synchronize and protect your data across devices and prevent data loss.</p>
   <p>We also collect anonymized analytics data to better understand app usage and improve the user experience.</p>
   
   <h2>Use of Firebase Firestore</h2>
-  <p>We use Firebase Firestore to manage account creation and authentication data securely. Your email is stored in cleartext, while your first name, last name, and username are encrypted on the backend before storage to enhance security.</p>
-  <p>Firebase may collect metadata such as device information and usage logs as part of its service operation. No vehicle or fuel data is stored in Firebase Firestore.</p>
+  <p>We use Firebase services including Firebase Authentication and Firebase Firestore to securely manage user accounts and store application data.</p>
+
+  <p>Data stored in Firebase Firestore may include:</p>
+  <ul>
+  <li>Account information (email and encrypted profile details)</li>
+  <li>Vehicle information (Vin and License Plate details encrypted)</li>
+  <li>Fuel and maintenance records</li>
+  <li>Optional vehicle component information (engine, battery, exterior details)</li>
+  </ul>
+
+  <p>This information is associated with your account and is only accessible by you through authenticated access to the application.</p>
 
   <h2>Data Usage</h2>
   <ul>
     <li>Account-related data (email, encrypted personal details) is securely stored using Firebase Firestore.</li>
-    <li>Vehicle and fuel information remains on your device only.</li>
+    <li>Vehicle, fuel, and maintenance data may be securely stored in Firebase Firestore and associated with your account.</li>
+    <li>Some data may also be cached locally on your device for performance and offline access.</li>
     <li>No user data is shared with third-party advertisers.</li>
   </ul>
 
@@ -48,9 +58,13 @@
   <p>We use Firebase Analytics to collect anonymized data about how users interact with our app. This includes device type, app usage patterns, and approximate geographic location derived from your IP address. This data helps us understand user behavior and improve app performance and features.</p>
   
   <p>You may choose to disable analytics tracking from the app’s settings page at any time.</p>
+
+  <h2>Push Notifications</h2>
+  <p>The app may use Firebase Cloud Messaging (FCM) to deliver notifications. To enable this functionality, a device notification token may be stored securely in Firebase Firestore and associated with your account. This token is used only for delivering notifications related to the app and is not shared with third-party advertisers.</p>
   
   <h2>Third-Party Services</h2>
-  <p>Besides Firebase, we do not use other third-party analytics or advertising services.</p>
+  <p>This app uses Google Firebase services including Firebase Authentication, Firebase Firestore, Firebase Analytics, and Firebase Cloud Messaging. These services may collect certain technical information as described in Google's Privacy Policy.</p>
+  <p>We do not use third-party advertising services.</p>
 
   <h2>Data Protection</h2>
   <p>We take data security seriously. Personal details such as first name, last name, and username are encrypted before storage on our backend to protect your privacy. Email addresses are stored in cleartext only as needed for login and account recovery. We implement industry-standard security measures to safeguard your data.</p>
