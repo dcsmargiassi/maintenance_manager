@@ -1,9 +1,14 @@
-import 'package:maintenance_manager/data/cloud/battery_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/write/battery_cloud_write.dart';
 import 'package:maintenance_manager/data/database.dart';
-import 'package:maintenance_manager/data/cloud/engine_cloud_database_operations.dart';
-import 'package:maintenance_manager/data/cloud/exterior_cloud_database_operations.dart';
-import 'package:maintenance_manager/data/cloud/fuel_cloud_database_operations.dart';
+import 'package:maintenance_manager/data/cloud/write/engine_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/exterior_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/fuel_cloud_write.dart';
 import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
+import 'package:maintenance_manager/mappers/battery_details_mapper.dart';
+import 'package:maintenance_manager/mappers/engine_details_mapper.dart';
+import 'package:maintenance_manager/mappers/exterior_details_mapper.dart';
+import 'package:maintenance_manager/mappers/fuel_details_mapper.dart';
+import 'package:maintenance_manager/mappers/vehicle_details_mapper.dart';
 import 'package:maintenance_manager/models/engine_detail_records.dart';
 import 'package:maintenance_manager/models/battery_detail_records.dart';
 import 'package:maintenance_manager/models/exterior_detail_records.dart';
@@ -24,41 +29,41 @@ class CloudBackfillService {
   CloudBackfillService._internal({
     DatabaseRepository? dbRepository,
     VehicleCloudWriteOperations? vehicleCloud,
-    EngineCloudOperations? engineCloud,
-    BatteryCloudOperations? batteryCloud,
-    ExteriorCloudOperations? exteriorCloud,
-    FuelCloudOperations? fuelCloud,
+    EngineCloudWriteOperations? engineCloud,
+    BatteryCloudWriteOperations? batteryCloud,
+    ExteriorCloudWriteOperations? exteriorCloud,
+    FuelCloudWriteOperations? fuelCloud,
   })  : dbRepository = dbRepository ?? DatabaseRepository.instance,
         vehicleCloud = vehicleCloud ?? VehicleCloudWriteOperations(),
-        engineCloud = engineCloud ?? EngineCloudOperations(),
-        batteryCloud = batteryCloud ?? BatteryCloudOperations(),
-        exteriorCloud = exteriorCloud ?? ExteriorCloudOperations(),
-        fuelCloud = fuelCloud ?? FuelCloudOperations();
+        engineCloud = engineCloud ?? EngineCloudWriteOperations(),
+        batteryCloud = batteryCloud ?? BatteryCloudWriteOperations(),
+        exteriorCloud = exteriorCloud ?? ExteriorCloudWriteOperations(),
+        fuelCloud = fuelCloud ?? FuelCloudWriteOperations();
 
   static final CloudBackfillService instance = CloudBackfillService._internal();
 
   final DatabaseRepository dbRepository;
   final VehicleCloudWriteOperations vehicleCloud;
-  final EngineCloudOperations engineCloud;
-  final BatteryCloudOperations batteryCloud;
-  final ExteriorCloudOperations exteriorCloud;
-  final FuelCloudOperations fuelCloud;
+  final EngineCloudWriteOperations engineCloud;
+  final BatteryCloudWriteOperations batteryCloud;
+  final ExteriorCloudWriteOperations exteriorCloud;
+  final FuelCloudWriteOperations fuelCloud;
   // Prevent concurrent runs (common cause of duplicate cloud inserts).
   bool _running = false;
 
   CloudBackfillService({
     DatabaseRepository? dbRepository,
     VehicleCloudWriteOperations? vehicleCloud,
-    EngineCloudOperations? engineCloud,
-    BatteryCloudOperations? batteryCloud,
-    ExteriorCloudOperations? exteriorCloud,
-    FuelCloudOperations? fuelCloud,
+    EngineCloudWriteOperations? engineCloud,
+    BatteryCloudWriteOperations? batteryCloud,
+    ExteriorCloudWriteOperations? exteriorCloud,
+    FuelCloudWriteOperations? fuelCloud,
   })  : dbRepository = dbRepository ?? DatabaseRepository.instance,
         vehicleCloud = vehicleCloud ?? VehicleCloudWriteOperations(),
-        engineCloud = engineCloud ?? EngineCloudOperations(),
-        batteryCloud = batteryCloud ?? BatteryCloudOperations(),
-        exteriorCloud = exteriorCloud ?? ExteriorCloudOperations(),
-        fuelCloud = fuelCloud ?? FuelCloudOperations();
+        engineCloud = engineCloud ?? EngineCloudWriteOperations(),
+        batteryCloud = batteryCloud ?? BatteryCloudWriteOperations(),
+        exteriorCloud = exteriorCloud ?? ExteriorCloudWriteOperations(),
+        fuelCloud = fuelCloud ?? FuelCloudWriteOperations();
 
   /// Runs one pass of backfill across all supported tables.
   /// Call repeatedly (or on a timer) until [BackfillResult.hasMore] is false.
@@ -128,10 +133,13 @@ class CloudBackfillService {
 
       // Safety: if ids are unexpectedly null, skip.
       if (vehicle.vehicleId == null || vehicle.userId == null) continue;
-
+              
       try {
+        final cloudModel =
+              VehicleInformationMapper.localToCloud(vehicle, '');
         if (vehicle.cloudId == null) {
-          final cloudId = await vehicleCloud.createVehicle(vehicle);
+              
+          final cloudId = await vehicleCloud.createVehicle(cloudModel);
 
           final updated = await db.update(
             'vehicleInformation',
@@ -146,7 +154,7 @@ class CloudBackfillService {
             );
           }
         } else {
-          await vehicleCloud.updateVehicle(vehicle);
+          await vehicleCloud.updateVehicle(cloudModel);
 
           final updated = await db.update(
             'vehicleInformation',
@@ -218,8 +226,14 @@ class CloudBackfillService {
       if (cloudVehicleId == null) continue;
 
       try {
+        final cloudModel = EngineDetailsMapper.localToCloud(
+          engine,
+          'engineDetails',
+          engine.userId!,
+          cloudVehicleId,
+        );
         if (engine.cloudId == null) {
-          final cloudId = await engineCloud.insertEngineDetails(engine);
+          final cloudId = await engineCloud.insertEngineDetails(cloudModel);
 
           final updated = await db.update(
             'engineDetails',
@@ -234,7 +248,7 @@ class CloudBackfillService {
             );
           }
         } else {
-          await engineCloud.updateEngineDetails(engine);
+          await engineCloud.updateEngineDetails(cloudModel);
 
           final updated = await db.update(
             'engineDetails',
@@ -283,8 +297,14 @@ class CloudBackfillService {
       if (cloudVehicleId == null) continue;
 
       try {
+        final cloudModel = localToCloud(
+          battery,
+          battery.userId,
+          'batteryDetails',
+          cloudVehicleId,
+        );
         if (battery.cloudId == null) {
-          final cloudId = await batteryCloud.insertBatteryDetails(battery);
+          final cloudId = await batteryCloud.insertBatteryDetails(cloudModel);
 
           final updated = await db.update(
             'batteryDetails',
@@ -299,7 +319,7 @@ class CloudBackfillService {
             );
           }
         } else {
-          await batteryCloud.updateBatteryDetails(battery);
+          await batteryCloud.updateBatteryDetails(cloudModel);
 
           final updated = await db.update(
             'batteryDetails',
@@ -349,8 +369,14 @@ class CloudBackfillService {
       if (cloudVehicleId == null) continue;
 
       try {
+        final cloudModel = ExteriorDetailsMapper.localToCloud(
+          exterior,
+          'exteriorDetails',
+          exterior.userId,
+          cloudVehicleId,
+        );
         if (exterior.cloudId == null) {
-          final cloudId = await exteriorCloud.insertExteriorDetails(exterior);
+          final cloudId = await exteriorCloud.insertExteriorDetails(cloudModel);
 
           final updated = await db.update(
             'exteriorDetails',
@@ -365,7 +391,7 @@ class CloudBackfillService {
             );
           }
         } else {
-          await exteriorCloud.updateExteriorDetails(exterior);
+          await exteriorCloud.updateExteriorDetails(cloudModel);
 
           final updated = await db.update(
             'exteriorDetails',
@@ -417,8 +443,14 @@ class CloudBackfillService {
       if (cloudVehicleId == null) continue;
 
       try {
+        final cloudModel = FuelRecordMapper.localToCloud(
+          fuel,
+          fuel.userId!,
+          cloudVehicleId,
+          fuel.cloudId!,
+        );
         if (fuel.cloudId == null) {
-          final cloudId = await fuelCloud.createFuelRecord(fuel);
+          final cloudId = await fuelCloud.createFuelRecord(cloudModel);
 
           final updated = await db.update(
             'fuelRecords',
@@ -433,7 +465,7 @@ class CloudBackfillService {
             );
           }
         } else {
-          await fuelCloud.updateFuelRecord(fuel);
+          await fuelCloud.updateFuelRecord(cloudModel);
 
           final updated = await db.update(
             'fuelRecords',
