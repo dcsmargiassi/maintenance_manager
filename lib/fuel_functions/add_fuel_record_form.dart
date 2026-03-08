@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/fuel_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/write/fuel_cloud_write.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:provider/provider.dart';
 
 class AddFuelRecordFormApp extends StatefulWidget {
-  final int vehicleId;
-  const AddFuelRecordFormApp({super.key, required this.vehicleId});
+  final String vehicleCloudId;
+  const AddFuelRecordFormApp({super.key, required this.vehicleCloudId});
 
   @override
   AddFuelRecordFormAppState createState() => AddFuelRecordFormAppState();
@@ -117,7 +117,7 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
       onConfirmBack: () async { 
         final shouldPop = await confirmDiscardChanges(context);
           if (shouldPop && context.mounted) {
-          navigateToSpecificVehiclePage(context, widget.vehicleId);
+          navigateToSpecificVehiclePage(context, widget.vehicleCloudId);
         }
       },
       body: SingleChildScrollView(
@@ -216,32 +216,30 @@ class AddFuelRecordFormAppState extends State<AddFuelRecordFormApp> {
                         return;
                       }
                     // Creating fuel record instance
-                    final fuelRecords = FuelRecords(
-                        fuelRecordId: null,
+                    final fuelRecords = FuelRecordCloudModel(
+                        cloudId: null,
                         userId: userId,
-                        vehicleId: widget.vehicleId,
+                        vehicleCloudId: widget.vehicleCloudId,
                         fuelAmount: double.parse(fuelAmountController.text),
                         fuelPrice: double.parse(fuelPriceController.text),
                         refuelCost: double.parse(refuelCostController.text),
                         odometerAmount: odometerAmountController.text.trim().isEmpty
                           ? 0.0
                           : double.parse(odometerAmountController.text),
-                        date: isoDateToStore,//dateController.text,
-                        notes: null,
-                        cloudId: null,
-                        isCloudSynced: 0,
+                        date: isoDateToStore!,//dateController.text,
+                        createdAt: null
                       );
                     //Create an instance of VehicleOperations
-                    final FuelRecordOperations fuelOperations = FuelRecordOperations();
+                    final FuelCloudWriteOperations fuelOperations = FuelCloudWriteOperations();
                     try {
                       await fuelOperations.createFuelRecord(fuelRecords);
                         if (!context.mounted) return;
-                        await updateCurrentOdometerNumber(widget.vehicleId, userId!, odometerAmountController.text.trim().isEmpty ? 0.0 : double.parse(odometerAmountController.text));
+                        await updateCurrentOdometerNumber(widget.vehicleCloudId, userId, odometerAmountController.text.trim().isEmpty ? 0.0 : double.parse(odometerAmountController.text));
                         // Updating lifetime fuel costs.
-                        await incrementLifeTimeFuelCosts(widget.vehicleId, userId, double.parse(refuelCostController.text));
+                        await incrementLifeTimeFuelCosts(widget.vehicleCloudId, userId, double.parse(refuelCostController.text));
                         if (!context.mounted) return;
                         // Navigate back to specific vehicle page
-                        navigateToSpecificVehiclePage(context, widget.vehicleId);
+                        navigateToSpecificVehiclePage(context, widget.vehicleCloudId);
                       }
                       catch (e) {
                         if (!context.mounted) return;

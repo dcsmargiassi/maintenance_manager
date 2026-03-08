@@ -7,16 +7,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/battery_local_database_operations.dart';
-import 'package:maintenance_manager/data/engine_local_database_operations.dart';
-import 'package:maintenance_manager/data/exterior_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/battery_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/engine_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/exterior_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/vehicle_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/read/battery_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/engine_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/exterior_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/vehicle_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/write/battery_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/engine_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/exterior_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/battery_detail_records.dart';
-import 'package:maintenance_manager/models/engine_detail_records.dart';
-import 'package:maintenance_manager/models/exterior_detail_records.dart';
-import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
@@ -25,10 +29,10 @@ import 'package:maintenance_manager/vehicle_functions/vehicle_stats/vehicle_deta
 import 'package:provider/provider.dart';
 
 class EditVehicleForm extends StatefulWidget {
-  final int vehicleId;
+  final String vehicleCloudId;
   
   final dynamic archivedStatus;
-  const EditVehicleForm({super.key, required this.vehicleId, required this.archivedStatus});
+  const EditVehicleForm({super.key, required this.vehicleCloudId, required this.archivedStatus});
 
   @override
   State<EditVehicleForm> createState() => _EditVehicleFormState();
@@ -87,7 +91,10 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   final TextEditingController licensePlateLampController = TextEditingController();
 
   String selectedUnit = "Miles Per Hour";
-  VehicleInformationModel? vehicleData;
+  VehicleInformationCloudModel? vehicleData;
+  EngineDetailsCloudModel? engineData;
+  BatteryDetailsCloudModel? batteryData;
+  ExteriorDetailsCloudModel? exteriorData;
   
   @override
   void initState() {
@@ -96,22 +103,22 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
   }
 
   Future<void> _loadVehicleData() async {
-    final vehicleOps = VehicleOperations();
-    final engineOps = EngineDetailsOperations();
-    final batteryOps = BatteryDetailsOperations();
-    final exteriorOps = ExteriorDetailsOperations();
     final userId = Provider.of<AuthState>(context, listen: false).userId;
-    final dataVehicle = await vehicleOps.getVehicleById(widget.vehicleId, userId!);
-    final dataEngine = await engineOps.getEngineDetailsByVehicleId(userId, widget.vehicleId);
-    final dataBattery = await batteryOps.getBatteryDetailsByVehicleId(userId, widget.vehicleId);
-    final dataExterior = await exteriorOps.getExteriorDetailsByVehicleId(userId, widget.vehicleId);
-    int? engineDetailsId;
-    int? batteryDetailsId;
-    engineDetailsId = dataEngine.engineDetailsId;
-    batteryDetailsId = dataBattery.batteryDetailsId!;
+    final vehicleOps = VehicleCloudReadOperations();
+    final engineOps = EngineCloudReadOperations();
+    final batteryOps = BatteryCloudReadOperations();
+    final exteriorOps = ExteriorCloudReadOperations();
+    final dataVehicle = await vehicleOps.getVehicleByCloudId(userId, widget.vehicleCloudId);
+    final dataEngine = await engineOps.getEngineDetails(userId, widget.vehicleCloudId);
+    final dataBattery = await batteryOps.getBatteryDetails(userId, widget.vehicleCloudId);
+    final dataExterior = await exteriorOps.getExteriorDetails(userId, widget.vehicleCloudId);
   
     setState(() {
-      vehicleData = dataVehicle;
+      vehicleData = dataVehicle!;
+      engineData = dataEngine;
+      batteryData = dataBattery;
+      exteriorData = dataExterior;
+
       vehicleNickNameController.text = dataVehicle.vehicleNickName ?? '';
       vinController.text = dataVehicle.vin ?? '';
       makeController.text = dataVehicle.make ?? '';
@@ -125,27 +132,24 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
       odometerCurrentController.text = dataVehicle.odometerCurrent.toString();
       purchasePriceController.text = dataVehicle.purchasePrice.toString();
       sellPriceController.text = dataVehicle.sellPrice.toString();
-      archiveController = dataVehicle.archived!;
-      lifeTimeFuelCost = dataVehicle.lifeTimeFuelCost!;
-      lifeTimeMaintenanceCost = dataVehicle.lifeTimeMaintenanceCost!;
+      archiveController = dataVehicle.archived;
+      lifeTimeFuelCost = dataVehicle.lifeTimeFuelCost;
+      lifeTimeMaintenanceCost = dataVehicle.lifeTimeMaintenanceCost;
       licensePlateController.text = dataVehicle.licensePlate!;
 
-      engineDetailsIdController.text = engineDetailsId.toString();
-      engineSizeController.text = dataEngine.engineSize!;
-      cylinderController.text = dataEngine.cylinders!;
-      engineTypeController.text = dataEngine.engineType!;
-      oilWeightController.text = dataEngine.oilWeight!;
-      oilCompositionController.text = dataEngine.oilComposition!;
-      oilClassController.text = dataEngine.oilClass!;
-      oilFilterController.text = dataEngine.oilFilter!;
-      engineFilterController.text = dataEngine.engineFilter!;
+      engineSizeController.text = dataEngine?.engineSize ?? '';
+      cylinderController.text = dataEngine?.cylinders ?? '';
+      engineTypeController.text = dataEngine?.engineType ?? '';
+      oilWeightController.text = dataEngine?.oilWeight ?? '';
+      oilCompositionController.text = dataEngine?.oilComposition ?? '';
+      oilClassController.text = dataEngine?.oilClass ?? '';
+      oilFilterController.text = dataEngine?.oilFilter ?? '';
+      engineFilterController.text = dataEngine?.engineFilter ?? '';
 
-      batteryDetailsIdController.text = batteryDetailsId.toString();
-      batterySeriesTypeController.text = dataBattery.batterySeriesType ?? '';
-      batterySizeController.text = dataBattery.batterySize ?? '';
-      coldCrankAmpsController.text = dataBattery.coldCrankAmps.toString();
+      batterySeriesTypeController.text = dataBattery?.batterySeriesType ?? '';
+      batterySizeController.text = dataBattery?.batterySize ?? '';
+      coldCrankAmpsController.text = dataBattery?.coldCrankAmps.toString() ?? '';
 
-      exteriorDetailsIdController.text = dataExterior.exteriorDetailsId.toString();
       driverWindshieldWiperController.text = dataExterior.driverWindshieldWiper.toString();
       passengerWindshieldWiperController.text = dataExterior.passengerWindshieldWiper.toString();
       rearWindshieldWiperController.text = dataExterior.rearWindshieldWiper.toString();
@@ -164,6 +168,7 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
 
+    // ignore: unnecessary_null_comparison
     if (vehicleData == null) {
       return Scaffold(
         body: Center(
@@ -194,10 +199,10 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
         final shouldPop = await confirmDiscardChanges(context);
         if (shouldPop == true && context.mounted) {
           if(widget.archivedStatus == 0){
-            navigateToSpecificVehiclePage(context, widget.vehicleId);
+            navigateToSpecificVehiclePage(context, widget.vehicleCloudId);
           }
           if(widget.archivedStatus == 1){
-            navigateToSpecificArchivedVehiclePage(context, widget.vehicleId);
+            navigateToSpecificArchivedVehiclePage(context, widget.vehicleCloudId);
           }
         }
       },
@@ -343,8 +348,8 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
 
                       // Vehicle Details
 
-                    final vehicleInformation = VehicleInformationModel(
-                      vehicleId: widget.vehicleId,
+                    final vehicleInformation = VehicleInformationCloudModel(
+                      cloudId: widget.vehicleCloudId,
                       userId: userId,
                       vehicleNickName: vehicleNickNameController.text,
                       vin: vinController.text,
@@ -364,15 +369,15 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                       lifeTimeMaintenanceCost: lifeTimeMaintenanceCost,
                       licensePlate: licensePlateController.text,
                     );
-                    VehicleOperations vehicleOperations = VehicleOperations();
+                    VehicleCloudWriteOperations vehicleOperations = VehicleCloudWriteOperations();
                     await vehicleOperations.updateVehicle(vehicleInformation);
 
                     // Engine Details
 
-                    EngineDetailsModel engineDetails = EngineDetailsModel(
-                      engineDetailsId: int.tryParse(engineDetailsIdController.text),
+                    EngineDetailsCloudModel engineDetails = EngineDetailsCloudModel(
+                      cloudId: 'engineDetails',
                       userId: userId,
-                      vehicleId: widget.vehicleId,
+                      vehicleCloudId: widget.vehicleCloudId,
                       engineSize: engineSizeController.text,
                       cylinders: cylinderController.text,
                       engineType: engineTypeController.text,
@@ -382,30 +387,30 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                       oilFilter: oilFilterController.text,
                       engineFilter: engineFilterController.text,
                     );
-                    EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
+                    EngineCloudWriteOperations engineDetailsOperations = EngineCloudWriteOperations();
                     await engineDetailsOperations.updateEngineDetails(engineDetails);
                     
                     // Battery Details
 
-                    BatteryDetailsModel batteryDetails = BatteryDetailsModel(
-                      batteryDetailsId: int.tryParse(batteryDetailsIdController.text),
-                      userId: userId!,
-                      vehicleId: widget.vehicleId,
+                    BatteryDetailsCloudModel batteryDetails = BatteryDetailsCloudModel(
+                      cloudId: 'batteryDetails',
+                      userId: userId,
+                      vehicleCloudId: widget.vehicleCloudId,
                       batterySeriesType: batterySeriesTypeController.text,
                       batterySize: batterySizeController.text,
                       coldCrankAmps: double.tryParse(coldCrankAmpsController.text),
                     );
-                    BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
+                    BatteryCloudWriteOperations batteryDetailsOperations = BatteryCloudWriteOperations();
                     await batteryDetailsOperations.updateBatteryDetails(batteryDetails);
 
                     // Exterior Details
 
                     // Exterior Details
 
-                  ExteriorDetailsModel exteriorDetails = ExteriorDetailsModel( 
-                    exteriorDetailsId: int.tryParse(exteriorDetailsIdController.text),
+                  ExteriorDetailsCloudModel exteriorDetails = ExteriorDetailsCloudModel( 
+                    cloudId: 'exteriorDetails',
                     userId: userId, 
-                    vehicleId: widget.vehicleId, 
+                    vehicleCloudId: widget.vehicleCloudId, 
                     driverWindshieldWiper: driverWindshieldWiperController.text, 
                     passengerWindshieldWiper: passengerWindshieldWiperController.text, 
                     rearWindshieldWiper: rearWindshieldWiperController.text, 
@@ -417,19 +422,20 @@ class _EditVehicleFormState extends State<EditVehicleForm> {
                     brakeLamp: brakeLampController.text, 
                     licensePlateLamp: licensePlateLampController.text,
                   );
-                  ExteriorDetailsOperations exteriorDetailsOperations = ExteriorDetailsOperations();
-                  final exists = await exteriorDetailsOperations.exteriorDetailsExists(userId, widget.vehicleId);
-                  if (exists) {
-                    await exteriorDetailsOperations.updateExteriorDetails(exteriorDetails);
-                  } else {
-                    await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
-                  }
+                  ExteriorCloudWriteOperations exteriorDetailsOperations = ExteriorCloudWriteOperations();
+                  await exteriorDetailsOperations.updateExteriorDetails(exteriorDetails);
+                  //final exists = await exteriorDetailsOperations.exteriorDetailsExists(userId, widget.vehicleCloudId);
+                  //if (exists) {
+                  //  await exteriorDetailsOperations.updateExteriorDetails(exteriorDetails);
+                  //} else {
+                  //  await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
+                  //}
                     if (!context.mounted) return;
                     if(archiveController == 0){
-                      navigateToSpecificVehiclePage(context, widget.vehicleId);
+                      navigateToSpecificVehiclePage(context, widget.vehicleCloudId);
                     }
                     else {
-                      navigateToSpecificArchivedVehiclePage(context, widget.vehicleId);
+                      navigateToSpecificArchivedVehiclePage(context, widget.vehicleCloudId);
                     }
                     }
                   },

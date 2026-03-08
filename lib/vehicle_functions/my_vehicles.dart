@@ -7,12 +7,11 @@
 */
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
+import 'package:maintenance_manager/cloud_models/vehicle_detail_records.dart';
 import 'package:maintenance_manager/data/cloud/read/vehicle_cloud_read.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
 class DisplayVehicleLists extends StatefulWidget {
@@ -24,7 +23,7 @@ class DisplayVehicleLists extends StatefulWidget {
 }
 
 class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
-  late Future<List<VehicleInformationModel>> _vehiclesFuture;
+  late Future<List<VehicleInformationCloudModel>> _vehiclesFuture;
 
   @override
   void initState() {
@@ -35,15 +34,15 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
       _vehiclesFuture = Future.value(_getFakeGuestVehicles());
     } else {
       final userId = authState.userId;
-      _vehiclesFuture = VehicleOperations().getAllVehiclesByUserId(userId!);
+      _vehiclesFuture = VehicleCloudReadOperations().getAllActiveVehiclesByUserId(userId);
     }
   }
 
   // Fake vehicle entries for guest preview
-  List<VehicleInformationModel> _getFakeGuestVehicles() {
+  List<VehicleInformationCloudModel> _getFakeGuestVehicles() {
     return [
-      VehicleInformationModel(
-        vehicleId: 1,
+      VehicleInformationCloudModel(
+        cloudId: "1",
         userId: '1',
         vehicleNickName: 'Guest Truck',
         vin: "guest*",
@@ -51,8 +50,8 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
         model: 'F-150',
         year: 2020,
       ),
-      VehicleInformationModel(
-        vehicleId: 2,
+      VehicleInformationCloudModel(
+        cloudId: "2",
         userId: '1',
         vehicleNickName: 'Guest Sedan',
         vin: "guest*",
@@ -87,10 +86,10 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
         ],
       ),
       body: SafeArea(
-        child: FutureBuilder<List<VehicleInformationModel>>(
+        child: FutureBuilder<List<VehicleInformationCloudModel>>(
           future: _vehiclesFuture,
           builder: (BuildContext context,
-              AsyncSnapshot<List<VehicleInformationModel>> snapshot) {
+              AsyncSnapshot<List<VehicleInformationCloudModel>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -113,56 +112,76 @@ class _DisplayVehicleListsState extends State<DisplayVehicleLists> {
     );
   }
 
-  Widget _displayVehicles(VehicleInformationModel data) {
+  Widget _displayVehicles(VehicleInformationCloudModel data) {
     return GestureDetector(
       onTap: () {
         if(data.vin == "guest*"){
           navigateToGuestVehicleDisplayPage(context);
         }
         else{
-          navigateToSpecificVehiclePage(context, data.vehicleId!);
+          final cloudId = data.cloudId;
+          if (cloudId.isEmpty) {
+            // If this happens, it means mapping isn't setting doc.id → cloudId
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("This vehicle isn't synced yet.")),
+            );
+            return;
+          }
+
+          navigateToSpecificVehiclePage(context, cloudId);
         }
       },
       child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "${data.vehicleNickName}",
-                maxLines: 1,
-                style: const TextStyle(fontSize: 22),
+              const Padding(
+                padding: EdgeInsets.only(right: 12.0),
+                child: Icon(
+                  Icons.directions_car,
+                  size: 48,
+                  color: Colors.black,
+                ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      "${data.make}",
-                      style: const TextStyle(fontSize: 18),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.vehicleNickName ?? "Unnamed Vehicle",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      "${data.model}",
-                      style: const TextStyle(fontSize: 18),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      "${data.make ?? ""} ${data.model ?? ""} • ${data.year}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      "${data.year}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  )
-                ],
-              )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-      ),
+      )
     );
   }
 }

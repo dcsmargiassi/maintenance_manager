@@ -1,84 +1,128 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/fuel_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/read/fuel_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/write/fuel_cloud_write.dart';
+import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
-import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/fuel_records.dart';
 import 'package:maintenance_manager/settings/display_constants.dart';
 import 'package:provider/provider.dart';
 
 class DisplayFuelLists extends StatefulWidget {
-  final int vehicleId;
-  const DisplayFuelLists({super.key, required this.vehicleId});
+  final String vehicleCloudId;
+
+  const DisplayFuelLists({
+    super.key,
+    required this.vehicleCloudId,
+  });
 
   @override
-  DisplayFuelListsState createState() => DisplayFuelListsState();
+  State<DisplayFuelLists> createState() => DisplayFuelListsState();
 }
 
 class DisplayFuelListsState extends State<DisplayFuelLists> {
-  late Future<List<FuelRecords>> _fuelRecordsFuture;
-  final List<String> _sortKeys =  ['newest', 'oldest', 'lowToHigh', 'highToLow'];
+  final FuelCloudReadOperations _readOps = FuelCloudReadOperations();
+
+  final ScrollController _scrollController = ScrollController();
+
+  final List<FuelRecordCloudModel> _records = [];
+  DocumentSnapshot<Map<String, dynamic>>? _lastDoc;
+  bool _isLoading = false;
+  bool _hasMore = true;
+
+  final List<String> _sortKeys = ['newest', 'oldest', 'lowToHigh', 'highToLow'];
   String _selectedSortType = 'newest';
 
   @override
   void initState() {
     super.initState();
-    final authState = Provider.of<AuthState>(context, listen: false);
-    final userId = authState.userId!;
-    _fuelRecordsFuture = FuelRecordOperations().getAllFuelRecordsByVehicleId(userId, widget.vehicleId);
+    _loadNextPage();
+
+    _scrollController.addListener(() {
+      if (!_hasMore || _isLoading) return;
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        _loadNextPage();
+      }
+    });
   }
 
-  // Sort function based on user input, default is newest to oldest.
-  void _sortRecords(List<FuelRecords> records) {
+  Future<void> _loadNextPage() async {
+    if (_isLoading || !_hasMore) return;
+
+    setState(() => _isLoading = true);
+
+    final userId = Provider.of<AuthState>(context, listen: false).userId;
+
+    final page = await _readOps.getFuelRecordsPage(
+      userId: userId,
+      vehicleCloudId: widget.vehicleCloudId,
+      limit: 25,
+      startAfter: _lastDoc,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _records.addAll(page.records);
+      _lastDoc = page.lastDoc;
+      _hasMore = page.records.length == 25;
+      _isLoading = false;
+    });
+  }
+
+  List<FuelRecordCloudModel> _sortedView() {
+    final list = List<FuelRecordCloudModel>.from(_records);
+
     switch (_selectedSortType) {
       case 'newest':
-        records.sort((a, b) => DateTime.parse(b.date!).compareTo(DateTime.parse(a.date!)));
-        break;
+        return list;
+
       case 'oldest':
-        records.sort((a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
-        break;
+        return list.reversed.toList();
+
       case 'lowToHigh':
-        records.sort((a, b) => (a.refuelCost ?? 0).compareTo(b.refuelCost ?? 0));
-        break;
+        list.sort((a, b) => a.refuelCost.compareTo(b.refuelCost));
+        return list;
+
       case 'highToLow':
-        records.sort((a, b) => (b.refuelCost ?? 0).compareTo(a.refuelCost ?? 0));
-        break;
+        list.sort((a, b) => b.refuelCost.compareTo(a.refuelCost));
+        return list;
+
+      default:
+        return list;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final prefs = Provider.of<UserPreferences>(context, listen: false);
 
     final Map<String, String> sortLabels = {
-    'newest': localizations.sortNewest,
-    'oldest': localizations.sortOldest,
-    'lowToHigh': localizations.sortLowToHigh,
-    'highToLow': localizations.sortHighToLow,
-  };
-  final userId = FirebaseAuth.instance.currentUser?.uid;
+      'newest': localizations.sortNewest,
+      'oldest': localizations.sortOldest,
+      'lowToHigh': localizations.sortLowToHigh,
+      'highToLow': localizations.sortHighToLow,
+    };
+
+    final view = _sortedView();
+
     return CustomScaffold(
       title: localizations.fuelRecordsTitle,
-      onBack: () async {
-        final vehicleOps = VehicleOperations();
-        final vehicle = await vehicleOps.getVehicleById(widget.vehicleId, userId!);
-        if(!context.mounted) return;
-        if (vehicle.archived == 0) {
-          navigateToSpecificVehiclePage(context, widget.vehicleId);
-        } else {
-          navigateToSpecificArchivedVehiclePage(context, widget.vehicleId);
-        }
-      },
       showActions: true,
       showBackButton: true,
+      onBack: () {
+        navigateToSpecificVehiclePage(context, widget.vehicleCloudId);
+      },
       body: SafeArea(
         child: Column(
           children: [
+            // Sort row
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -95,54 +139,45 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedSortType = newValue!;
-                        });
+                        if (newValue == null) return;
+                        setState(() => _selectedSortType = newValue);
                       },
                     ),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () => setState(() {}), 
+                    onPressed: () => setState(() {}),
                     child: Text(localizations.sortButton),
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: FutureBuilder<List<FuelRecords>>(
-                future: _fuelRecordsFuture,
-                builder: (BuildContext context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } 
-                  else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    List<FuelRecords> records = snapshot.data!;
-                    // sort before calling display
-                    _sortRecords(records);
 
-                    // Check for deleted fuel record, if so remove at specified index and refresh
-                    return ListView.builder(
-                      itemCount: records.length,
-                      itemBuilder: (context, index) {
-                        final record = records[index];
-                        // if deleted, .deletefuel record function will be caleld, removing record/updating state
-                        return _displayFuelRecords(record, () async {
-                          // Decrement lifetime fuel costs prior to fully deleting record
-                          decrementLifeTimeFuelCosts(widget.vehicleId, record.userId!, record.refuelCost!);
-                          await FuelRecordOperations().deleteFuelRecord(record);
-                          setState(() {
-                            records.removeAt(index);
-                          });
-                        });
-                      },
-                    );
-                  } 
-                  else {
-                    return Center(child: Text(localizations.noRecordsFoundMessage));
-                  }
-                },
-              ),
+            // List
+            Expanded(
+              child: view.isEmpty && _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : view.isEmpty
+                      ? Center(child: Text(localizations.noRecordsFoundMessage))
+                      : ListView.builder(
+                          controller: _scrollController,
+                          itemCount: view.length + (_hasMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == view.length) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+
+                            final record = view[index];
+                            return _fuelCard(
+                              record: record,
+                              prefs: prefs,
+                              onDelete: () => _deleteFuelRecord(record),
+                            );
+                          },
+                        ),
             ),
           ],
         ),
@@ -150,19 +185,35 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
     );
   }
 
-  Widget _displayFuelRecords(FuelRecords data, VoidCallback onDelete) {
-    final prefs = Provider.of<UserPreferences>(context, listen: false);
-    // Implementation of slide to left to delete a fuel record on confirmation
-    var distanceVolume = "gallon";
-    if( prefs.distanceUnit == "Miles") {
-      distanceVolume = "gallons";
-    }
-    else {
-      distanceVolume = "liters";
-    }
+  Future<void> _deleteFuelRecord(FuelRecordCloudModel record) async {
+    await decrementLifeTimeFuelCosts(
+      record.vehicleCloudId,
+      record.userId,
+      record.refuelCost,
+    );
+  
+    await FuelCloudWriteOperations().deleteFuelRecord(record);
+  
+    if (!mounted) return;
+  
+    setState(() {
+      _records.removeWhere((r) => r.cloudId == record.cloudId);
+    });
+  }
+
+  Widget _fuelCard({
+    required FuelRecordCloudModel record,
+    required UserPreferences prefs,
+    required VoidCallback onDelete,
+  }) {
+    // Unit text
+    final volumeUnit = (prefs.distanceUnit == "Miles") ? "gallons" : "liters";
     final displayUnit = distanceUnits[prefs.distanceUnit] ?? prefs.distanceUnit;
+
+    final key = record.cloudId ?? '${record.date}_${record.refuelCost}';
+
     return Dismissible(
-      key: Key(data.fuelRecordId.toString()),
+      key: Key(key),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -171,30 +222,34 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
         child: const Icon(Icons.delete, color: Colors.white, size: 32),
       ),
       confirmDismiss: (direction) async {
-        return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.confirmDeleteButton),
-            content: Text(AppLocalizations.of(context)!.confirmFuelRecordDeleteMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(AppLocalizations.of(context)!.cancelButton),
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(AppLocalizations.of(context)!.confirmDeleteButton),
+                content: Text(AppLocalizations.of(context)!.confirmFuelRecordDeleteMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(AppLocalizations.of(context)!.cancelButton),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      AppLocalizations.of(context)!.deleteButton,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(AppLocalizations.of(context)!.deleteButton, style: const TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        );
+            ) ??
+            false;
       },
-      onDismissed: (direction) {
-        onDelete(); 
-      },
+      onDismissed: (direction) => onDelete(),
       child: GestureDetector(
         onTap: () {
-          navigateToEditFuelRecordPage(context, data.vehicleId!, data.fuelRecordId!);
+          final fuelRecordCloudId = record.cloudId;
+          if (fuelRecordCloudId == null || fuelRecordCloudId.isEmpty) return;
+          navigateToEditFuelRecordPage(context, widget.vehicleCloudId, fuelRecordCloudId);
         },
         child: Card(
           child: Padding(
@@ -202,34 +257,29 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icon to display a gas station pump
                 const Padding(
                   padding: EdgeInsets.only(right: 12.0),
-                  child: Icon(
-                    Icons.local_gas_station,
-                    size: 64,
-                    color: Colors.black,
-                  ),
+                  child: Icon(Icons.local_gas_station, size: 64, color: Colors.black),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        formatDateForUser(data.date, prefs.dateFormat),
+                        formatDateForUser(record.date, prefs.dateFormat),
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${prefs.currencySymbol}${data.refuelCost}",
+                        "${prefs.currencySymbol}${record.refuelCost.toStringAsFixed(2)}",
                         style: const TextStyle(fontSize: 16),
-                      ), 
+                      ),
                       Text(
-                        "${data.fuelAmount} $distanceVolume @ ${prefs.currencySymbol}${data.fuelPrice}/$displayUnit",
+                        "${record.fuelAmount} $volumeUnit @ ${prefs.currencySymbol}${record.fuelPrice.toStringAsFixed(2)}/$displayUnit",
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
-                  )
+                  ),
                 ),
               ],
             ),
@@ -237,5 +287,11 @@ class DisplayFuelListsState extends State<DisplayFuelLists> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

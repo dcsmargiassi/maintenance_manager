@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/battery_local_database_operations.dart';
-import 'package:maintenance_manager/data/engine_local_database_operations.dart';
-import 'package:maintenance_manager/data/exterior_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/battery_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/engine_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/exterior_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/vehicle_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/write/battery_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/engine_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/exterior_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/battery_detail_records.dart';
-import 'package:maintenance_manager/models/engine_detail_records.dart';
-import 'package:maintenance_manager/models/exterior_detail_records.dart';
-import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/battery_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/engine_details.dart';
 import 'package:maintenance_manager/vehicle_functions/vehicle_stats/exterior_details.dart';
@@ -20,16 +20,19 @@ import 'package:provider/provider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Creating object for vehicle information database
- VehicleOperations vehicleInformation = VehicleOperations();
+ VehicleCloudWriteOperations vehicleInformation = VehicleCloudWriteOperations();
 
  // Creating object for engine details database
- EngineDetailsOperations engineDetails = EngineDetailsOperations();
+ EngineCloudWriteOperations engineDetails = EngineCloudWriteOperations();
 
  // Creating object for battery details database
- BatteryDetailsOperations batteryDetails = BatteryDetailsOperations();
+ BatteryDetailsWriteOperations batteryDetails = BatteryDetailsWriteOperations();
+ 
+ class BatteryDetailsWriteOperations {
+ }
 
  // Creating object for exterior details database
- ExteriorDetailsOperations exteriorDetails = ExteriorDetailsOperations();
+ ExteriorCloudWriteOperations exteriorDetails = ExteriorCloudWriteOperations();
 
 class AddVehicleFormApp extends StatelessWidget {
   const AddVehicleFormApp({super.key}); 
@@ -96,8 +99,8 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // Checking Privacy Analytics
-  Future<bool> _isPrivacyAnalyticsEnabled(String? userId) async {
-  if (userId == null) return false;
+  Future<bool> _isPrivacyAnalyticsEnabled(String userId) async {
+  //if (userId == null) return false;
   final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
   return doc.data()?['privacyAnalytics'] == false;
 }
@@ -107,7 +110,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   @override
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context, listen: false);
-    var userId = authState.userId;
+    String userId = authState.userId;
     return SingleChildScrollView(
       child: Form(
         key: _formKey,
@@ -297,7 +300,8 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
 
                     // Vehicle Details
 
-                  final vehicleInformation = VehicleInformationModel(
+                  final vehicleInformation = VehicleInformationCloudModel(
+                    cloudId: "",
                     userId: userId,
                     vehicleNickName: vehicleNickNameController.text,
                     vin: vinController.text,
@@ -315,14 +319,15 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     archived: archiveController,
                     licensePlate: licensePlateController.text,
                   );
-                  VehicleOperations vehicleOperations = VehicleOperations();
-                  int vehicleId = await vehicleOperations.createVehicle(vehicleInformation);
+                  VehicleCloudWriteOperations vehicleOperations = VehicleCloudWriteOperations();
+                  String vehicleId = await vehicleOperations.createVehicle(vehicleInformation);
 
                   // Engine Details
 
-                  EngineDetailsModel engineDetails = EngineDetailsModel(
+                  EngineDetailsCloudModel engineDetails = EngineDetailsCloudModel(
+                    cloudId: "",
                     userId: userId,
-                    vehicleId: vehicleId,
+                    vehicleCloudId: vehicleId,
                     engineSize: engineSizeController.text,
                     cylinders: cylinderController.text,
                     engineType: engineTypeController.text,
@@ -332,28 +337,30 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     oilFilter: oilFilterController.text,
                     engineFilter: engineFilterController.text,
                   );
-                  EngineDetailsOperations engineDetailsOperations = EngineDetailsOperations();
-                  await engineDetailsOperations.insertEngineDetails(engineDetails);
+                  EngineCloudWriteOperations engineCloudOperations = EngineCloudWriteOperations();
+                  await engineCloudOperations.insertEngineDetails(engineDetails);
 
                   // Battery Details
 
                   final ccaText = coldCrankAmpsController.text.trim();
                   final cca = ccaText.isEmpty ? 0.0 : double.parse(ccaText);
-                  BatteryDetailsModel batteryDetails = BatteryDetailsModel(
-                    userId: userId!,
-                    vehicleId: vehicleId,
+                  BatteryDetailsCloudModel batteryDetails = BatteryDetailsCloudModel(
+                    cloudId: "",
+                    userId: userId,
+                    vehicleCloudId: vehicleId,
                     batterySeriesType: batterySeriesTypeController.text,
                     batterySize: batterySizeController.text,
                     coldCrankAmps: cca,
                   );
-                  BatteryDetailsOperations batteryDetailsOperations = BatteryDetailsOperations();
+                  BatteryCloudWriteOperations batteryDetailsOperations = BatteryCloudWriteOperations();
                   await batteryDetailsOperations.insertBatteryDetails(batteryDetails);
 
                   // Exterior Details
 
-                  ExteriorDetailsModel exteriorDetails = ExteriorDetailsModel( 
+                  ExteriorDetailsCloudModel exteriorDetails = ExteriorDetailsCloudModel( 
+                    cloudId: "",
                     userId: userId, 
-                    vehicleId: vehicleId, 
+                    vehicleCloudId: vehicleId, 
                     driverWindshieldWiper: driverWindshieldWiperController.text, 
                     passengerWindshieldWiper: passengerWindshieldWiperController.text, 
                     rearWindshieldWiper: rearWindshieldWiperController.text, 
@@ -365,7 +372,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                     brakeLamp: brakeLampController.text, 
                     licensePlateLamp: licensePlateLampController.text,
                   );
-                  ExteriorDetailsOperations exteriorDetailsOperations = ExteriorDetailsOperations();
+                  ExteriorCloudWriteOperations exteriorDetailsOperations = ExteriorCloudWriteOperations();
                   await exteriorDetailsOperations.insertExteriorDetails(exteriorDetails);
 
                   if (!context.mounted) return;

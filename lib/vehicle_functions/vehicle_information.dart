@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/battery_local_database_operations.dart';
-import 'package:maintenance_manager/data/engine_local_database_operations.dart';
-import 'package:maintenance_manager/data/exterior_local_database_operations.dart';
-import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/battery_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/engine_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/exterior_detail_records.dart';
+import 'package:maintenance_manager/cloud_models/vehicle_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/read/battery_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/engine_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/exterior_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/fuel_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/read/vehicle_cloud_read.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/battery_detail_records.dart';
-import 'package:maintenance_manager/models/engine_detail_records.dart';
-import 'package:maintenance_manager/models/exterior_detail_records.dart';
-import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
 class DisplayVehicleInfo extends StatefulWidget {
-  final int vehicleId;
+  final String vehicleCloudId;
 
-   const DisplayVehicleInfo({super.key, required this.vehicleId});
+   const DisplayVehicleInfo({super.key, required this.vehicleCloudId});
 
   @override
   DisplayVehicleInfoState createState() => DisplayVehicleInfoState();
 }
 
 class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
-  late Future<VehicleInformationModel> _vehicleInfoFuture;
-  late Future<EngineDetailsModel> _engineDetailsFuture;
-  late Future<BatteryDetailsModel> _batteryDetailsFuture;
-  late Future<ExteriorDetailsModel> _exteriorDetailsFuture;
+  late Future<VehicleInformationCloudModel?> _vehicleInfoFuture;
+  late Future<EngineDetailsCloudModel?> _engineDetailsFuture;
+  late Future<BatteryDetailsCloudModel?> _batteryDetailsFuture;
+  late Future<ExteriorDetailsCloudModel> _exteriorDetailsFuture;
   int _selectedMonth = DateTime.now().month;
   int _selectedYear = DateTime.now().year;
   double? _selectedMonthFuelCost;
@@ -39,16 +39,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     super.initState();
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
-    _vehicleInfoFuture = VehicleOperations().getVehicleById(widget.vehicleId, userId!);
-    _engineDetailsFuture = EngineDetailsOperations().getEngineDetailsByVehicleId(userId, widget.vehicleId);
-    _batteryDetailsFuture = BatteryDetailsOperations().getBatteryDetailsByVehicleId(userId, widget.vehicleId);
-    _exteriorDetailsFuture = ExteriorDetailsOperations().getExteriorDetailsByVehicleId(userId, widget.vehicleId);
+    _vehicleInfoFuture = VehicleCloudReadOperations().getVehicleByCloudId(userId, widget.vehicleCloudId);
+    _engineDetailsFuture = EngineCloudReadOperations().getEngineDetails(userId, widget.vehicleCloudId);
+    _batteryDetailsFuture = BatteryCloudReadOperations().getBatteryDetails(userId, widget.vehicleCloudId);
+    _exteriorDetailsFuture = ExteriorCloudReadOperations().getExteriorDetails(userId, widget.vehicleCloudId);
     _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
   }
 
   void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
-    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
-    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleCloudId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleCloudId, userId, year);
 
     if (!mounted) return;
 
@@ -58,7 +58,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     });
   } 
 
-  Future<double> getMonthlyFuelCost (int vehicleId, String userId) async {
+  Future<double> getMonthlyFuelCost (String vehicleCloudId, String userId) async {
   DateTime now = DateTime.now();
   int currentYear = now.year;
   int previousMonth = now.month - 1;
@@ -67,8 +67,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     currentYear -= 1;
   }
 
-  final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, currentYear, previousMonth);
-  double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost ?? 0));
+  final records = await FuelCloudReadOperations().getFuelRecordsByMonth(userId: userId, vehicleCloudId: vehicleCloudId, year: currentYear, month: previousMonth);
+  double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost));
   return totalCost;
   }
 
@@ -78,8 +78,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       _selectedYear = year;
     });
 
-    final monthCost = await getFuelCostByMonthYear(widget.vehicleId, userId, year, month);
-    final yearCost = await getFuelCostByYear(widget.vehicleId, userId, year);
+    final monthCost = await getFuelCostByMonthYear(widget.vehicleCloudId, userId, year, month);
+    final yearCost = await getFuelCostByYear(widget.vehicleCloudId, userId, year);
 
     if (!mounted) return;
 
@@ -89,24 +89,24 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     });
   }
 
-  Future<double> getFuelCostByMonthYear(int vehicleId, String userId, int year, int month) async {
-    final records = await FuelRecordOperations().getFuelRecordsByMonth(vehicleId, year, month);
+  Future<double> getFuelCostByMonthYear(String vehicleCloudId, String userId, int year, int month) async {
+    final records = await FuelCloudReadOperations().getFuelRecordsByMonth(userId: userId, vehicleCloudId: vehicleCloudId, year: year, month: month);
 
     double totalCost = 0.0;
     for (final record in records) {
       final cost = record.refuelCost;
-      totalCost += cost ?? 0;
+      totalCost += cost;
     }
     return totalCost;
   }
 
-  Future<double> getFuelCostByYear(int vehicleId, String userId, int year) async {
-    final records = await FuelRecordOperations().getFuelRecordsByYear(vehicleId, year);
+  Future<double> getFuelCostByYear(String vehicleCloudId, String userId, int year) async {
+    final records = await FuelCloudReadOperations().getFuelRecordsByYear(userId: userId, vehicleCloudId: vehicleCloudId, year: year);
   
     double totalCost = 0.0;
     for (final record in records) {
       final cost = record.refuelCost;  
-      totalCost += cost ?? 0;
+      totalCost += cost;
     }
     return totalCost;
   }
@@ -119,9 +119,9 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       showBackButton: true,
       onBack: () {navigateToMyVehicles(context);},
       body: SafeArea(
-        child: FutureBuilder<VehicleInformationModel>(
+        child: FutureBuilder<VehicleInformationCloudModel?>(
           future: _vehicleInfoFuture,
-          builder: (BuildContext context, AsyncSnapshot<VehicleInformationModel> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<VehicleInformationCloudModel?> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -135,20 +135,20 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 child: Text("No Vehicle Found"),
               );
             }
-            return FutureBuilder<EngineDetailsModel>(
+            return FutureBuilder<EngineDetailsCloudModel?>(
               future: _engineDetailsFuture,
               builder: (context, engineSnapshot) {
                 if (!engineSnapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return FutureBuilder<BatteryDetailsModel>(
+                return FutureBuilder<BatteryDetailsCloudModel?>(
                   future: _batteryDetailsFuture,
                   builder: (context, batterySnapshot) {
                     if (!batterySnapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    return FutureBuilder<ExteriorDetailsModel>(
+                    return FutureBuilder<ExteriorDetailsCloudModel>(
                       future: _exteriorDetailsFuture,
                       builder: (context, exteriorSnapshot) {
                         if (!exteriorSnapshot.hasData) {
@@ -163,7 +163,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                     );
                       },
                     );
-                    
                   },
                 );
               },
@@ -202,10 +201,10 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     );
   }
     Widget _displayVehicleDetails(
-      VehicleInformationModel vehicleData,
-      EngineDetailsModel engineData,
-      BatteryDetailsModel batteryData, 
-      ExteriorDetailsModel exteriorData
+      VehicleInformationCloudModel vehicleData,
+      EngineDetailsCloudModel engineData,
+      BatteryDetailsCloudModel batteryData, 
+      ExteriorDetailsCloudModel exteriorData
     ) {
     final prefs = Provider.of<UserPreferences>(context, listen: false);
     final monthNames = getLocalizedMonthNames(context);
@@ -222,13 +221,13 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 onPressed: () {
                   navigateToEditVehiclePage(
                     context,
-                    vehicleData.vehicleId!,
-                    vehicleData.archived!,
+                    vehicleData.cloudId,
+                    vehicleData.archived,
                     onReturn: () {
                       setState(() {
-                        _vehicleInfoFuture = VehicleOperations().getVehicleById(
-                          widget.vehicleId,
-                          Provider.of<AuthState>(context, listen: false).userId!,
+                        _vehicleInfoFuture = VehicleCloudReadOperations().getVehicleByCloudId(
+                          widget.vehicleCloudId,
+                          Provider.of<AuthState>(context, listen: false).userId,
                         );
                       });
                     },
@@ -279,7 +278,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                             value: _selectedYear,
                             onChanged: (newYear) {
                               if (newYear != null) {
-                                final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                final userId = Provider.of<AuthState>(context, listen: false).userId;
                                 _onMonthYearChanged(newYear, _selectedMonth, userId);
                               }
                             },
@@ -307,7 +306,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                             value: _selectedMonth,
                             onChanged: (newMonth) {
                               if (newMonth != null) {
-                                final userId = Provider.of<AuthState>(context, listen: false).userId!;
+                                final userId = Provider.of<AuthState>(context, listen: false).userId;
                                 _onMonthYearChanged(_selectedYear, newMonth, userId);
                               }
                             },
@@ -336,7 +335,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               ),
               _infoText(
                 AppLocalizations.of(context)!.lifetimeFuelCost,
-                "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost?.toStringAsFixed(2) ?? '0.00'}"
+                "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost.toStringAsFixed(2)}"
               ),
               _infoText(
                 AppLocalizations.of(context)!.purchasePriceLabel,
@@ -344,14 +343,14 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               ),
               _infoText(
                 AppLocalizations.of(context)!.lifetimeMaintenanceCost,
-                "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost?.toStringAsFixed(2) ?? '0.00'}"
+                "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost.toStringAsFixed(2)}"
               ),
               _infoText(
                 AppLocalizations.of(context)!.lifetimeVehicleCost,
                 "${prefs.currencySymbol}${(
                     (vehicleData.purchasePrice ?? 0) +
-                    (vehicleData.lifeTimeFuelCost ?? 0) +
-                    (vehicleData.lifeTimeMaintenanceCost ?? 0)
+                    (vehicleData.lifeTimeFuelCost) +
+                    (vehicleData.lifeTimeMaintenanceCost)
                   ).toStringAsFixed(2)}"
               ),
             ],
@@ -402,7 +401,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 Row(
                   children: [
                     buildVehicleButton(AppLocalizations.of(context)!.buttonAddFuel, () {
-                      navigateToAddFuelRecordPage(context, vehicleData.vehicleId!);
+                      navigateToAddFuelRecordPage(context, vehicleData.cloudId);
                     }),
                     const SizedBox(width: 16.0),
                     buildVehicleButton(AppLocalizations.of(context)!.buttonAddWork, () {
@@ -414,7 +413,7 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 Row(
                   children: [
                     buildVehicleButton(AppLocalizations.of(context)!.buttonViewFuel, () {
-                      navigateToDisplayFuelRecordPage(context, vehicleData.vehicleId!);
+                      navigateToDisplayFuelRecordPage(context, vehicleData.cloudId);
                     }),
                     const SizedBox(width: 16.0),
                     buildVehicleButton(AppLocalizations.of(context)!.buttonViewWork, () {

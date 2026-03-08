@@ -9,13 +9,14 @@
 */
 import 'package:flutter/material.dart';
 import 'package:maintenance_manager/auth/auth_state.dart';
-import 'package:maintenance_manager/data/fuel_local_database_operations.dart';
-import 'package:maintenance_manager/data/vehicle_local_database_operations.dart';
+import 'package:maintenance_manager/cloud_models/vehicle_detail_records.dart';
+import 'package:maintenance_manager/data/cloud/read/vehicle_cloud_read.dart';
+import 'package:maintenance_manager/data/cloud/write/fuel_cloud_write.dart';
+import 'package:maintenance_manager/data/cloud/write/vehicle_cloud_write.dart';
 import 'package:maintenance_manager/helper_functions/format_date.dart';
 import 'package:maintenance_manager/helper_functions/global_actions_menu.dart';
 import 'package:maintenance_manager/helper_functions/page_navigator.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
-import 'package:maintenance_manager/models/vehicle_information.dart';
 import 'package:provider/provider.dart';
 
 class DisplayArchivedVehicleLists extends StatefulWidget {
@@ -26,9 +27,9 @@ class DisplayArchivedVehicleLists extends StatefulWidget {
 }
 
 class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
-  late Future<List<VehicleInformationModel>> _vehiclesFuture;
-  List<VehicleInformationModel> _nonArchivedVehicles = [];
-  VehicleInformationModel? _selectedVehicle;
+  late Future<List<VehicleInformationCloudModel>> _vehiclesFuture;
+  List<VehicleInformationCloudModel> _nonArchivedVehicles = [];
+  VehicleInformationCloudModel? _selectedVehicle;
   bool _isLoading = false;
 
   @override
@@ -41,9 +42,9 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
     final userId = authState.userId;
 
     setState(() {
-    _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId!);
+    _vehiclesFuture = VehicleCloudReadOperations().getAllArchivedVehiclesByUserId(userId);
   });
-    final vehicles = await VehicleOperations().getAllVehiclesByUserId(userId!);
+    final vehicles = await VehicleCloudReadOperations().getAllActiveVehiclesByUserId(userId);
     setState(() {
       _nonArchivedVehicles = vehicles;
     });
@@ -65,17 +66,17 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
               child: Row(
                 children: [
                   Expanded(
-                    child: DropdownButton<VehicleInformationModel>(
+                    child: DropdownButton<VehicleInformationCloudModel>(
                       hint: Text(AppLocalizations.of(context)!.selectVehicleHint),
                       value: _selectedVehicle,
                       isExpanded: true,
                       items: _nonArchivedVehicles.map((vehicle) {
-                        return DropdownMenuItem<VehicleInformationModel>(
+                        return DropdownMenuItem<VehicleInformationCloudModel>(
                           value: vehicle,
                           child: Text(vehicle.vehicleNickName ?? 'Unnamed Vehicle'),
                         );
                       }).toList(),
-                      onChanged: (VehicleInformationModel? newValue) {
+                      onChanged: (VehicleInformationCloudModel? newValue) {
                         setState(() {
                           _selectedVehicle = newValue;
                         });
@@ -90,11 +91,11 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                           final archiveDate = DateTime.now();
                           final date = formatDateToString(archiveDate);
                           setState(() => _isLoading = true);
-                          await VehicleOperations().archiveVehicleById(_selectedVehicle!.vehicleId!, userId!, date);
+                          await VehicleCloudWriteOperations().archiveVehicle(userId: userId, cloudVehicleId: _selectedVehicle!.cloudId, sellDateIso: date);
                           setState(() {
-                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
+                            _vehiclesFuture = VehicleCloudReadOperations().getAllArchivedVehiclesByUserId(userId);
                           });
-                          _nonArchivedVehicles = await VehicleOperations().getAllVehiclesByUserId(userId);
+                          _nonArchivedVehicles = await VehicleCloudReadOperations().getAllVehicles(userId);
                           _selectedVehicle = null;
                           setState(() => _isLoading = false);
                         },
@@ -103,10 +104,11 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                 ],
               ),
             ),
+            // Deleting a vehicle. Wiping all fuel records and vehicle records.
             Expanded(
-              child: FutureBuilder<List<VehicleInformationModel>>(
+              child: FutureBuilder<List<VehicleInformationCloudModel>>(
                 future: _vehiclesFuture,
-                builder: (BuildContext context, AsyncSnapshot<List<VehicleInformationModel>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<List<VehicleInformationCloudModel>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -116,11 +118,11 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
                         final vehicle = snapshot.data![index];
                         return _displayVehicles(vehicle, () async {
                           final userId = Provider.of<AuthState>(context, listen: false).userId;
-                          final vehicleId = vehicle.vehicleId!;
-                          await FuelRecordOperations().deleteAllFuelRecordsByVehicleId(userId!, vehicleId);
-                          await VehicleOperations().deleteVehicle(userId, vehicleId);
+                          final vehicleId = vehicle.cloudId;
+                          await FuelCloudWriteOperations().deleteAllFuelRecordsByVehicleCloudId(userId, vehicleId);
+                          await VehicleCloudWriteOperations().deleteVehicle(userId: userId, cloudVehicleId: vehicleId);
                           setState(() {
-                            _vehiclesFuture = VehicleOperations().getAllArchivedVehiclesByUserId(userId);
+                            _vehiclesFuture = VehicleCloudReadOperations().getAllArchivedVehiclesByUserId(userId);
                           });
                           
                         });
@@ -138,9 +140,9 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
     );
   }
 
-  Widget _displayVehicles(VehicleInformationModel data, VoidCallback onDelete) {
+  Widget _displayVehicles(VehicleInformationCloudModel data, VoidCallback onDelete) {
     return Dismissible(
-      key: Key(data.vehicleId.toString()),
+      key: Key(data.cloudId.toString()),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -172,51 +174,62 @@ class DisplayVehicleListsState extends State<DisplayArchivedVehicleLists> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar
           (content: Text(AppLocalizations.of(context)!.deleteSnackBarMessage)));
       },
-    child: GestureDetector(
-      onTap: () {
-        navigateToSpecificArchivedVehiclePage(context, data.vehicleId!);
-      },
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "${data.vehicleNickName}",
-                style: const TextStyle(fontSize: 24),
-                overflow: TextOverflow.ellipsis,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      "${data.make}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      "${data.model}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      "${data.year}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  )
-                ],
-              )
-            ],
+      child: GestureDetector(
+        onTap: () {
+          navigateToSpecificArchivedVehiclePage(context, data.cloudId);
+        },
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Icon(
+                    Icons.directions_car,
+                    size: 48,
+                    color: Colors.black,
+                  ),
+                ),
+  
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.vehicleNickName ?? "Unnamed Vehicle",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+  
+                      const SizedBox(height: 4),
+  
+                      Text(
+                        "${data.make ?? ""} ${data.model ?? ""} • ${data.year}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
       ),
-    ),
     );
   }
 }

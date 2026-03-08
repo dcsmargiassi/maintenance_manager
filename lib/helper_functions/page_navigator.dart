@@ -125,10 +125,10 @@ Future<void> navigateToAddVehicleFormPage(BuildContext context, {VoidCallback? o
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToSpecificVehiclePage(BuildContext context,  cloudVehicleId, {VoidCallback? onReturn}) {
+Future<void> navigateToSpecificVehiclePage(BuildContext context,  vehicleCloudId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayVehicleInfo(cloudVehicleId: cloudVehicleId)),
+    MaterialPageRoute(builder: (context) => DisplayVehicleInfo(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
@@ -140,10 +140,10 @@ Future<void> navigateToGuestVehicleDisplayPage(BuildContext context, {VoidCallba
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditVehiclePage(BuildContext context, String cloudVehicleId, int archivedStatus, {VoidCallback? onReturn}) {
+Future<void> navigateToEditVehiclePage(BuildContext context, String vehicleCloudId, int archivedStatus, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EditVehicleForm(cloudVehicleId: cloudVehicleId, archivedStatus: archivedStatus,)),
+    MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleCloudId: vehicleCloudId, archivedStatus: archivedStatus,)),
   ).then((_) => onReturn?.call());
 }
 
@@ -156,32 +156,32 @@ Future<void> navigateToArchivedVehicles(BuildContext context, {VoidCallback? onR
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToSpecificArchivedVehiclePage(BuildContext context, String cloudVehicleId, {VoidCallback? onReturn}) {
+Future<void> navigateToSpecificArchivedVehiclePage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayArchivedVehicleInfo(cloudVehicleId: cloudVehicleId)),
+    MaterialPageRoute(builder: (context) => DisplayArchivedVehicleInfo(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
 // Fuel Records
 
-Future<void> navigateToAddFuelRecordPage(BuildContext context, String cloudVehicleId, {VoidCallback? onReturn}) {
+Future<void> navigateToAddFuelRecordPage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => AddFuelRecordFormApp(cloudVehicleId: cloudVehicleId)),
+    MaterialPageRoute(builder: (context) => AddFuelRecordFormApp(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToDisplayFuelRecordPage(BuildContext context, String cloudVehicleId, {VoidCallback? onReturn}) {
+Future<void> navigateToDisplayFuelRecordPage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayFuelLists(cloudVehicleId: cloudVehicleId)),
+    MaterialPageRoute(builder: (context) => DisplayFuelLists(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditFuelRecordPage(BuildContext context, String cloudVehicleId, int fuelRecordId, {VoidCallback? onReturn}) {
+Future<void> navigateToEditFuelRecordPage(BuildContext context, String vehicleCloudId, String fuelRecordId, {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EditFuelForm(cloudVehicleId: cloudVehicleId, fuelRecordId: fuelRecordId,)),
+    MaterialPageRoute(builder: (context) => EditFuelForm(vehicleCloudId: vehicleCloudId, fuelRecordId: fuelRecordId,)),
   ).then((_) => onReturn?.call());
 }
