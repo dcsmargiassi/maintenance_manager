@@ -19,6 +19,7 @@ class BatteryDetailsCloudModel {
   // Convert to a Firestore map
   Map<String, dynamic> toMap() {
     return {
+      'userId': userId,
       'vehicleCloudId': vehicleCloudId,
       'batterySeriesType': batterySeriesType,
       'batterySize': batterySize,
@@ -38,6 +39,20 @@ class BatteryDetailsCloudModel {
       batterySeriesType: map['batterySeriesType'],
       batterySize: map['batterySize'],
       coldCrankAmps: (map['coldCrankAmps'] as num?)?.toDouble(),
+    );
+  }
+
+  factory BatteryDetailsCloudModel.fromJson(
+    String cloudId,
+    Map<String, dynamic> data,
+  ) {
+    return BatteryDetailsCloudModel(
+      cloudId: cloudId,
+      userId: data['userId'] ?? '',
+      vehicleCloudId: data['vehicleCloudId'] ?? '',
+      batterySeriesType: data['batterySeriesType'],
+      batterySize: data['batterySize'],
+      coldCrankAmps: (data['coldCrankAmps'] as num?)?.toDouble(),
     );
   }
 }

@@ -41,6 +41,25 @@ class EngineDetailsCloudModel {
     };
   }
 
+  factory EngineDetailsCloudModel.empty({
+    required String userId,
+    required String vehicleCloudId,
+  }) {
+    return EngineDetailsCloudModel(
+      cloudId: 'engineDetails',
+      userId: userId,
+      vehicleCloudId: vehicleCloudId,
+      engineSize: '',
+      cylinders: '',
+      engineType: '',
+      oilWeight: '',
+      oilComposition: '',
+      oilClass: '',
+      oilFilter: '',
+      engineFilter: '',
+    );
+  }
+
   factory EngineDetailsCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return EngineDetailsCloudModel(
       cloudId: cloudId,
@@ -59,10 +78,8 @@ class EngineDetailsCloudModel {
 
   static EngineDetailsCloudModel? fromJson(
   String cloudId,
-  Map<String, dynamic>? data,
+  Map<String, dynamic> data,
 ) {
-  if (data == null) return null;
-
   return EngineDetailsCloudModel(
     cloudId: cloudId,
     userId: data['userId'] ?? '',

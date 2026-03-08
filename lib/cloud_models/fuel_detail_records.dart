@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FuelRecordCloudModel {
   final String? cloudId; // Firestore document ID
   final String userId;
@@ -8,6 +10,7 @@ class FuelRecordCloudModel {
   final double refuelCost; // auto-calculated
   final double odometerAmount;
   final String date;
+  final Timestamp? createdAt;
 
   FuelRecordCloudModel({
     this.cloudId,
@@ -18,6 +21,7 @@ class FuelRecordCloudModel {
     required this.refuelCost,
     required this.odometerAmount,
     required this.date,
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +33,7 @@ class FuelRecordCloudModel {
       'refuelCost': refuelCost,
       'odometerAmount': odometerAmount,
       'date': date,
+      'createdAt': createdAt, // if null (legacy) firestore will ignore
     };
   }
 
@@ -42,6 +47,7 @@ class FuelRecordCloudModel {
       refuelCost: (map['refuelCost'] ?? 0).toDouble(),
       odometerAmount: (map['odometerAmount'] ?? 0).toDouble(),
       date: map['date'] ?? '',
+      createdAt: map['createdAt'] as Timestamp?,
     );
   }
 }

@@ -30,6 +30,27 @@ class ExteriorDetailsCloudModel {
     required this.licensePlateLamp,
   });
 
+  factory ExteriorDetailsCloudModel.empty({
+    required String userId,
+    required String vehicleCloudId,
+  }) {
+    return ExteriorDetailsCloudModel(
+      cloudId: 'exteriorDetails',
+      userId: userId,
+      vehicleCloudId: vehicleCloudId,
+      driverWindshieldWiper: '',
+      passengerWindshieldWiper: '',
+      rearWindshieldWiper: '',
+      headlampHighBeam: '',
+      headlampLowBeam: '',
+      turnLamp: '',
+      backupLamp: '',
+      fogLamp: '',
+      brakeLamp: '',
+      licensePlateLamp: '',
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,

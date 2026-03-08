@@ -43,6 +43,7 @@ class VehicleInformationCloudModel {
     this.licensePlate,
   });
 
+@Deprecated("Phase out from map utilize from json")
   factory VehicleInformationCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
     return VehicleInformationCloudModel(
       cloudId: cloudId,
@@ -91,6 +92,33 @@ class VehicleInformationCloudModel {
     };
   }
 
+  factory VehicleInformationCloudModel.empty({
+    required String userId,
+    required String cloudId,
+  }) {
+    return VehicleInformationCloudModel(
+      cloudId: cloudId,
+      userId: userId,
+      vehicleNickName: '',
+      vin: '',
+      make: '',
+      model: '',
+      version: '',
+      year: 0,
+      purchaseDate: '',
+      sellDate: '',
+      odometerBuy: 0.0,
+      odometerSell: 0.0,
+      odometerCurrent: 0.0,
+      purchasePrice: 0.0,
+      sellPrice: 0.0,
+      archived: 0,
+      lifeTimeFuelCost: 0.0,
+      lifeTimeMaintenanceCost: 0.0,
+      licensePlate: '',
+    );
+  }
+
   static Future<VehicleInformationCloudModel?> fromJson(
     String cloudId,
     Map<String, dynamic>? data, {
@@ -121,7 +149,7 @@ class VehicleInformationCloudModel {
       make: data['make'],
       model: data['model'],
       version: data['version'],
-      year: (data['year'] ?? 0) as int,
+      year: (data['year'] as num?)?.toInt() ?? 0,
       purchaseDate: data['purchaseDate'],
       sellDate: data['sellDate'],
       odometerBuy: (data['odometerBuy'] as num?)?.toDouble(),
