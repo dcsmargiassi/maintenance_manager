@@ -91,7 +91,7 @@ class EngineDetailsSection extends StatelessWidget {
           },
           items: (String? filter, LoadProps? props) async {
             final allOptions = [
-              "I1", "I2", "I3", "i4", "i5", "I6", "I8",
+              "I1", "I2", "I3", "I4", "I5", "I6", "I8",
               "V2", "V3", "V4", "V5", "V6", "V8", "V10", "V12", "V14", "V16", "V18",
               "F2", "F4", "F6", "F10", "F12", "F16",
               "W8", "W12", "W16"

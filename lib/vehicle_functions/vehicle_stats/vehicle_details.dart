@@ -138,7 +138,7 @@ class VehicleDetailsSectionState extends State<VehicleDetailsSection> {
             final allOptions = [
               "AC", "Acura", "Alfa Romeo", "Alpine", "Ariel", "Aro", "Artega", "Aston Martin", "Audi",  "Aurus",
                "BMW", "Bristol", "Bufori", "Bugatti", "Buick",
-               "Cadillac" "Caterham", "Chevrolet", "Chrysler", "Citroen", "Cupra", "Dacia", "Daewoo", "Daihatsu",
+               "Cadillac", "Caterham", "Chevrolet", "Chrysler", "Citroen", "Cupra", "Dacia", "Daewoo", "Daihatsu",
                "Datsun", "DeLorean", "Dodge", "Donkervoort", "Dr Motor", "DS Automobiles", "Eagle", "Ferrari",
                "Fiat", "Fisker", "Ford", "FSO", "Geely", "Genesis", "GMC", "Gordon Murray Automotive", "GTA Motor",
                "Hindustan", "Holden", "Honda", "Hummer", "Hyundai", "Ineos", "Infiniti", "Isuzu", "Jaguar", "Jeep",
