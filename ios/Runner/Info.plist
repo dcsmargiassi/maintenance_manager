@@ -34,6 +34,12 @@
 	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+    	<string>_dartobservatory._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app uses the local network for development debugging.</string>
 	<key>NSDocumentsUsageDescription</key>
 	<string>This app needs access to your documents for local database storage and access.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
