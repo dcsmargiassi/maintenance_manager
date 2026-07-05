@@ -12,6 +12,9 @@ import 'package:maintenance_manager/account_functions/profile_page.dart';
 import 'package:maintenance_manager/fuel_functions/edit_fuel_record.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
 import 'package:maintenance_manager/homepage.dart';
+import 'package:maintenance_manager/maintenance_functions/add_maintenance_record.dart';
+import 'package:maintenance_manager/maintenance_functions/edit_maintenance_record.dart';
+import 'package:maintenance_manager/maintenance_functions/list_maintenance_records.dart';
 import 'package:maintenance_manager/settings/display_options.dart';
 import 'package:maintenance_manager/settings/manage_data.dart';
 import 'package:maintenance_manager/settings/privacy_policy_display.dart';
@@ -31,7 +34,8 @@ Completer<void> navigationCompleter = Completer<void>();
 
 // Authentication and home Pages
 
-Future<void> navigateToCreateAccountPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToCreateAccountPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const CreateAccountPage()),
@@ -45,28 +49,32 @@ Future<void> navigateToLogin(BuildContext context, {VoidCallback? onReturn}) {
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToHomePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
+Future<void> navigateToHomePage(BuildContext context,
+    {VoidCallback? onReturn, bool showGlobalActions = true}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const HomePage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToProfilePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
+Future<void> navigateToProfilePage(BuildContext context,
+    {VoidCallback? onReturn, bool showGlobalActions = true}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const ProfilePage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditProfilePage(BuildContext context, {VoidCallback? onReturn, bool showGlobalActions = true}) {
+Future<void> navigateToEditProfilePage(BuildContext context,
+    {VoidCallback? onReturn, bool showGlobalActions = true}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const EditProfilePage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToResetPasswordPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToResetPasswordPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
@@ -74,35 +82,40 @@ Future<void> navigateToResetPasswordPage(BuildContext context, {VoidCallback? on
 }
 
 // Settings Page
-Future<void> navigateToSettingsPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToSettingsPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const DisplaySettings()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToPrivacyPolicy(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToPrivacyPolicy(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToTermsOfServicePage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToTermsOfServicePage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const TermsOfServicePage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToManageDataPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToManageDataPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const ManageDataPage()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToDisplayOptionsPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToDisplayOptionsPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const DisplayOptionsPage()),
@@ -111,77 +124,152 @@ Future<void> navigateToDisplayOptionsPage(BuildContext context, {VoidCallback? o
 
 // Vehicle Functions
 
-Future<void> navigateToMyVehicles(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToMyVehicles(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const DisplayVehicleLists()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToAddVehicleFormPage(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToAddVehicleFormPage(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => const AddVehicleFormApp()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToSpecificVehiclePage(BuildContext context,  vehicleCloudId, {VoidCallback? onReturn}) {
+Future<void> navigateToSpecificVehiclePage(BuildContext context, vehicleCloudId,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayVehicleInfo(vehicleCloudId: vehicleCloudId)),
+    MaterialPageRoute(
+        builder: (context) =>
+            DisplayVehicleInfo(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToGuestVehicleDisplayPage(BuildContext context, {VoidCallback? onReturn,}) {
+Future<void> navigateToGuestVehicleDisplayPage(
+  BuildContext context, {
+  VoidCallback? onReturn,
+}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const GuestDisplayVehicleInfoPage(),
+    MaterialPageRoute(
+      builder: (context) => const GuestDisplayVehicleInfoPage(),
     ),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditVehiclePage(BuildContext context, String vehicleCloudId, int archivedStatus, {VoidCallback? onReturn}) {
+Future<void> navigateToEditVehiclePage(
+    BuildContext context, String vehicleCloudId, int archivedStatus,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EditVehicleForm(vehicleCloudId: vehicleCloudId, archivedStatus: archivedStatus,)),
+    MaterialPageRoute(
+        builder: (context) => EditVehicleForm(
+              vehicleCloudId: vehicleCloudId,
+              archivedStatus: archivedStatus,
+            )),
   ).then((_) => onReturn?.call());
 }
 
 // Archived Vehicles
 
-Future<void> navigateToArchivedVehicles(BuildContext context, {VoidCallback? onReturn}) {
+Future<void> navigateToArchivedVehicles(BuildContext context,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const DisplayArchivedVehicleLists()),
+    MaterialPageRoute(
+        builder: (context) => const DisplayArchivedVehicleLists()),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToSpecificArchivedVehiclePage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
+Future<void> navigateToSpecificArchivedVehiclePage(
+    BuildContext context, String vehicleCloudId,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayArchivedVehicleInfo(vehicleCloudId: vehicleCloudId)),
+    MaterialPageRoute(
+        builder: (context) =>
+            DisplayArchivedVehicleInfo(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
 // Fuel Records
 
-Future<void> navigateToAddFuelRecordPage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
+Future<void> navigateToAddFuelRecordPage(
+    BuildContext context, String vehicleCloudId,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => AddFuelRecordFormApp(vehicleCloudId: vehicleCloudId)),
+    MaterialPageRoute(
+        builder: (context) =>
+            AddFuelRecordFormApp(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToDisplayFuelRecordPage(BuildContext context, String vehicleCloudId, {VoidCallback? onReturn}) {
+Future<void> navigateToDisplayFuelRecordPage(
+    BuildContext context, String vehicleCloudId,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DisplayFuelLists(vehicleCloudId: vehicleCloudId)),
+    MaterialPageRoute(
+        builder: (context) => DisplayFuelLists(vehicleCloudId: vehicleCloudId)),
   ).then((_) => onReturn?.call());
 }
 
-Future<void> navigateToEditFuelRecordPage(BuildContext context, String vehicleCloudId, String fuelRecordId, {VoidCallback? onReturn}) {
+Future<void> navigateToEditFuelRecordPage(
+    BuildContext context, String vehicleCloudId, String fuelRecordId,
+    {VoidCallback? onReturn}) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EditFuelForm(vehicleCloudId: vehicleCloudId, fuelRecordId: fuelRecordId,)),
+    MaterialPageRoute(
+        builder: (context) => EditFuelForm(
+              vehicleCloudId: vehicleCloudId,
+              fuelRecordId: fuelRecordId,
+            )),
   ).then((_) => onReturn?.call());
+}
+
+// Maintenance Records
+
+Future<void> navigateToEditMaintenanceRecordPage(BuildContext context,
+    String vehicleCloudId, String maintenanceRecordCloudId,
+    {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(
+        builder: (context) => EditMaintenanceRecordFormApp(
+              vehicleCloudId: vehicleCloudId,
+              maintenanceRecordCloudId: maintenanceRecordCloudId,
+            )),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToAddMaintenanceRecordPage(
+    BuildContext context, String vehicleCloudId,
+    {VoidCallback? onReturn}) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(
+        builder: (context) => AddMaintenanceRecordFormApp(
+              vehicleCloudId: vehicleCloudId,
+            )),
+  ).then((_) => onReturn?.call());
+}
+
+Future<void> navigateToDisplayMaintenanceRecordPage(
+  BuildContext context,
+  String vehicleCloudId,
+) {
+  return Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => DisplayMaintenanceLists(
+        vehicleCloudId: vehicleCloudId,
+      ),
+    ),
+  );
 }

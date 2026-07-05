@@ -14,7 +14,8 @@ class VehicleCloudWriteOperations {
   CollectionReference<Map<String, dynamic>> _col(String userId) =>
       _firestore.collection('users').doc(userId).collection('vehicles');
 
-  DocumentReference<Map<String, dynamic>> _doc(String userId, String cloudVehicleId) =>
+  DocumentReference<Map<String, dynamic>> _doc(
+          String userId, String cloudVehicleId) =>
       _col(userId).doc(cloudVehicleId);
 
   /// Create vehicle (cloud-only). Returns new cloud doc id.
@@ -44,15 +45,15 @@ class VehicleCloudWriteOperations {
 
     final docRef = _doc(vehicle.userId, vehicle.cloudId);
 
-    final patch = vehicle.toMap()
-      ..removeWhere((k, v) => v == null);
+    final patch = vehicle.toMap()..removeWhere((k, v) => v == null);
 
     // Encrypt sensitive fields only if included in the patch
     if (patch.containsKey('vin') && patch['vin'] != null) {
       patch['vin'] = await encryptField(patch['vin'] as String);
     }
     if (patch.containsKey('licensePlate') && patch['licensePlate'] != null) {
-      patch['licensePlate'] = await encryptField(patch['licensePlate'] as String);
+      patch['licensePlate'] =
+          await encryptField(patch['licensePlate'] as String);
     }
 
     await docRef.update(patch);
@@ -73,7 +74,8 @@ class VehicleCloudWriteOperations {
       patch['vin'] = await encryptField(patch['vin'] as String);
     }
     if (patch.containsKey('licensePlate') && patch['licensePlate'] != null) {
-      patch['licensePlate'] = await encryptField(patch['licensePlate'] as String);
+      patch['licensePlate'] =
+          await encryptField(patch['licensePlate'] as String);
     }
 
     await docRef.update(patch);
@@ -129,7 +131,7 @@ class VehicleCloudWriteOperations {
     required String userId,
   }) async {
     final snapshot = await _col(userId).get();
-  
+
     for (final doc in snapshot.docs) {
       await deleteVehicle(
         userId: userId,
@@ -148,6 +150,20 @@ class VehicleCloudWriteOperations {
       cloudVehicleId: cloudVehicleId,
       patch: {
         'lifeTimeFuelCost': lifeTimeFuelCost,
+      },
+    );
+  }
+
+  Future<void> updateLifeTimeMaintenanceCost({
+    required String userId,
+    required String cloudVehicleId,
+    required double lifeTimeMaintenanceCost,
+  }) async {
+    await updateVehiclePatch(
+      userId: userId,
+      cloudVehicleId: cloudVehicleId,
+      patch: {
+        'lifeTimeMaintenanceCost': lifeTimeMaintenanceCost,
       },
     );
   }
