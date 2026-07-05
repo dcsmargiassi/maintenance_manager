@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class DisplayVehicleInfo extends StatefulWidget {
   final String vehicleCloudId;
 
-   const DisplayVehicleInfo({super.key, required this.vehicleCloudId});
+  const DisplayVehicleInfo({super.key, required this.vehicleCloudId});
 
   @override
   DisplayVehicleInfoState createState() => DisplayVehicleInfoState();
@@ -39,16 +39,22 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     super.initState();
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
-    _vehicleInfoFuture = VehicleCloudReadOperations().getVehicleByCloudId(userId, widget.vehicleCloudId);
-    _engineDetailsFuture = EngineCloudReadOperations().getEngineDetails(userId, widget.vehicleCloudId);
-    _batteryDetailsFuture = BatteryCloudReadOperations().getBatteryDetails(userId, widget.vehicleCloudId);
-    _exteriorDetailsFuture = ExteriorCloudReadOperations().getExteriorDetails(userId, widget.vehicleCloudId);
+    _vehicleInfoFuture = VehicleCloudReadOperations()
+        .getVehicleByCloudId(userId, widget.vehicleCloudId);
+    _engineDetailsFuture = EngineCloudReadOperations()
+        .getEngineDetails(userId, widget.vehicleCloudId);
+    _batteryDetailsFuture = BatteryCloudReadOperations()
+        .getBatteryDetails(userId, widget.vehicleCloudId);
+    _exteriorDetailsFuture = ExteriorCloudReadOperations()
+        .getExteriorDetails(userId, widget.vehicleCloudId);
     _fetchInitialMonthYearCosts(userId, _selectedYear, _selectedMonth);
   }
 
   void _fetchInitialMonthYearCosts(String userId, int year, int month) async {
-    final monthCost = await getFuelCostByMonthYear(widget.vehicleCloudId, userId, year, month);
-    final yearCost = await getFuelCostByYear(widget.vehicleCloudId, userId, year);
+    final monthCost = await getFuelCostByMonthYear(
+        widget.vehicleCloudId, userId, year, month);
+    final yearCost =
+        await getFuelCostByYear(widget.vehicleCloudId, userId, year);
 
     if (!mounted) return;
 
@@ -56,20 +62,26 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       _selectedMonthFuelCost = monthCost;
       _selectedYearFuelCost = yearCost;
     });
-  } 
-
-  Future<double> getMonthlyFuelCost (String vehicleCloudId, String userId) async {
-  DateTime now = DateTime.now();
-  int currentYear = now.year;
-  int previousMonth = now.month - 1;
-  if (previousMonth == 0) {
-    previousMonth = 12;
-    currentYear -= 1;
   }
 
-  final records = await FuelCloudReadOperations().getFuelRecordsByMonth(userId: userId, vehicleCloudId: vehicleCloudId, year: currentYear, month: previousMonth);
-  double totalCost = records.fold(0.0, (sum, record) => sum + (record.refuelCost));
-  return totalCost;
+  Future<double> getMonthlyFuelCost(
+      String vehicleCloudId, String userId) async {
+    DateTime now = DateTime.now();
+    int currentYear = now.year;
+    int previousMonth = now.month - 1;
+    if (previousMonth == 0) {
+      previousMonth = 12;
+      currentYear -= 1;
+    }
+
+    final records = await FuelCloudReadOperations().getFuelRecordsByMonth(
+        userId: userId,
+        vehicleCloudId: vehicleCloudId,
+        year: currentYear,
+        month: previousMonth);
+    double totalCost =
+        records.fold(0.0, (sum, record) => sum + (record.refuelCost));
+    return totalCost;
   }
 
   void _onMonthYearChanged(int year, int month, String userId) async {
@@ -78,8 +90,10 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       _selectedYear = year;
     });
 
-    final monthCost = await getFuelCostByMonthYear(widget.vehicleCloudId, userId, year, month);
-    final yearCost = await getFuelCostByYear(widget.vehicleCloudId, userId, year);
+    final monthCost = await getFuelCostByMonthYear(
+        widget.vehicleCloudId, userId, year, month);
+    final yearCost =
+        await getFuelCostByYear(widget.vehicleCloudId, userId, year);
 
     if (!mounted) return;
 
@@ -89,8 +103,13 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     });
   }
 
-  Future<double> getFuelCostByMonthYear(String vehicleCloudId, String userId, int year, int month) async {
-    final records = await FuelCloudReadOperations().getFuelRecordsByMonth(userId: userId, vehicleCloudId: vehicleCloudId, year: year, month: month);
+  Future<double> getFuelCostByMonthYear(
+      String vehicleCloudId, String userId, int year, int month) async {
+    final records = await FuelCloudReadOperations().getFuelRecordsByMonth(
+        userId: userId,
+        vehicleCloudId: vehicleCloudId,
+        year: year,
+        month: month);
 
     double totalCost = 0.0;
     for (final record in records) {
@@ -100,12 +119,14 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
     return totalCost;
   }
 
-  Future<double> getFuelCostByYear(String vehicleCloudId, String userId, int year) async {
-    final records = await FuelCloudReadOperations().getFuelRecordsByYear(userId: userId, vehicleCloudId: vehicleCloudId, year: year);
-  
+  Future<double> getFuelCostByYear(
+      String vehicleCloudId, String userId, int year) async {
+    final records = await FuelCloudReadOperations().getFuelRecordsByYear(
+        userId: userId, vehicleCloudId: vehicleCloudId, year: year);
+
     double totalCost = 0.0;
     for (final record in records) {
-      final cost = record.refuelCost;  
+      final cost = record.refuelCost;
       totalCost += cost;
     }
     return totalCost;
@@ -117,20 +138,25 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
       title: AppLocalizations.of(context)!.vehicleInformationTitle,
       showActions: true,
       showBackButton: true,
-      onBack: () {navigateToMyVehicles(context);},
+      onBack: () {
+        navigateToMyVehicles(context);
+      },
       body: SafeArea(
         child: FutureBuilder<VehicleInformationCloudModel?>(
           future: _vehicleInfoFuture,
-          builder: (BuildContext context, AsyncSnapshot<VehicleInformationCloudModel?> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<VehicleInformationCloudModel?> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } if (snapshot.hasError) {
+            }
+            if (snapshot.hasError) {
               return Center(
                 child: Text("Error: ${snapshot.error}"),
               );
-            } if(!snapshot.hasData) {
+            }
+            if (!snapshot.hasData) {
               return const Center(
                 child: Text("No Vehicle Found"),
               );
@@ -152,15 +178,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                       future: _exteriorDetailsFuture,
                       builder: (context, exteriorSnapshot) {
                         if (!exteriorSnapshot.hasData) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
 
-                    return _displayVehicleDetails(
-                      snapshot.data!,
-                      engineSnapshot.data!,
-                      batterySnapshot.data!,
-                      exteriorSnapshot.data!,
-                    );
+                        return _displayVehicleDetails(
+                          snapshot.data!,
+                          engineSnapshot.data!,
+                          batterySnapshot.data!,
+                          exteriorSnapshot.data!,
+                        );
                       },
                     );
                   },
@@ -181,9 +208,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            textStyle: const TextStyle(
-              fontSize: 20, 
-              fontWeight: FontWeight.bold)),
+              textStyle:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           child: FittedBox(child: Text(label)),
         ),
       ),
@@ -191,21 +217,22 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
   }
 
   // Widget to build info text
-  Widget _infoText(String label, String? value){
+  Widget _infoText(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text("$label: ${value ?? 'N/A'}", style: const TextStyle(fontSize: 16), textAlign: TextAlign.left),
+        child: Text("$label: ${value ?? 'N/A'}",
+            style: const TextStyle(fontSize: 16), textAlign: TextAlign.left),
       ),
     );
   }
-    Widget _displayVehicleDetails(
+
+  Widget _displayVehicleDetails(
       VehicleInformationCloudModel vehicleData,
       EngineDetailsCloudModel engineData,
-      BatteryDetailsCloudModel batteryData, 
-      ExteriorDetailsCloudModel exteriorData
-    ) {
+      BatteryDetailsCloudModel batteryData,
+      ExteriorDetailsCloudModel exteriorData) {
     final prefs = Provider.of<UserPreferences>(context, listen: false);
     final monthNames = getLocalizedMonthNames(context);
     return SingleChildScrollView(
@@ -225,7 +252,8 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                     vehicleData.archived,
                     onReturn: () {
                       setState(() {
-                        _vehicleInfoFuture = VehicleCloudReadOperations().getVehicleByCloudId(
+                        _vehicleInfoFuture =
+                            VehicleCloudReadOperations().getVehicleByCloudId(
                           widget.vehicleCloudId,
                           Provider.of<AuthState>(context, listen: false).userId,
                         );
@@ -238,27 +266,37 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[800],
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textStyle: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ),
           ExpansionTile(
             initiallyExpanded: true,
-            title: Text(AppLocalizations.of(context)!.vehicleDetails, style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.vehicleDetails,
+                style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText(AppLocalizations.of(context)!.nicknameLabel, vehicleData.vehicleNickName),
-              _infoText(AppLocalizations.of(context)!.makeLabel, vehicleData.make),
-              _infoText(AppLocalizations.of(context)!.modelLabel, vehicleData.model),
-              _infoText(AppLocalizations.of(context)!.yearLabel, vehicleData.year.toString()),
-              _infoText(AppLocalizations.of(context)!.vinLabel, vehicleData.vin),
-              _infoText(AppLocalizations.of(context)!.licensePlateLabel, vehicleData.licensePlate.toString()),
-              _infoText(AppLocalizations.of(context)!.mileageLabel, vehicleData.odometerCurrent.toString()),
+              _infoText(AppLocalizations.of(context)!.nicknameLabel,
+                  vehicleData.vehicleNickName),
+              _infoText(
+                  AppLocalizations.of(context)!.makeLabel, vehicleData.make),
+              _infoText(
+                  AppLocalizations.of(context)!.modelLabel, vehicleData.model),
+              _infoText(AppLocalizations.of(context)!.yearLabel,
+                  vehicleData.year.toString()),
+              _infoText(
+                  AppLocalizations.of(context)!.vinLabel, vehicleData.vin),
+              _infoText(AppLocalizations.of(context)!.licensePlateLabel,
+                  vehicleData.licensePlate.toString()),
+              _infoText(AppLocalizations.of(context)!.mileageLabel,
+                  vehicleData.odometerCurrent.toString()),
             ],
           ),
           ExpansionTile(
             key: ValueKey('financial_summary_${_selectedYear}_$_selectedMonth'),
-            title: Text(AppLocalizations.of(context)!.financialSummary, style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.financialSummary,
+                style: TextStyle(fontWeight: FontWeight.bold)),
             initiallyExpanded: true,
             children: [
               Padding(
@@ -278,13 +316,17 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                             value: _selectedYear,
                             onChanged: (newYear) {
                               if (newYear != null) {
-                                final userId = Provider.of<AuthState>(context, listen: false).userId;
-                                _onMonthYearChanged(newYear, _selectedMonth, userId);
+                                final userId = Provider.of<AuthState>(context,
+                                        listen: false)
+                                    .userId;
+                                _onMonthYearChanged(
+                                    newYear, _selectedMonth, userId);
                               }
                             },
                             items: List.generate(10, (index) {
                               final year = DateTime.now().year - index;
-                              return DropdownMenuItem(value: year, child: Text('$year'));
+                              return DropdownMenuItem(
+                                  value: year, child: Text('$year'));
                             }),
                           ),
                         ],
@@ -306,16 +348,19 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                             value: _selectedMonth,
                             onChanged: (newMonth) {
                               if (newMonth != null) {
-                                final userId = Provider.of<AuthState>(context, listen: false).userId;
-                                _onMonthYearChanged(_selectedYear, newMonth, userId);
+                                final userId = Provider.of<AuthState>(context,
+                                        listen: false)
+                                    .userId;
+                                _onMonthYearChanged(
+                                    _selectedYear, newMonth, userId);
                               }
                             },
                             items: List.generate(12, (index) {
-                            final monthNumber = index + 1;
-                            final monthName = monthNames[monthNumber]!;
-                            return DropdownMenuItem(value: monthNumber, child: Text(monthName));
-                            }
-                            ),
+                              final monthNumber = index + 1;
+                              final monthName = monthNames[monthNumber]!;
+                              return DropdownMenuItem(
+                                  value: monthNumber, child: Text(monthName));
+                            }),
                           ),
                         ],
                       ),
@@ -324,55 +369,52 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 ),
               ),
               _infoText(
-                AppLocalizations.of(context)!.monthlyFuelCost(_selectedMonth, _selectedYear),
-                _selectedMonthFuelCost != null ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}" 
-                : AppLocalizations.of(context)!.noDataText
-              ),
+                  AppLocalizations.of(context)!
+                      .monthlyFuelCost(_selectedMonth, _selectedYear),
+                  _selectedMonthFuelCost != null
+                      ? "${prefs.currencySymbol}${_selectedMonthFuelCost!.toStringAsFixed(2)}"
+                      : AppLocalizations.of(context)!.noDataText),
               _infoText(
-                AppLocalizations.of(context)!.yearlyFuelCost(_selectedYear),
-                _selectedYearFuelCost != null ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}" 
-                : AppLocalizations.of(context)!.noDataText
-              ),
-              _infoText(
-                AppLocalizations.of(context)!.lifetimeFuelCost,
-                "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost.toStringAsFixed(2)}"
-              ),
-              _infoText(
-                AppLocalizations.of(context)!.purchasePriceLabel,
-                "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"
-              ),
-              _infoText(
-                AppLocalizations.of(context)!.lifetimeMaintenanceCost,
-                "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost.toStringAsFixed(2)}"
-              ),
-              _infoText(
-                AppLocalizations.of(context)!.lifetimeVehicleCost,
-                "${prefs.currencySymbol}${(
-                    (vehicleData.purchasePrice ?? 0) +
-                    (vehicleData.lifeTimeFuelCost) +
-                    (vehicleData.lifeTimeMaintenanceCost)
-                  ).toStringAsFixed(2)}"
-              ),
+                  AppLocalizations.of(context)!.yearlyFuelCost(_selectedYear),
+                  _selectedYearFuelCost != null
+                      ? "${prefs.currencySymbol}${_selectedYearFuelCost!.toStringAsFixed(2)}"
+                      : AppLocalizations.of(context)!.noDataText),
+              _infoText(AppLocalizations.of(context)!.lifetimeFuelCost,
+                  "${prefs.currencySymbol}${vehicleData.lifeTimeFuelCost.toStringAsFixed(2)}"),
+              _infoText(AppLocalizations.of(context)!.purchasePriceLabel,
+                  "${prefs.currencySymbol}${vehicleData.purchasePrice?.toStringAsFixed(2) ?? '0.00'}"),
+              _infoText(AppLocalizations.of(context)!.lifetimeMaintenanceCost,
+                  "${prefs.currencySymbol}${vehicleData.lifeTimeMaintenanceCost.toStringAsFixed(2)}"),
+              _infoText(AppLocalizations.of(context)!.lifetimeVehicleCost,
+                  "${prefs.currencySymbol}${((vehicleData.purchasePrice ?? 0) + (vehicleData.lifeTimeFuelCost) + (vehicleData.lifeTimeMaintenanceCost)).toStringAsFixed(2)}"),
             ],
           ),
           ExpansionTile(
-            title: Text(AppLocalizations.of(context)!.engineDetails, 
-            style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.engineDetails,
+                style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText(AppLocalizations.of(context)!.engineDetails, engineData.engineSize),
-              _infoText(AppLocalizations.of(context)!.cylinderLabel, engineData.cylinders),
-              _infoText(AppLocalizations.of(context)!.engineTypeLabel, engineData.engineType),
-              _infoText(AppLocalizations.of(context)!.oilWeightLabel, engineData.oilWeight),
-              _infoText(AppLocalizations.of(context)!.oilFilterLabel, engineData.oilFilter),
+              _infoText(AppLocalizations.of(context)!.engineDetails,
+                  engineData.engineSize),
+              _infoText(AppLocalizations.of(context)!.cylinderLabel,
+                  engineData.cylinders),
+              _infoText(AppLocalizations.of(context)!.engineTypeLabel,
+                  engineData.engineType),
+              _infoText(AppLocalizations.of(context)!.oilWeightLabel,
+                  engineData.oilWeight),
+              _infoText(AppLocalizations.of(context)!.oilFilterLabel,
+                  engineData.oilFilter),
             ],
           ),
           ExpansionTile(
-            title: Text(AppLocalizations.of(context)!.batteryDetails, 
-            style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AppLocalizations.of(context)!.batteryDetails,
+                style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
-              _infoText(AppLocalizations.of(context)!.seriesTypeLabel, batteryData.batterySeriesType),
-              _infoText(AppLocalizations.of(context)!.bciGroupSizeLabel, batteryData.batterySize),
-              _infoText(AppLocalizations.of(context)!.coldCrankAmpsLabel, "${batteryData.coldCrankAmps ?? 'N/A'}"),
+              _infoText(AppLocalizations.of(context)!.seriesTypeLabel,
+                  batteryData.batterySeriesType),
+              _infoText(AppLocalizations.of(context)!.bciGroupSizeLabel,
+                  batteryData.batterySize),
+              _infoText(AppLocalizations.of(context)!.coldCrankAmpsLabel,
+                  "${batteryData.coldCrankAmps ?? 'N/A'}"),
             ],
           ),
           ExpansionTile(
@@ -381,16 +423,26 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             children: [
-              _infoText(AppLocalizations.of(context)!.driverWiperLabel, exteriorData.driverWindshieldWiper),
-              _infoText(AppLocalizations.of(context)!.passengerWiperLabel, exteriorData.passengerWindshieldWiper),
-              _infoText(AppLocalizations.of(context)!.rearWiperLabel, exteriorData.rearWindshieldWiper),
-              _infoText(AppLocalizations.of(context)!.highBeamLabel, exteriorData.headlampHighBeam),
-              _infoText(AppLocalizations.of(context)!.lowBeamLabel, exteriorData.headlampLowBeam),
-              _infoText(AppLocalizations.of(context)!.turnLampLabel, exteriorData.turnLamp),
-              _infoText(AppLocalizations.of(context)!.backupLampLabel, exteriorData.backupLamp),
-              _infoText(AppLocalizations.of(context)!.fogLampLabel, exteriorData.fogLamp),
-              _infoText(AppLocalizations.of(context)!.brakeLampLabel, exteriorData.brakeLamp),
-              _infoText(AppLocalizations.of(context)!.licenseLampLabel, exteriorData.licensePlateLamp),
+              _infoText(AppLocalizations.of(context)!.driverWiperLabel,
+                  exteriorData.driverWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.passengerWiperLabel,
+                  exteriorData.passengerWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.rearWiperLabel,
+                  exteriorData.rearWindshieldWiper),
+              _infoText(AppLocalizations.of(context)!.highBeamLabel,
+                  exteriorData.headlampHighBeam),
+              _infoText(AppLocalizations.of(context)!.lowBeamLabel,
+                  exteriorData.headlampLowBeam),
+              _infoText(AppLocalizations.of(context)!.turnLampLabel,
+                  exteriorData.turnLamp),
+              _infoText(AppLocalizations.of(context)!.backupLampLabel,
+                  exteriorData.backupLamp),
+              _infoText(AppLocalizations.of(context)!.fogLampLabel,
+                  exteriorData.fogLamp),
+              _infoText(AppLocalizations.of(context)!.brakeLampLabel,
+                  exteriorData.brakeLamp),
+              _infoText(AppLocalizations.of(context)!.licenseLampLabel,
+                  exteriorData.licensePlateLamp),
             ],
           ),
           const SizedBox(height: 20),
@@ -400,11 +452,15 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
               children: [
                 Row(
                   children: [
-                    buildVehicleButton(AppLocalizations.of(context)!.buttonAddFuel, () {
+                    buildVehicleButton(
+                        AppLocalizations.of(context)!.buttonAddFuel, () {
                       navigateToAddFuelRecordPage(context, vehicleData.cloudId);
                     }),
                     const SizedBox(width: 16.0),
-                    buildVehicleButton(AppLocalizations.of(context)!.buttonAddWork, () {
+                    buildVehicleButton(
+                        AppLocalizations.of(context)!.buttonAddWork, () {
+                      navigateToAddMaintenanceRecordPage(
+                          context, vehicleData.cloudId);
                       // navigateToAddWorkRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],
@@ -412,11 +468,16 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    buildVehicleButton(AppLocalizations.of(context)!.buttonViewFuel, () {
-                      navigateToDisplayFuelRecordPage(context, vehicleData.cloudId);
+                    buildVehicleButton(
+                        AppLocalizations.of(context)!.buttonViewFuel, () {
+                      navigateToDisplayFuelRecordPage(
+                          context, vehicleData.cloudId);
                     }),
                     const SizedBox(width: 16.0),
-                    buildVehicleButton(AppLocalizations.of(context)!.buttonViewWork, () {
+                    buildVehicleButton(
+                        AppLocalizations.of(context)!.buttonViewWork, () {
+                      navigateToDisplayMaintenanceRecordPage(
+                          context, vehicleData.cloudId);
                       // navigateToDisplayWorkRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],
