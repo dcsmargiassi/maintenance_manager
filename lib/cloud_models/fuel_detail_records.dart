@@ -37,7 +37,8 @@ class FuelRecordCloudModel {
     };
   }
 
-  factory FuelRecordCloudModel.fromMap(String cloudId, Map<String, dynamic> map) {
+  factory FuelRecordCloudModel.fromMap(
+      String cloudId, Map<String, dynamic> map) {
     return FuelRecordCloudModel(
       cloudId: cloudId,
       userId: (map['userId'] ?? ''),

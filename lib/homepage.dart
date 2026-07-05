@@ -19,103 +19,95 @@ class HomePage extends StatelessWidget {
     const double homeScreenButtonHeight = 50.0;
     const double homeScreenButtonWidth = 240.0;
     const double buttonSpacingBoxHeight = 50.0;
-      return Scaffold(
-        appBar: AppBar(
-          // Disabling backspace button
-          automaticallyImplyLeading: false,
-          title:  Text(
-            localizations.applicationName,
-          ),
-          actions: [
-            buildAppNavigatorMenu(context),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        // Disabling backspace button
+        automaticallyImplyLeading: false,
+        title: Text(
+          localizations.applicationName,
         ),
-        body: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget> [
+        actions: [
+          buildAppNavigatorMenu(context),
+        ],
+      ),
+      body: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
             const SizedBox(height: buttonSpacingBoxHeight),
             Image.asset(
               'assets/icon/1024.png',
               width: 200,
               height: 200,
             ),
-
-          SizedBox(
-            width: homeScreenButtonWidth,
-            height: homeScreenButtonHeight,
-            child: ElevatedButton(
-              onPressed: () {
-                navigateToMyVehicles(context);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 4,
-                textStyle: TextStyle(
-                  fontSize: buttonFontSize,
-                  fontWeight: FontWeight.bold,
+            SizedBox(
+              width: homeScreenButtonWidth,
+              height: homeScreenButtonHeight,
+              child: ElevatedButton(
+                onPressed: () {
+                  navigateToMyVehicles(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 4,
+                  textStyle: TextStyle(
+                    fontSize: buttonFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                child: Text(myVehicles),
               ),
-              child: Text(myVehicles),
             ),
-          ),
-
-          const SizedBox(height: buttonSpacingBoxHeight),
-   
-          SizedBox(
-            width: homeScreenButtonWidth,
-            height: homeScreenButtonHeight,
-            child: ElevatedButton(
-              onPressed: () {
-                navigateToAddVehicleFormPage(context);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 4,
-                foregroundColor: Colors.white,
-                textStyle: TextStyle(
-                  fontSize: buttonFontSize,
-                  fontWeight: FontWeight.bold,
+            const SizedBox(height: buttonSpacingBoxHeight),
+            SizedBox(
+              width: homeScreenButtonWidth,
+              height: homeScreenButtonHeight,
+              child: ElevatedButton(
+                onPressed: () {
+                  navigateToAddVehicleFormPage(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 4,
+                  foregroundColor: Colors.white,
+                  textStyle: TextStyle(
+                    fontSize: buttonFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                child: Text(addRemoveVehicle),
               ),
-              child: Text(addRemoveVehicle),
             ),
-          ),
-
-          const SizedBox(height: buttonSpacingBoxHeight),
-
-          SizedBox(
-            width: homeScreenButtonWidth,
-            height: homeScreenButtonHeight,
-            child: ElevatedButton(
-              onPressed: () {
-                navigateToArchivedVehicles(context);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 4,
-                foregroundColor: Colors.white,
-                textStyle: TextStyle(
-                  fontSize: buttonFontSize,
-                  fontWeight: FontWeight.bold,
+            const SizedBox(height: buttonSpacingBoxHeight),
+            SizedBox(
+              width: homeScreenButtonWidth,
+              height: homeScreenButtonHeight,
+              child: ElevatedButton(
+                onPressed: () {
+                  navigateToArchivedVehicles(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 4,
+                  foregroundColor: Colors.white,
+                  textStyle: TextStyle(
+                    fontSize: buttonFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                child: Text(archivedVehicles),
               ),
-              child: Text(archivedVehicles),
             ),
-          ),
-
-          const SizedBox(height: buttonSpacingBoxHeight),
-
-          const Material(
-            color: Colors.transparent,
-            child: Text(
-              'Version: 0.7.0',
-              style: TextStyle(fontSize: 12,
-              fontWeight: FontWeight.normal,
-              color: Colors.grey
-              ),
-            )
-          )
+            const SizedBox(height: buttonSpacingBoxHeight),
+            const Material(
+                color: Colors.transparent,
+                child: Text(
+                  'Version: 0.8.0 Beta',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey),
+                ))
           ],
         ),
       ),
