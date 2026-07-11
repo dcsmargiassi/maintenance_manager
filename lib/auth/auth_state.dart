@@ -30,30 +30,30 @@ class AuthState extends ChangeNotifier {
     if (_user != null) {
       await _user!.reload();
       _user = FirebaseAuth.instance.currentUser;
-
+// *** Termporarily disabling auto sign out until google/apple and face id authentication implemented
       // Checking for lastLogin in Firestore
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user!.uid)
-          .get();
+      //final doc = await FirebaseFirestore.instance
+      //    .collection('users')
+      //    .doc(_user!.uid)
+      //    .get();
 
-      final data = doc.data();
-      if (data != null && data['lastLogin'] != null) {
-        final lastLogin = (data['lastLogin'] as Timestamp).toDate();
-        final now = DateTime.now();
-        // if last login was more than 30 days ago, sign them out
-        if (now.difference(lastLogin).inDays > 30) {
-          await FirebaseAuth.instance.signOut();
-          _user = null;
+      //final data = doc.data();
+      //if (data != null && data['lastLogin'] != null) {
+      //  final lastLogin = (data['lastLogin'] as Timestamp).toDate();
+      //  final now = DateTime.now();
+      //  // if last login was more than 30 days ago, sign them out
+      //  if (now.difference(lastLogin).inDays > 30) {
+      //    await FirebaseAuth.instance.signOut();
+      //    _user = null;
+      //  }
+      //}
+      if (_user != null) {
+        try {
+          await migrateUserSettingsIfNeeded();
+        } catch (e) {
+          debugPrint("Migration failed: $e");
         }
       }
-      if (_user != null) {
-      try {
-        await migrateUserSettingsIfNeeded();
-      } catch (e) {
-        debugPrint("Migration failed: $e");
-      }
-    }
     }
     _initialized = true;
     isLoading = false;
@@ -90,13 +90,13 @@ class UserPreferences extends ChangeNotifier {
   String theme;
 
   factory UserPreferences.defaults() {
-  return UserPreferences(
-    currency: 'USD',
-    distanceUnit: 'Miles',
-    dateFormat: 'MM/DD/YYYY',
-    theme: 'Light',
-  );
-}
+    return UserPreferences(
+      currency: 'USD',
+      distanceUnit: 'Miles',
+      dateFormat: 'MM/DD/YYYY',
+      theme: 'Light',
+    );
+  }
 
   UserPreferences({
     required this.currency,
