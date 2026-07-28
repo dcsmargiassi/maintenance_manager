@@ -9,7 +9,8 @@ import 'package:maintenance_manager/data/cloud_sync_service.dart';
 import 'package:maintenance_manager/data/database.dart';
 import 'package:maintenance_manager/helper_functions/global_theme.dart';
 import 'package:maintenance_manager/account_functions/signin_page.dart';
-import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
+import 'package:intl/intl_standalone.dart'
+    if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:maintenance_manager/helper_functions/utility.dart';
 import 'package:maintenance_manager/homepage.dart';
 import 'package:maintenance_manager/l10n/app_localizations.dart';
@@ -32,15 +33,15 @@ Future<void> _saveTokenToFirestore(String token) async {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   if (uid != null) {
     await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .collection('tokens')
-      .doc(token)
-      .set({
-        'token': token,
-        'createdAt': FieldValue.serverTimestamp(),
-        'platform': defaultTargetPlatform.toString(),
-      });
+        .collection('users')
+        .doc(uid)
+        .collection('tokens')
+        .doc(token)
+        .set({
+      'token': token,
+      'createdAt': FieldValue.serverTimestamp(),
+      'platform': defaultTargetPlatform.toString(),
+    });
   }
 }
 
@@ -84,7 +85,8 @@ Future<void> _initPushNotifications() async {
 
   // Listen for foreground messages
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    debugPrint('💬 Received a foreground message: ${message.notification?.title}');
+    debugPrint(
+        '💬 Received a foreground message: ${message.notification?.title}');
   });
 
   FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
@@ -115,25 +117,23 @@ Future<void> initFirestoreCache() async {
   );
 }
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await findSystemLocale();
-try {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  debugPrint("***FIREBASE INITIALIZED***");
-  }catch (e, st) { 
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint("***FIREBASE INITIALIZED***");
+  } catch (e, st) {
     debugPrint('X Firebase init failed: $e\n$st');
   }
   // Initializing firestone offline persistance
   try {
     await initFirestoreCache();
-  }catch(e, st) {
+  } catch (e, st) {
     debugPrint('X Firebase cache init failed: $e\n$st');
   }
-  
 
   // Call to initialize push notification connection
   await _initPushNotifications();
@@ -151,7 +151,7 @@ try {
   }
 
   // DEBUG TESTING DEFAULT VALUE: FALSE Only utilize during testing of syncing data to cloud database
-   const bool kResetCloudSyncOnStartup =
+  const bool kResetCloudSyncOnStartup =
       bool.fromEnvironment('RESET_CLOUD_SYNC', defaultValue: false);
 
   if (kResetCloudSyncOnStartup) {
@@ -167,6 +167,8 @@ try {
           create: (_) => UserPreferences(
             currency: '\$',
             distanceUnit: 'Miles',
+            fuelVolumeUnit: 'Gallons',
+            maintenanceFluidUnit: 'Quarts',
             dateFormat: 'MM/dd/yyyy',
             theme: 'Light',
           ),
@@ -199,7 +201,7 @@ Future<void> resetAllCloudSyncState() async {
           'cloudId': null,
         },
       );
-      
+
       debugPrint('🔁 Reset $table → rows affected: $updated');
     }
   });
@@ -233,7 +235,8 @@ class MyApp extends StatelessWidget {
 
             final data = doc.data();
             if (data != null) {
-              final prefs = Provider.of<UserPreferences>(context, listen: false);
+              final prefs =
+                  Provider.of<UserPreferences>(context, listen: false);
               prefs.update(
                 currency: data['currency'],
                 distanceUnit: data['distanceUnit'],
@@ -247,12 +250,13 @@ class MyApp extends StatelessWidget {
 
               // DEBUG
               final uid = authState.userId;
-                if ((!_didRunBackfillThisSession || _didRunBackfillForUserId != uid)) {
-                  _didRunBackfillThisSession = true;
-                  _didRunBackfillForUserId = uid;
+              if ((!_didRunBackfillThisSession ||
+                  _didRunBackfillForUserId != uid)) {
+                _didRunBackfillThisSession = true;
+                _didRunBackfillForUserId = uid;
 
-                  await CloudBackfillService.instance.runOnce(uid);
-                }
+                await CloudBackfillService.instance.runOnce(uid);
+              }
             }
           });
         } else {

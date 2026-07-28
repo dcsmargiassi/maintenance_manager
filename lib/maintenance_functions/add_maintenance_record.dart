@@ -49,7 +49,11 @@ class AddMaintenanceRecordFormAppState
 
   String _selectedMaintenanceType = MaintenanceTypes.oilChange;
   String? isoDateToStore;
+
   bool hasAutofilled = false; // Limit of 1 use of autofill per form
+  bool _titleWasManuallyEdited = false; // used in autofilling title field
+  bool _updatingTitleAutomatically = false;
+
   bool canAutofillMaintenanceType(String type) {
     return {
       MaintenanceTypes.oilChange,
@@ -62,6 +66,12 @@ class AddMaintenanceRecordFormAppState
   void initState() {
     super.initState();
     isoDateToStore = DateTime.now().toIso8601String();
+
+    _setAutomaticTitle(
+      MaintenanceTypeLabels.labelFor(_selectedMaintenanceType),
+    );
+
+    titleController.addListener(_handleTitleChanged);
   }
 
   String? _validateRequiredText(String? value) {
@@ -96,6 +106,17 @@ class AddMaintenanceRecordFormAppState
   }
 
   void _resetDynamicDetailsForType(String type) {
+    final previousDefaultTitle =
+        MaintenanceTypeLabels.labelFor(_selectedMaintenanceType);
+
+    final newDefaultTitle = MaintenanceTypeLabels.labelFor(type);
+
+    final currentTitle = titleController.text.trim();
+
+    final shouldUpdateTitle = currentTitle.isEmpty ||
+        !_titleWasManuallyEdited ||
+        currentTitle == previousDefaultTitle;
+
     for (final controller in _detailControllers.values) {
       controller.dispose();
     }
@@ -105,7 +126,33 @@ class AddMaintenanceRecordFormAppState
 
     setState(() {
       _selectedMaintenanceType = type;
+      hasAutofilled = false;
     });
+
+    if (shouldUpdateTitle) {
+      _setAutomaticTitle(newDefaultTitle);
+    }
+  }
+
+  // helper for title change - if manually changed, no longer autoupdate based on maint. type
+  void _handleTitleChanged() {
+    if (_updatingTitleAutomatically) return;
+
+    _titleWasManuallyEdited = true;
+  }
+
+  void _setAutomaticTitle(String title) {
+    _updatingTitleAutomatically = true;
+
+    titleController.value = TextEditingValue(
+      text: title,
+      selection: TextSelection.collapsed(
+        offset: title.length,
+      ),
+    );
+
+    _updatingTitleAutomatically = false;
+    _titleWasManuallyEdited = false;
   }
 
   TextEditingController _controllerForDetailField(String fieldKey) {
@@ -499,6 +546,7 @@ class AddMaintenanceRecordFormAppState
 
   @override
   void dispose() {
+    titleController.removeListener(_handleTitleChanged);
     titleController.dispose();
     dateController.dispose();
     odometerController.dispose();

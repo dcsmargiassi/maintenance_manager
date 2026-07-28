@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maintenance_manager/helper_functions/migration.dart';
+import 'package:maintenance_manager/settings/display_constants.dart';
 
 class AuthState extends ChangeNotifier {
   User? _user;
@@ -86,6 +87,8 @@ class AuthState extends ChangeNotifier {
 class UserPreferences extends ChangeNotifier {
   String currency;
   String distanceUnit;
+  String fuelVolumeUnit;
+  String maintenanceFluidUnit;
   String dateFormat;
   String theme;
 
@@ -93,6 +96,8 @@ class UserPreferences extends ChangeNotifier {
     return UserPreferences(
       currency: 'USD',
       distanceUnit: 'Miles',
+      fuelVolumeUnit: 'Gallons',
+      maintenanceFluidUnit: 'Quarts',
       dateFormat: 'MM/DD/YYYY',
       theme: 'Light',
     );
@@ -101,6 +106,8 @@ class UserPreferences extends ChangeNotifier {
   UserPreferences({
     required this.currency,
     required this.distanceUnit,
+    required this.fuelVolumeUnit,
+    required this.maintenanceFluidUnit,
     required this.dateFormat,
     required this.theme,
   });
@@ -122,14 +129,25 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
+  String get fuelVolumeUnitSymbol => fuelVolumeUnits[fuelVolumeUnit] ?? 'gal';
+
+  String get maintenanceFluidUnitSymbol =>
+      maintenanceFluidUnits[maintenanceFluidUnit] ?? 'qt';
+
   void update({
     String? currency,
     String? distanceUnit,
+    String? fuelVolumeUnit,
+    String? maintenanceFluidUnit,
     String? dateFormat,
     String? theme,
   }) {
     if (currency != null) this.currency = currency;
     if (distanceUnit != null) this.distanceUnit = distanceUnit;
+    if (fuelVolumeUnit != null) this.fuelVolumeUnit = fuelVolumeUnit;
+    if (maintenanceFluidUnit != null) {
+      this.maintenanceFluidUnit = maintenanceFluidUnit;
+    }
     if (dateFormat != null) this.dateFormat = dateFormat;
     if (theme != null) this.theme = theme;
     notifyListeners();

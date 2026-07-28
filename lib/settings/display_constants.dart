@@ -6,7 +6,6 @@ const Map<String, String> currencySymbols = {
   'AUD': '\$',
   'MXN': '\$',
   'MXV': 'Mex\$',
-
 };
 
 const Map<String, String> distanceUnits = {
@@ -14,8 +13,15 @@ const Map<String, String> distanceUnits = {
   'Kilometers': 'km',
 };
 
-const Map<String, String> volumeUnits = {
+// Fuel volume units
+const Map<String, String> fuelVolumeUnits = {
   'Gallons': 'gal',
+  'Liters': 'L',
+};
+
+// Fluid volume units (quart, liter, etc)
+const Map<String, String> maintenanceFluidUnits = {
+  'Quarts': 'qt',
   'Liters': 'L',
 };
 

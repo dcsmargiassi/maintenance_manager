@@ -102,7 +102,7 @@ class HomePage extends StatelessWidget {
             const Material(
                 color: Colors.transparent,
                 child: Text(
-                  'Version: 0.8.0 Beta',
+                  'Version: 0.8.0',
                   style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.normal,
