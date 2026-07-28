@@ -1,5 +1,5 @@
 import 'package:maintenance_manager/cloud_models/battery_detail_records.dart';
-import 'package:maintenance_manager/models/battery_detail_records.dart' show BatteryDetailsModel;
+import 'package:maintenance_manager/models/battery_detail_records.dart';
 
 // Local -> Cloud Firestore
 BatteryDetailsCloudModel localToCloud(
