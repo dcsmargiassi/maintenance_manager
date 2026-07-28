@@ -461,7 +461,6 @@ class DisplayVehicleInfoState extends State<DisplayVehicleInfo> {
                         AppLocalizations.of(context)!.buttonAddWork, () {
                       navigateToAddMaintenanceRecordPage(
                           context, vehicleData.cloudId);
-                      // navigateToAddWorkRecordPage(context, vehicleData.vehicleId!);
                     }),
                   ],
                 ),

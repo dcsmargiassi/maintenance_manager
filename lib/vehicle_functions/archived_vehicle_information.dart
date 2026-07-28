@@ -468,7 +468,8 @@ class DisplayVehicleInfoState extends State<DisplayArchivedVehicleInfo> {
                     const SizedBox(width: 16.0),
                     buildVehicleButton(
                         AppLocalizations.of(context)!.workHistoryButton, () {
-                      navigateToAddFuelRecordPage(context, vehicleData.cloudId);
+                      navigateToAddMaintenanceRecordPage(
+                          context, vehicleData.cloudId);
                     }),
                   ],
                 ),

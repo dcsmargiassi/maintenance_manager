@@ -8,8 +8,8 @@ import 'package:maintenance_manager/auth/auth_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-class DisplaySettings extends StatefulWidget{
-  const DisplaySettings({super.key}); 
+class DisplaySettings extends StatefulWidget {
+  const DisplaySettings({super.key});
 
   @override
   DisplaySettingsState createState() => DisplaySettingsState();
@@ -24,12 +24,15 @@ class DisplaySettingsState extends State<DisplaySettings> {
     super.initState();
     loadUserPreference();
   }
-  
+
   Future<void> loadUserPreference() async {
     final authState = Provider.of<AuthState>(context, listen: false);
     final userId = authState.userId;
 
-    final doc = await FirebaseFirestore.instance.collection('settings').doc(userId).get();
+    final doc = await FirebaseFirestore.instance
+        .collection('settings')
+        .doc(userId)
+        .get();
     final data = doc.data();
 
     if (data != null && mounted) {
@@ -49,189 +52,193 @@ class DisplaySettingsState extends State<DisplaySettings> {
       appBar: AppBar(
         // Custom backspace button
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white
-            ),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text(
           localizations.settingsTitle,
-          ),
-          elevation: 0.0,
-          centerTitle: true,
         ),
-        body: SafeArea(
-          child: ListView(
-            children: [
-              Card(
-                child: SwitchListTile(
-                  secondary: const Icon(Icons.notifications),
-                  title: Text(localizations.enablePushNotifications),
-                  value: pushNotificationsEnabled,
-                  onChanged: (value) async {
-                    final messaging = FirebaseMessaging.instance;
-                    final settings = await messaging.getNotificationSettings();
-                    if (value && settings.authorizationStatus != AuthorizationStatus.authorized) {
-                      showDialog(
-                        // ignore: use_build_context_synchronously
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text(localizations.notificationsDisabledTitle),
-                          content: Text(localizations.notificationsDisabledMessage),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(localizations.ok),
-                              ),
-                          ],
-                        ),
-                      );
-                      setState(() {
-                      pushNotificationsEnabled = false;
-                      return;
-                    });
-                    }
-                    setState(() {
-                      pushNotificationsEnabled = value;
-                    });
-
-                      await FirebaseFirestore.instance
-                      .collection('settings')
-                      .doc(userId)
-                      .update({'pushNotifications': value});
-                  },
-                ),
-              ),
-
-              Card(
-                child: SwitchListTile(
-                  secondary: const Icon(Icons.analytics),
-                  title: Text(localizations.privacyAnalytics),
-                  value: privacyAnalytics,
-                  onChanged: (value) async {
-                    setState(() {
-                      privacyAnalytics = value;
-                    });
-                      await FirebaseFirestore.instance
-                      .collection('settings')
-                      .doc(userId)
-                      .update({'privacyAnalytics': value});
-                      await FirebaseAnalytics.instance
-                      .setAnalyticsCollectionEnabled(value);
-                  },
-                ),
-              ),
-
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.display_settings),
-                  title: Text(localizations.displayOptions),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: (){
-                    navigateToDisplayOptionsPage(context);
-                  },
-                ),
-              ),
-
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.privacy_tip),
-                  title: Text(localizations.privacyPolicy),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: (){
-                    navigateToPrivacyPolicy(context);
-                  },
-                ),
-              ),
-
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.article),
-                  title: Text(localizations.termsOfService),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: (){
-                    navigateToTermsOfServicePage(context);
-                  },
-                ),
-              ),
-
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.article),
-                  title: Text(localizations.licenses),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: (){
-                    showLicensePage(context: context);
-                  },
-                ),
-              ),
-
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.password),
-                  title: Text(localizations.resetPassword),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: (){
-                    navigateToResetPasswordPage(context);
-                  },
-                ),
-              ),
-              
-              Card(
-                child: ListTile(
-                  title: Text(localizations.recalculateFuelTotalsTitle),
-                  subtitle: Text(localizations.recalculateFuelTotalsSubtitle),
-                  leading: Icon(Icons.calculate),
-                  onTap: () async {
-                    final confirm = await showDialog<bool>(
+        elevation: 0.0,
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: ListView(
+          children: [
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.notifications),
+                title: Text(localizations.enablePushNotifications),
+                value: pushNotificationsEnabled,
+                onChanged: (value) async {
+                  final messaging = FirebaseMessaging.instance;
+                  final settings = await messaging.getNotificationSettings();
+                  if (value &&
+                      settings.authorizationStatus !=
+                          AuthorizationStatus.authorized) {
+                    showDialog(
+                      // ignore: use_build_context_synchronously
                       context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: Text(localizations.recalculateFuelTotalsDialogTitle),
-                        content: Text(localizations.recalculateFuelTotalsDialogBody),
+                      builder: (_) => AlertDialog(
+                        title: Text(localizations.notificationsDisabledTitle),
+                        content:
+                            Text(localizations.notificationsDisabledMessage),
                         actions: [
-                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(localizations.cancelButton,)),
-                          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(localizations.recalculateFuelTotalsConfirm)),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(localizations.ok),
+                          ),
                         ],
                       ),
                     );
+                    setState(() {
+                      pushNotificationsEnabled = false;
+                      return;
+                    });
+                  }
+                  setState(() {
+                    pushNotificationsEnabled = value;
+                  });
 
-                    if (confirm == true) {
-                      await recalculateFuelForAllVehicles(userId);
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(localizations.recalculateFuelTotalsSuccess)),
-                      );
-                    }
-                  },
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.manage_accounts),
-                title: Text(localizations.manageData),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  navigateToManageDataPage(context);
+                  await FirebaseFirestore.instance
+                      .collection('settings')
+                      .doc(userId)
+                      .update({'pushNotifications': value});
                 },
               ),
-              AboutListTile(
-                icon: Icon(Icons.info_outline),
-                applicationName: localizations.applicationName,
-                applicationIcon: Image.asset('assets/icon/1024.png',
-                width: 124, height: 124),
-                applicationVersion: '0.7.0',
-                applicationLegalese: localizations.applicationLegalese,
-                aboutBoxChildren: [
-                  const SizedBox(height: 10),
-                  Text(localizations.aboutDescription1),
-                  Text(localizations.aboutDescription2),
-                ],
+            ),
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.analytics),
+                title: Text(localizations.privacyAnalytics),
+                value: privacyAnalytics,
+                onChanged: (value) async {
+                  setState(() {
+                    privacyAnalytics = value;
+                  });
+                  await FirebaseFirestore.instance
+                      .collection('settings')
+                      .doc(userId)
+                      .update({'privacyAnalytics': value});
+                  await FirebaseAnalytics.instance
+                      .setAnalyticsCollectionEnabled(value);
+                },
               ),
-            ],
-          ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.display_settings),
+                title: Text(localizations.displayOptions),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  navigateToDisplayOptionsPage(context);
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.privacy_tip),
+                title: Text(localizations.privacyPolicy),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  navigateToPrivacyPolicy(context);
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.article),
+                title: Text(localizations.termsOfService),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  navigateToTermsOfServicePage(context);
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.article),
+                title: Text(localizations.licenses),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  showLicensePage(context: context);
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.password),
+                title: Text(localizations.resetPassword),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  navigateToResetPasswordPage(context);
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text(localizations.recalculateFuelTotalsTitle),
+                subtitle: Text(localizations.recalculateFuelTotalsSubtitle),
+                leading: Icon(Icons.calculate),
+                onTap: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title:
+                          Text(localizations.recalculateFuelTotalsDialogTitle),
+                      content:
+                          Text(localizations.recalculateFuelTotalsDialogBody),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: Text(
+                              localizations.cancelButton,
+                            )),
+                        ElevatedButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            child: Text(
+                                localizations.recalculateFuelTotalsConfirm)),
+                      ],
+                    ),
+                  );
+
+                  if (confirm == true) {
+                    await recalculateFuelForAllVehicles(userId);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text(localizations.recalculateFuelTotalsSuccess)),
+                    );
+                  }
+                },
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.manage_accounts),
+              title: Text(localizations.manageData),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                navigateToManageDataPage(context);
+              },
+            ),
+            AboutListTile(
+              icon: Icon(Icons.info_outline),
+              applicationName: localizations.applicationName,
+              applicationIcon:
+                  Image.asset('assets/icon/1024.png', width: 124, height: 124),
+              applicationVersion: '0.8.0',
+              applicationLegalese: localizations.applicationLegalese,
+              aboutBoxChildren: [
+                const SizedBox(height: 10),
+                Text(localizations.aboutDescription1),
+                Text(localizations.aboutDescription2),
+              ],
+            ),
+          ],
         ),
+      ),
     );
   }
 }
