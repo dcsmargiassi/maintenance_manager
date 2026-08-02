@@ -263,19 +263,48 @@ class DisplayMaintenanceListsState extends State<DisplayMaintenanceLists> {
   Future<void> _deleteMaintenanceRecord(
     MaintenanceRecordCloudModel record,
   ) async {
-    await decrementLifeTimeMaintenanceCosts(
-      record.vehicleCloudId,
-      record.userId,
-      record.totalCost,
+    final removedIndex = _records.indexWhere(
+      (item) => item.id == record.id,
     );
 
-    await MaintenanceCloudWriteOperations().deleteMaintenanceRecord(record);
+    if (removedIndex == -1) return;
 
-    if (!mounted) return;
-
+    // Remove immediately so the dismissed widget leaves the tree.
     setState(() {
-      _records.removeWhere((r) => r.id == record.id);
+      _records.removeAt(removedIndex);
     });
+
+    try {
+      // Delete the maintenance record first.
+      await MaintenanceCloudWriteOperations().deleteMaintenanceRecord(record);
+
+      // Update the vehicle's lifetime maintenance total.
+      await decrementLifeTimeMaintenanceCosts(
+        record.vehicleCloudId,
+        record.userId,
+        record.totalCost,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      // Restore the record if the cloud operation failed.
+      setState(() {
+        final restoreIndex = removedIndex.clamp(
+          0,
+          _records.length,
+        );
+
+        _records.insert(restoreIndex, record);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Unable to delete maintenance record: $e',
+          ),
+        ),
+      );
+    }
   }
 
   Widget _maintenanceCard({
