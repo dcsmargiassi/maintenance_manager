@@ -426,7 +426,7 @@ class EditMaintenanceRecordFormAppState
     }
 
     return ConfirmableBackScaffold(
-      title: 'Edit Maintenance Record',
+      title: 'Edit Work',
       onConfirmBack: () async {
         final shouldPop = await confirmDiscardChanges(context);
         if (shouldPop && context.mounted) {
